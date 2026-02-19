@@ -1,0 +1,74 @@
+---
+title: Go SDK
+description: Official Windback SDK for Go.
+---
+
+# Go SDK
+
+Official Go SDK for the Windback API.
+
+## Installation
+
+```bash
+go get github.com/windback/windback-go
+```
+
+## Quick Start
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "log"
+    "os"
+
+    windback "github.com/windback/windback-go"
+)
+
+func main() {
+    client := windback.NewClient(os.Getenv("PAYBACK_SECRET_KEY")) // sk_... from dashboard settings
+
+    ctx := context.Background()
+
+    // Get stats
+    stats, err := client.Stats.Get(ctx)
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Printf("Recovery rate: %.1f%%\n", stats.RecoveryRate)
+
+    // List churn events
+    events, err := client.ChurnEvents.List(ctx, &windback.ListParams{
+        Status: "new",
+        Limit:  10,
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // Generate recovery emails
+    variants, err := client.ChurnEvents.GenerateVariants(ctx, "event-id")
+
+    // Send a variant
+    err = client.ChurnEvents.SendVariant(ctx, "event-id", "variant-id")
+
+    // Mark as recovered
+    err = client.ChurnEvents.MarkRecovered(ctx, "event-id")
+}
+```
+
+<Callout type="info">
+The SDK uses your **secret API key** (`sk_...`) for authentication, not JWT tokens. Get your API key from **Settings** in the [dashboard](https://app.windback.dev/dashboard).
+</Callout>
+
+## Configuration
+
+```go
+client := windback.NewClient(
+    os.Getenv("PAYBACK_SECRET_KEY"),
+    windback.WithBaseURL("https://api.windback.dev"),
+    windback.WithTimeout(30 * time.Second),
+)
+```

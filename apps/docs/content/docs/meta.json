@@ -1,0 +1,16 @@
+{
+  "title": "Documentation",
+  "pages": [
+    "---Introduction---",
+    "index",
+    "quickstart",
+    "authentication",
+    "multi-project",
+    "---API---",
+    "api-reference",
+    "---Guides---",
+    "integrations",
+    "widget",
+    "sdks"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@windback/tailwind-config",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.1.0"
+  }
+}

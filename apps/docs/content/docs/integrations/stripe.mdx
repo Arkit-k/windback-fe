@@ -1,0 +1,107 @@
+---
+title: Stripe Integration
+description: Connect Stripe to Windback for automatic churn detection and failed payment recovery.
+---
+
+# Stripe Integration
+
+Automatically detect subscription cancellations and failed payments from Stripe.
+
+## Setup
+
+### 1. Get Your Webhook URL
+
+Your Stripe webhook URL is:
+
+```
+https://api.windback.dev/api/v1/webhooks/stripe/{your_public_key}
+```
+
+Replace `{your_public_key}` with your Windback public API key (starts with `pub_`). Find it in **Settings** on your dashboard.
+
+### 2. Add the Webhook in Stripe
+
+1. Go to [Stripe Dashboard > Webhooks](https://dashboard.stripe.com/webhooks)
+2. Click **"Add endpoint"**
+3. Paste your webhook URL
+4. Select the following events:
+   - `customer.subscription.deleted` (voluntary churn)
+   - `invoice.payment_failed` (failed payment / dunning)
+   - `invoice.payment_succeeded` (payment recovery detection)
+5. Click **"Add endpoint"**
+
+### 3. Verify the Webhook Secret
+
+Stripe sends a signing secret when you create the webhook. Windback verifies signatures automatically — no additional configuration needed.
+
+## How It Works
+
+### Voluntary Churn (Cancellations)
+
+When a Stripe subscription is cancelled:
+
+1. Stripe sends a `customer.subscription.deleted` webhook
+2. Windback verifies the signature using the `Stripe-Signature` header
+3. Customer info, plan details, and MRR are extracted
+4. A new churn event is created in your dashboard
+5. You can generate AI recovery emails and send them
+
+### Involuntary Churn (Failed Payments)
+
+When a subscription payment fails:
+
+1. Stripe sends an `invoice.payment_failed` webhook
+2. Windback creates a payment failure record and starts the dunning sequence
+3. AI-generated dunning emails are sent on an escalating schedule (Days 1, 3, 5, 7)
+4. Each email includes a Stripe Billing Portal link so the customer can update their payment method
+5. When the payment succeeds (`invoice.payment_succeeded`), Windback auto-marks the failure as recovered
+
+See the [Failed Payment Recovery](/docs/failed-payment-recovery) docs for the full dunning schedule and API reference.
+
+## Supported Events
+
+| Event | Description |
+|---|---|
+| `customer.subscription.deleted` | Subscription cancelled (voluntary churn) |
+| `invoice.payment_failed` | Payment failed (starts dunning sequence) |
+| `invoice.payment_succeeded` | Payment recovered (stops dunning) |
+
+## Webhook Resilience
+
+Windback is designed to **never cause webhook delivery failures**. This prevents Stripe from retrying for 72 hours or disabling your endpoint.
+
+| Scenario | Response | Behavior |
+|---|---|---|
+| Valid cancellation event | `200 OK` | Event created normally |
+| Missing or invalid API key | `200 OK` | Silently ignored |
+| Signature verification fails | `200 OK` | Silently ignored |
+| Your Windback subscription expired | `200 OK` | Silently skipped (not processed) |
+| Unhandled event type | `200 OK` | Silently ignored |
+| Internal processing error | `200 OK` | Logged, event skipped |
+
+<Callout type="info">
+All webhook responses return `200 OK` regardless of outcome. This is intentional — returning error codes to Stripe causes aggressive retries and can lead to your endpoint being disabled after repeated failures.
+</Callout>
+
+## Testing
+
+Use Stripe's test mode to send test webhook events:
+
+```bash
+stripe trigger customer.subscription.deleted
+stripe trigger invoice.payment_failed
+stripe trigger invoice.payment_succeeded
+```
+
+Or use the Stripe CLI to forward webhooks locally:
+
+```bash
+stripe listen --forward-to localhost:3000/api/v1/webhooks/stripe/pub_your_key
+```
+
+## Billing Portal
+
+Windback automatically generates Stripe Billing Portal links in dunning emails so customers can update their payment method with one click. This requires:
+
+- A Stripe secret key (`STRIPE_SECRET_KEY` env var)
+- The [Billing Portal](https://dashboard.stripe.com/settings/billing/portal) enabled in your Stripe dashboard

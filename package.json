@@ -1,0 +1,18 @@
+{
+  "name": "windback-frontend",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "dev:web": "turbo dev --filter=@windback/web",
+    "dev:docs": "turbo dev --filter=@windback/docs",
+    "build:web": "turbo build --filter=@windback/web",
+    "build:docs": "turbo build --filter=@windback/docs"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.0"
+  },
+  "packageManager": "bun@1.3.9"
+}

@@ -1,0 +1,103 @@
+---
+title: Node.js SDK
+description: Official Windback SDK for Node.js.
+---
+
+# Node.js SDK
+
+Official Node.js SDK for the Windback API.
+
+## Installation
+
+<Tabs items={["npm", "pnpm", "yarn", "bun"]}>
+<Tab value="npm">
+```bash
+npm install @windback/node
+```
+</Tab>
+<Tab value="pnpm">
+```bash
+pnpm add @windback/node
+```
+</Tab>
+<Tab value="yarn">
+```bash
+yarn add @windback/node
+```
+</Tab>
+<Tab value="bun">
+```bash
+bun add @windback/node
+```
+</Tab>
+</Tabs>
+
+## Quick Start
+
+```typescript
+import { Windback } from "@windback/node";
+
+const client = new Windback({
+  apiKey: process.env.PAYBACK_SECRET_KEY, // sk_... from dashboard settings
+});
+
+// Get stats
+const stats = await client.stats.get();
+console.log(`Recovery rate: ${stats.recovery_rate}%`);
+
+// List churn events
+const events = await client.churnEvents.list({
+  status: "new",
+  limit: 10,
+});
+
+// Generate recovery emails
+const variants = await client.churnEvents.generateVariants("event-id");
+
+// Send a recovery email
+await client.churnEvents.sendVariant("event-id", "variant-id");
+
+// Mark as recovered
+await client.churnEvents.markRecovered("event-id");
+```
+
+<Callout type="info">
+The SDK uses your **secret API key** (`sk_...`) for authentication, not JWT tokens. Get your API key from **Settings** in the [dashboard](https://app.windback.dev/dashboard).
+</Callout>
+
+## API Reference
+
+### `Windback(options)`
+
+| Option | Type | Description |
+|---|---|---|
+| `apiKey` | string | Your secret API key (`sk_...`) |
+| `baseUrl` | string | API base URL (optional) |
+
+### `client.stats.get()`
+
+Returns aggregate statistics.
+
+### `client.churnEvents.list(params?)`
+
+| Param | Type | Description |
+|---|---|---|
+| `status` | string | Filter by status |
+| `limit` | number | Items per page |
+| `offset` | number | Items to skip |
+
+### `client.churnEvents.get(id)`
+
+Get a single churn event by ID.
+
+### `client.churnEvents.generateVariants(id)`
+
+Generate 9 AI recovery email variants.
+
+### `client.churnEvents.sendVariant(eventId, variantId)`
+
+Send a specific variant email.
+
+### `client.churnEvents.markRecovered(id)`
+
+Mark an event as recovered.

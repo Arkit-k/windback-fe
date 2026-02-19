@@ -1,0 +1,83 @@
+---
+title: Recovery
+description: API reference for recovery email generation and sending.
+---
+
+# Recovery API
+
+Generate and send AI-powered recovery emails.
+
+## Generate Recovery Variants
+
+```
+POST /api/v1/churn-events/:id/generate
+```
+
+**Auth:** JWT Bearer or Secret API Key
+
+Generates 9 recovery email variants using different strategies. The AI analyzes the customer's context (plan, tenure, cancel reason) to personalize each email.
+
+<Callout type="warn">
+Variants can only be generated for events in `new` or `processing` status. If the event has already progressed past this stage, you'll receive a `400 Bad Request`.
+</Callout>
+
+**Response:**
+
+```json
+{
+  "variants": [
+    {
+      "id": "uuid",
+      "churn_event_id": "uuid",
+      "strategy": "discount",
+      "subject": "We'd love to have you back — here's 30% off",
+      "body": "Hi John, ...",
+      "coupon_code": "COMEBACK30",
+      "coupon_percent": 30,
+      "created_at": "2025-01-15T10:35:00Z"
+    }
+  ]
+}
+```
+
+## Recovery Strategies
+
+Each variant uses a different persuasion strategy. When a cancellation reason is provided, the AI auto-maps it to the best matching strategy:
+
+| Strategy | Cancel Reason Match | Description |
+|---|---|---|
+| `discount` | `too_expensive` | Offers a percentage discount |
+| `unused_feature` | `missing_features` | Highlights features they haven't tried |
+| `value_recap` | `not_using_enough` | Reminds the customer of value they've received |
+| `social_proof` | `switching_competitor` | Shows how similar customers benefit |
+| `pain_point_fix` | `technical_issues` | Addresses their specific issue |
+| `founder_email` | `poor_support` | Personal message from the founder |
+| `pause_option` | `dont_need_anymore` | Offers to pause instead of cancel |
+| `feedback_request` | `other` / fallback | Asks for feedback with incentive |
+| `downgrade_offer` | — | Suggests a lower-tier plan |
+
+If the cancel reason doesn't match any strategy, the system falls back to `feedback_request`.
+
+## Send a Variant
+
+```
+POST /api/v1/churn-events/:id/variants/:variant_id/send
+```
+
+**Auth:** JWT Bearer or Secret API Key
+
+Sends the specified recovery email to the customer. Updates the event status to `email_sent`.
+
+### Error Cases
+
+| Scenario | Status | Error |
+|---|---|---|
+| Event not in `variants_generated` or `email_sent` status | `400` | "variants must be generated before sending emails" |
+| Customer email missing on the event | `400` | "customer email is missing on this churn event" |
+| Variant already sent | `400` | "this variant has already been sent" |
+| Email service not configured | `500` | "email service is not configured" |
+| Variant ID not found | `404` | "variant not found" |
+
+<Callout type="info">
+Each variant can only be sent once. The `sent_at` timestamp is set on send and prevents re-sending the same variant. To send another email, choose a different variant.
+</Callout>

@@ -1,0 +1,46 @@
+---
+title: Stats
+description: API reference for the statistics endpoint.
+---
+
+# Stats API
+
+Get aggregate churn and recovery statistics.
+
+## Get Stats
+
+```
+GET /api/v1/stats
+```
+
+**Auth:** JWT Bearer or Secret API Key
+
+**Response:**
+
+```json
+{
+  "total_events": 150,
+  "new_events": 12,
+  "recovered_events": 45,
+  "lost_events": 30,
+  "total_mrr_at_risk": 750000,
+  "recovered_mrr": 225000,
+  "recovery_rate": 30.0
+}
+```
+
+**Field Descriptions:**
+
+| Field | Type | Description |
+|---|---|---|
+| `total_events` | int | Total churn events |
+| `new_events` | int | Events in `new` status |
+| `recovered_events` | int | Successfully recovered customers |
+| `lost_events` | int | Permanently lost customers |
+| `total_mrr_at_risk` | int | Total MRR at risk in cents |
+| `recovered_mrr` | int | MRR recovered in cents |
+| `recovery_rate` | float | Recovery percentage |
+
+<Callout type="info">
+If you have no churn events yet, all values return `0`. The endpoint never errors for empty data.
+</Callout>

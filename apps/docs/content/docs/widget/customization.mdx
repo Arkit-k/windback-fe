@@ -1,0 +1,73 @@
+---
+title: Widget Customization
+description: Customize the look and behavior of the cancellation widget.
+---
+
+# Widget Customization
+
+Customize the Windback widget to match your brand.
+
+## Themes
+
+### Light Theme (Default)
+
+```html
+<script
+  src="https://api.windback.dev/widget.js"
+  data-api-key="pub_your_key"
+  data-theme="light"
+  async
+></script>
+```
+
+### Dark Theme
+
+```html
+<script
+  src="https://api.windback.dev/widget.js"
+  data-api-key="pub_your_key"
+  data-theme="dark"
+  async
+></script>
+```
+
+## Custom Cancel Reasons
+
+Override the default cancel reasons:
+
+```javascript
+window.Windback.show({
+  customerEmail: "user@example.com",
+  subscriptionId: "sub_123",
+  reasons: [
+    { value: "too_expensive", label: "Too expensive" },
+    { value: "missing_features", label: "Missing features I need" },
+    { value: "switching_competitor", label: "Found a better alternative" },
+    { value: "not_using_enough", label: "Not using it enough" },
+    { value: "other", label: "Other reason" },
+  ],
+});
+```
+
+<Callout type="info">
+Use the [standardized cancel reason values](/docs/integrations/custom-webhook#cancel-reasons) for best AI strategy matching. Custom values will fall back to the `feedback_request` strategy.
+</Callout>
+
+## Event Callbacks
+
+Listen to widget events:
+
+```javascript
+window.Windback.on("submit", (data) => {
+  console.log("Reason submitted:", data.reason);
+  // Proceed with your cancellation logic
+});
+
+window.Windback.on("dismiss", () => {
+  console.log("User dismissed the widget");
+});
+```
+
+## Required Fields
+
+The widget requires `customer_email`, `cancel_reason`, `provider`, and `currency` for a valid submission. Missing fields will result in a validation error.

@@ -1,0 +1,61 @@
+---
+title: Razorpay Integration
+description: Connect Razorpay to Windback for automatic churn detection.
+---
+
+# Razorpay Integration
+
+Automatically detect subscription cancellations from Razorpay.
+
+## Setup
+
+### 1. Get Your Webhook URL
+
+```
+https://api.windback.dev/api/v1/webhooks/razorpay/{your_public_key}
+```
+
+Replace `{your_public_key}` with your Windback public API key (starts with `pub_`). Find it in **Settings** on your dashboard.
+
+### 2. Add the Webhook in Razorpay
+
+1. Go to [Razorpay Dashboard > Settings > Webhooks](https://dashboard.razorpay.com/app/webhooks)
+2. Click **"Add New Webhook"**
+3. Enter the webhook URL
+4. Select the event: `subscription.cancelled`
+5. Save the webhook
+
+### 3. Signature Verification
+
+Razorpay signs webhook payloads using the `X-Razorpay-Signature` header. Windback verifies signatures automatically to ensure authenticity.
+
+## Supported Events
+
+| Event | Description |
+|---|---|
+| `subscription.cancelled` | Subscription cancelled |
+
+## Data Mapping
+
+Windback maps Razorpay subscription data to churn events:
+
+- **Customer Email** — from the customer object
+- **Plan Name** — from the plan object
+- **MRR** — calculated from plan amount and interval
+- **Currency** — from the plan currency
+
+## Webhook Resilience
+
+Same as Stripe — Windback always returns `200 OK` to prevent Razorpay from retrying or disabling your endpoint.
+
+| Scenario | Response | Behavior |
+|---|---|---|
+| Valid cancellation event | `200 OK` | Event created normally |
+| Missing or invalid API key | `200 OK` | Silently ignored |
+| Signature verification fails | `200 OK` | Silently ignored |
+| Your Windback subscription expired | `200 OK` | Silently skipped |
+| Internal processing error | `200 OK` | Logged, event skipped |
+
+<Callout type="info">
+If your Windback subscription is expired, webhooks are still accepted (200 OK) but not processed. No churn events will be created until your subscription is renewed.
+</Callout>

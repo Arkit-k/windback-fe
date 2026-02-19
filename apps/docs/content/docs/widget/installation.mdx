@@ -1,0 +1,73 @@
+---
+title: Widget Installation
+description: Install the Windback cancellation widget on your site.
+---
+
+# Widget Installation
+
+The Windback widget captures cancellation reasons from users before they leave.
+
+## Quick Setup
+
+Add this script tag to your cancellation page:
+
+```html
+<script
+  src="https://api.windback.dev/widget.js"
+  data-api-key="pub_your_public_key"
+  async
+></script>
+```
+
+## How It Works
+
+1. The widget loads asynchronously (no performance impact)
+2. When triggered, it shows a modal asking the user why they're cancelling
+3. The user selects a reason (and optionally provides details)
+4. The reason is sent to Windback via the cancel flow API
+5. This data enriches the churn event with context for AI recovery
+
+## Configuration
+
+| Attribute | Required | Description |
+|---|---|---|
+| `data-api-key` | Yes | Your public API key (`pub_...`) |
+| `data-theme` | No | `light` (default) or `dark` |
+| `data-position` | No | Widget position: `center`, `bottom-right` |
+
+## Triggering the Widget
+
+The widget exposes a global function:
+
+```javascript
+// Show the cancellation widget
+window.Windback.show({
+  customerEmail: "user@example.com",
+  subscriptionId: "sub_123",
+});
+```
+
+## Allowed Origins
+
+For security, the widget only works on domains listed in your allowed origins. Configure them in [Settings > Allowed Origins](https://app.windback.dev/dashboard/settings/allowed-origins).
+
+If no origins are configured, the widget works on all domains (backward compatible).
+
+## Graceful Degradation
+
+The widget is designed to **never block your customers from cancelling**. This is critical for legal compliance.
+
+| Scenario | Widget Behavior |
+|---|---|
+| Your Windback subscription is active | Full functionality — feedback captured and processed |
+| Your Windback subscription expired | Widget still works — feedback is accepted (HTTP 202) but not processed |
+| Same customer submits within 24 hours | Accepted silently (HTTP 202) — no duplicate events created |
+| Network error or API failure | Widget closes gracefully — cancellation proceeds |
+
+<Callout type="info">
+Even if your Windback subscription expires, the widget will continue to work for your end-users. Their cancellation flow is never interrupted. Feedback is accepted but won't generate churn events or recovery emails until your subscription is renewed.
+</Callout>
+
+## Rate Limiting
+
+The cancel flow endpoint is rate-limited to **10 requests per 15 seconds** per API key. This prevents abuse while allowing normal cancellation traffic.

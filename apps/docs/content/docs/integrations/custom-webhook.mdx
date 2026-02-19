@@ -1,0 +1,77 @@
+---
+title: Custom Webhook
+description: Send churn events from any payment provider via custom webhooks.
+---
+
+# Custom Webhook
+
+If your payment provider isn't directly supported, use the custom webhook endpoint.
+
+## Endpoint
+
+```
+POST https://api.windback.dev/api/v1/webhooks/custom/{your_public_key}
+```
+
+## Payload Format
+
+```json
+{
+  "customer_email": "user@example.com",
+  "customer_name": "John Doe",
+  "provider_subscription_id": "sub_123",
+  "provider_customer_id": "cus_456",
+  "plan_name": "Pro Monthly",
+  "mrr_cents": 4900,
+  "currency": "usd",
+  "tenure_days": 180,
+  "cancel_reason": "too_expensive"
+}
+```
+
+## Cancel Reasons
+
+Use these standardized cancel reason values for the best AI recovery strategy matching:
+
+| Value | AI Strategy |
+|---|---|
+| `too_expensive` | Discount offer |
+| `missing_features` | Unused feature highlight |
+| `not_using_enough` | Value recap |
+| `switching_competitor` | Social proof |
+| `technical_issues` | Pain point fix |
+| `poor_support` | Founder email |
+| `dont_need_anymore` | Pause option |
+| `other` | Feedback request |
+
+If no cancel reason is provided or the value doesn't match, the AI defaults to the `feedback_request` strategy.
+
+## Webhook Resilience
+
+Like Stripe and Razorpay webhooks, custom webhooks always return `200 OK` — even on errors. This prevents your system from retrying unnecessarily.
+
+| Scenario | Response |
+|---|---|
+| Valid event | `200 OK` — event created |
+| Invalid/missing API key | `200 OK` — silently ignored |
+| Subscription expired | `200 OK` — silently skipped |
+| Processing error | `200 OK` — logged, skipped |
+
+## Example
+
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customer_email": "john@example.com",
+    "customer_name": "John Doe",
+    "provider_subscription_id": "sub_abc123",
+    "provider_customer_id": "cus_xyz789",
+    "plan_name": "Pro",
+    "mrr_cents": 4900,
+    "currency": "usd",
+    "tenure_days": 90,
+    "cancel_reason": "too_expensive"
+  }' \
+  https://api.windback.dev/api/v1/webhooks/custom/pub_your_key
+```

@@ -1,0 +1,229 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/ocean.css";
+@import "fumadocs-ui/css/preset.css";
+
+/* ── Windback Premium Theme ── */
+@theme {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Primary — Windback blue */
+  --color-fd-primary: hsl(218, 93%, 42%);
+  --color-fd-primary-foreground: hsl(0, 0%, 100%);
+  --color-fd-ring: hsl(218, 93%, 42%);
+
+  /* Surfaces */
+  --color-fd-background: hsl(220, 20%, 98%);
+  --color-fd-card: hsl(0, 0%, 100%);
+  --color-fd-border: hsl(220, 13%, 91%);
+
+  /* Accents */
+  --color-fd-accent: hsl(221, 50%, 95%);
+  --color-fd-accent-foreground: hsl(218, 80%, 36%);
+  --color-fd-secondary: hsl(221, 40%, 96%);
+  --color-fd-secondary-foreground: hsl(220, 14%, 10%);
+  --color-fd-muted-foreground: hsl(220, 10%, 46%);
+}
+
+/* ── Dark Mode ── */
+.dark {
+  --color-fd-primary: hsl(221, 90%, 68%);
+  --color-fd-primary-foreground: hsl(220, 60%, 4%);
+  --color-fd-ring: hsl(221, 90%, 68%);
+  --color-fd-background: hsl(224, 50%, 4%);
+  --color-fd-foreground: hsl(220, 40%, 95%);
+  --color-fd-card: hsla(224, 50%, 8%, 0.6);
+  --color-fd-card-foreground: hsl(220, 40%, 95%);
+  --color-fd-border: hsla(221, 40%, 25%, 0.25);
+  --color-fd-muted: hsl(224, 40%, 8%);
+  --color-fd-muted-foreground: hsl(220, 15%, 55%);
+  --color-fd-accent: hsl(224, 40%, 12%);
+  --color-fd-accent-foreground: hsl(221, 70%, 78%);
+  --color-fd-secondary: hsl(224, 40%, 10%);
+  --color-fd-secondary-foreground: hsl(220, 60%, 92%);
+  --color-fd-popover: hsl(224, 50%, 6%);
+  --color-fd-popover-foreground: hsl(220, 40%, 95%);
+}
+
+.dark body {
+  background-image:
+    radial-gradient(ellipse at 20% 0%, hsla(221, 90%, 50%, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 0%, hsla(218, 90%, 50%, 0.06) 0%, transparent 50%);
+  background-repeat: no-repeat;
+}
+
+/* ── Typography ── */
+body {
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.03em;
+}
+
+code, pre, kbd {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+.prose {
+  line-height: 1.8;
+}
+
+.prose p {
+  margin-bottom: 1.25em;
+}
+
+/* ── Dot Grid Pattern ── */
+.dot-grid {
+  background-image: radial-gradient(circle, hsl(220, 13%, 82%) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.dark .dot-grid {
+  background-image: radial-gradient(circle, hsla(221, 40%, 30%, 0.3) 1px, transparent 1px);
+}
+
+/* ── Animated Gradient Border ── */
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.gradient-border {
+  background: linear-gradient(135deg, hsl(218, 93%, 42%), hsl(210, 90%, 55%), hsl(218, 93%, 42%));
+  background-size: 200% 200%;
+  animation: gradient-shift 4s ease infinite;
+}
+
+/* ── Glow Effect ── */
+.glow {
+  box-shadow:
+    0 0 20px hsla(218, 93%, 42%, 0.15),
+    0 0 60px hsla(218, 93%, 42%, 0.05);
+}
+
+.dark .glow {
+  box-shadow:
+    0 0 20px hsla(221, 90%, 68%, 0.1),
+    0 0 60px hsla(221, 90%, 68%, 0.03);
+}
+
+.glow:hover {
+  box-shadow:
+    0 0 30px hsla(218, 93%, 42%, 0.25),
+    0 0 80px hsla(218, 93%, 42%, 0.1);
+}
+
+.dark .glow:hover {
+  box-shadow:
+    0 0 30px hsla(221, 90%, 68%, 0.2),
+    0 0 80px hsla(221, 90%, 68%, 0.08);
+}
+
+/* ── Glass Card ── */
+.glass {
+  background: hsla(0, 0%, 100%, 0.7);
+  backdrop-filter: blur(12px) saturate(1.5);
+  border: 1px solid hsla(220, 13%, 91%, 0.8);
+}
+
+.dark .glass {
+  background: hsla(224, 50%, 8%, 0.5);
+  backdrop-filter: blur(12px) saturate(1.5);
+  border: 1px solid hsla(221, 40%, 25%, 0.2);
+}
+
+/* ── Shimmer Animation ── */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, hsla(0, 0%, 100%, 0.08), transparent);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* ── Gradient Text ── */
+.gradient-text {
+  background: linear-gradient(135deg, hsl(218, 93%, 42%) 0%, hsl(210, 90%, 55%) 50%, hsl(200, 85%, 50%) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dark .gradient-text {
+  background: linear-gradient(135deg, hsl(221, 90%, 72%) 0%, hsl(210, 90%, 70%) 50%, hsl(200, 85%, 72%) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Pulse Ring ── */
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+.pulse-ring::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 2px solid hsl(218, 93%, 42%);
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+/* ── Improved scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #084CCF;
+  border-radius: 3px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #084CCF;
+}
+
+/* ── Code block enhancements ── */
+pre:has(code) {
+  border: 1px solid var(--color-fd-border);
+  border-radius: 12px;
+}
+
+/* ── Card hover lift ── */
+.card-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-lift:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 4px 12px hsla(220, 30%, 20%, 0.08),
+    0 1px 3px hsla(220, 30%, 20%, 0.06);
+}
+
+.dark .card-lift:hover {
+  box-shadow:
+    0 4px 12px hsla(221, 60%, 50%, 0.06),
+    0 1px 3px hsla(221, 60%, 50%, 0.04);
+}

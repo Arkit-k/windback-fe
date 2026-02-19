@@ -1,0 +1,64 @@
+---
+title: API Reference
+description: Complete Windback API reference.
+---
+
+# API Reference
+
+Base URL: `https://api.windback.dev/api/v1`
+
+## Authentication
+
+Most endpoints require authentication. The API supports two methods:
+
+- **JWT Bearer token**: `Authorization: Bearer <token>` — obtained via login/register
+- **API Secret Key**: `X-API-Key: sk_...` — obtained from dashboard settings
+
+Dashboard endpoints accept either method (Dual Auth). Widget and webhook endpoints use public API keys or no auth.
+
+## Endpoints
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/auth/register` | None | Create a new account (email + password) |
+| `POST` | `/auth/login` | None | Log in with email + password |
+| `GET` | `/auth/me` | JWT / Secret | Get current user info |
+| `PUT` | `/auth/allowed-origins` | JWT / Secret | Update allowed origins |
+| `GET` | `/stats` | JWT / Secret | Get churn statistics |
+| `POST` | `/churn-events` | JWT / Secret | Create a churn event |
+| `GET` | `/churn-events` | JWT / Secret | List churn events |
+| `GET` | `/churn-events/:id` | JWT / Secret | Get a specific event |
+| `POST` | `/churn-events/:id/generate` | JWT / Secret | Generate recovery variants |
+| `POST` | `/churn-events/:id/variants/:vid/send` | JWT / Secret | Send a recovery email |
+| `POST` | `/churn-events/:id/recovered` | JWT / Secret | Mark event as recovered |
+| `POST` | `/cancel-flow/submit` | Public | Submit cancellation reason |
+| `POST` | `/webhooks/:provider/:key` | None | Receive payment webhooks |
+
+## Response Format
+
+Successful responses return JSON. Errors return:
+
+```json
+{
+  "error": "Human-readable error message"
+}
+```
+
+## Pagination
+
+List endpoints support pagination via query parameters:
+
+- `limit` — Number of items (default: 20, max: 100)
+- `offset` — Number of items to skip (default: 0)
+- `status` — Filter by status (optional)
+
+Response includes total count:
+
+```json
+{
+  "data": [...],
+  "total": 42,
+  "limit": 20,
+  "offset": 0
+}
+```

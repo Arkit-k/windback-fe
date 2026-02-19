@@ -1,0 +1,130 @@
+---
+title: Churn Events
+description: API reference for churn event endpoints.
+---
+
+# Churn Events API
+
+Manage churn events — the core resource in Windback.
+
+## List Churn Events
+
+```
+GET /api/v1/churn-events
+```
+
+**Auth:** JWT Bearer or Secret API Key
+
+**Query Parameters:**
+
+| Param | Type | Description |
+|---|---|---|
+| `limit` | int | Items per page (default: 20, max: 100) |
+| `offset` | int | Items to skip (default: 0) |
+| `status` | string | Filter by status |
+
+**Response:**
+
+```json
+{
+  "data": [
+    {
+      "id": "uuid",
+      "customer_email": "user@example.com",
+      "customer_name": "John Doe",
+      "provider": "stripe",
+      "plan_name": "Pro",
+      "mrr_cents": 4900,
+      "currency": "usd",
+      "tenure_days": 180,
+      "cancel_reason": "too_expensive",
+      "status": "new",
+      "created_at": "2025-01-15T10:30:00Z"
+    }
+  ],
+  "total": 42,
+  "limit": 20,
+  "offset": 0
+}
+```
+
+## Get Churn Event
+
+```
+GET /api/v1/churn-events/:id
+```
+
+**Auth:** JWT Bearer or Secret API Key
+
+Returns the full event including any generated recovery variants.
+
+## Create Churn Event
+
+```
+POST /api/v1/churn-events
+```
+
+**Auth:** JWT Bearer or Secret API Key
+
+**Body:**
+
+```json
+{
+  "customer_email": "user@example.com",
+  "customer_name": "John Doe",
+  "provider": "custom",
+  "provider_subscription_id": "sub_123",
+  "provider_customer_id": "cus_456",
+  "plan_name": "Pro",
+  "mrr_cents": 4900,
+  "currency": "usd",
+  "tenure_days": 180,
+  "cancel_reason": "too_expensive"
+}
+```
+
+## Mark as Recovered
+
+```
+POST /api/v1/churn-events/:id/recovered
+```
+
+**Auth:** JWT Bearer or Secret API Key
+
+Changes the event status to `recovered`.
+
+<Callout type="warn">
+Returns `400 Bad Request` if the event is already marked as `recovered`.
+</Callout>
+
+## Event Status Lifecycle
+
+Churn events follow a strict status progression. The backend validates transitions — you cannot skip steps.
+
+| Status | Description | Next Valid Status |
+|---|---|---|
+| `new` | Just received, no action taken | `processing` |
+| `processing` | Being analyzed by AI | `variants_generated` |
+| `variants_generated` | Recovery emails have been generated | `email_sent` |
+| `email_sent` | At least one recovery email has been sent | `recovered`, `lost` |
+| `recovered` | Customer was won back | — (terminal) |
+| `lost` | Customer was not recovered | — (terminal) |
+
+**Status validation rules:**
+
+- Variants can only be generated for events in `new` or `processing` status
+- Emails can only be sent for events in `variants_generated` or `email_sent` status
+- Already-recovered events cannot be modified
+
+## Subscription Requirement
+
+All churn event endpoints require an active Windback subscription (trial or paid). If your subscription has expired, these endpoints return:
+
+```json
+{
+  "error": "subscription expired — please renew at app.windback.dev/billing",
+  "code": "SUBSCRIPTION_EXPIRED"
+}
+```
+
+**HTTP Status:** `402 Payment Required`

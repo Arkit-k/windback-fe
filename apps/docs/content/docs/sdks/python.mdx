@@ -1,0 +1,65 @@
+---
+title: Python SDK
+description: Official Windback SDK for Python.
+---
+
+# Python SDK
+
+Official Python SDK for the Windback API.
+
+## Installation
+
+```bash
+pip install windback
+```
+
+## Quick Start
+
+```python
+import os
+from windback import Windback
+
+client = Windback(api_key=os.environ["PAYBACK_SECRET_KEY"])  # sk_... from dashboard settings
+
+# Get stats
+stats = client.stats.get()
+print(f"Recovery rate: {stats.recovery_rate}%")
+
+# List churn events
+events = client.churn_events.list(status="new", limit=10)
+
+# Generate recovery emails
+variants = client.churn_events.generate_variants("event-id")
+
+# Send a recovery email
+client.churn_events.send_variant("event-id", "variant-id")
+
+# Mark as recovered
+client.churn_events.mark_recovered("event-id")
+```
+
+<Callout type="info">
+The SDK uses your **secret API key** (`sk_...`) for authentication, not JWT tokens. Get your API key from **Settings** in the [dashboard](https://app.windback.dev/dashboard).
+</Callout>
+
+## Configuration
+
+```python
+client = Windback(
+    api_key=os.environ["PAYBACK_SECRET_KEY"],
+    base_url="https://api.windback.dev",  # optional
+    timeout=30,  # seconds, optional
+)
+```
+
+## Async Support
+
+```python
+import os
+from windback import AsyncWindback
+
+client = AsyncWindback(api_key=os.environ["PAYBACK_SECRET_KEY"])
+
+stats = await client.stats.get()
+events = await client.churn_events.list()
+```

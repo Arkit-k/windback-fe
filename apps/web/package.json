@@ -1,0 +1,38 @@
+{
+  "name": "@windback/web",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack --port 3001",
+    "build": "next build",
+    "start": "next start --port 3001",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@fontsource/instrument-serif": "^5.2.8",
+    "@gsap/react": "^2.1.2",
+    "@rive-app/react-canvas": "^4.27.0",
+    "@tanstack/react-query": "^5.75.0",
+    "@windback/ui": "workspace:*",
+    "cal-sans": "^1.0.1",
+    "framer-motion": "^12.34.0",
+    "geist": "^1.3.0",
+    "gsap": "^3.14.2",
+    "lucide-react": "^0.475.0",
+    "next": "^15.3.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zustand": "^5.0.0"
+  },
+  "devDependencies": {
+    "@windback/typescript-config": "workspace:*",
+    "@windback/tailwind-config": "workspace:*",
+    "@tailwindcss/postcss": "^4.1.0",
+    "tailwindcss": "^4.1.0",
+    "postcss": "^8.5.0",
+    "typescript": "^5.7.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/node": "^22.0.0"
+  }
+}

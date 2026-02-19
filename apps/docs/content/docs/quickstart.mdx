@@ -1,0 +1,65 @@
+---
+title: Quickstart
+description: Get Windback up and running in 5 minutes.
+---
+
+# Quickstart
+
+Get from zero to recovering churned customers in 5 minutes.
+
+## 1. Create an Account
+
+Sign up at the [Windback dashboard](https://app.windback.dev/register) with your email, name, and password.
+
+After signing up you'll be logged in automatically and taken to the dashboard.
+
+## 2. Get Your API Keys
+
+Go to **Settings** in the dashboard to find your API keys:
+
+- **Public Key** (`pub_...`) — Used for the cancellation widget and webhook URLs
+- **Secret Key** (`sk_...`) — Used for SDK integrations and server-side API calls
+
+<Callout type="warn">
+Keep your secret key safe. Never expose it in client-side code.
+</Callout>
+
+## 3. Connect Your Payment Provider
+
+Add a webhook URL in your payment provider's dashboard:
+
+```
+https://api.windback.dev/api/v1/webhooks/{provider}/{your_public_key}
+```
+
+Replace `{provider}` with `stripe`, `razorpay`, or `custom`.
+
+For Stripe, listen for the `customer.subscription.deleted` event.
+
+## 4. (Optional) Add the Cancellation Widget
+
+Add this snippet to your app's cancellation flow:
+
+```html
+<script
+  src="https://api.windback.dev/widget.js"
+  data-api-key="pub_your_key_here"
+  async
+></script>
+```
+
+This captures cancellation reasons before the customer leaves.
+
+## 5. View Events in the Dashboard
+
+Once webhooks start flowing, you'll see churn events in your [dashboard](https://app.windback.dev/dashboard).
+
+## 6. Generate & Send Recovery Emails
+
+Click on any churn event, then click **"Generate AI Recovery Emails"**. The AI creates 9 personalized variants. Preview them, pick the best one, and send it with one click.
+
+## Next Steps
+
+- [Authentication](/docs/authentication) — Understand JWT and API key auth
+- [API Reference](/docs/api-reference) — Build custom integrations
+- [Stripe Integration](/docs/integrations/stripe) — Detailed Stripe setup

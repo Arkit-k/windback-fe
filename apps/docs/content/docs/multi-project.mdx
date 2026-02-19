@@ -1,0 +1,178 @@
+---
+title: Multi-Project Setup
+description: Manage multiple products from a single Windback account.
+---
+
+# Multi-Project Setup
+
+Windback supports managing churn recovery for **multiple products** from a single account. Each project gets its own API keys, payment provider connections, churn events, and allowed origins.
+
+## How It Works
+
+Projects are the top-level organizational unit in Windback. When you create an account and complete onboarding, a **Default** project is created automatically. You can then create additional projects for each of your SaaS products.
+
+Each project is completely isolated:
+
+- Separate **API keys** (public + secret)
+- Independent **Stripe / Razorpay** connections
+- Scoped **churn events** and **recovery stats**
+- Per-project **allowed origins** for the widget
+- Unique **slug** used in URLs and API paths
+
+## Creating a Project
+
+### Via Dashboard
+
+1. Go to **Projects** in the sidebar
+2. Click **Create Project**
+3. Fill in the project details:
+   - **Name** — Your product name (e.g. "Acme Pro")
+   - **Product Type** — The type of SaaS product
+   - **Support Email** — Email shown in recovery emails
+4. A URL-friendly slug is generated automatically from the name
+
+### Via API
+
+```bash
+curl -X POST https://api.windback.dev/api/v1/projects \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Acme Pro",
+    "product_type": "SaaS",
+    "support_email": "support@acme.com"
+  }'
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "Acme Pro",
+    "slug": "acme-pro",
+    "product_type": "SaaS",
+    "support_email": "support@acme.com",
+    "allowed_origins": [],
+    "created_at": "2026-02-17T10:00:00Z",
+    "updated_at": "2026-02-17T10:00:00Z"
+  }
+}
+```
+
+<Callout type="info">
+A unique public and secret API key pair is auto-generated for each new project.
+</Callout>
+
+## Project-Scoped API
+
+All core endpoints are scoped under a project slug:
+
+```
+https://api.windback.dev/api/v1/projects/{slug}/...
+```
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/projects` | List all your projects |
+| `POST` | `/projects` | Create a new project |
+| `GET` | `/projects/:slug` | Get project details |
+| `PUT` | `/projects/:slug` | Update project settings |
+| `DELETE` | `/projects/:slug` | Delete a project |
+| `PUT` | `/projects/:slug/allowed-origins` | Update CORS origins |
+| `GET` | `/projects/:slug/churn-events` | List churn events |
+| `POST` | `/projects/:slug/churn-events` | Create a churn event |
+| `GET` | `/projects/:slug/churn-events/:id` | Get a churn event |
+| `POST` | `/projects/:slug/churn-events/:id/generate` | Generate recovery variants |
+| `POST` | `/projects/:slug/churn-events/:id/variants/:vid/send` | Send a recovery email |
+| `POST` | `/projects/:slug/churn-events/:id/recovered` | Mark as recovered |
+| `GET` | `/projects/:slug/stats` | Get project statistics |
+
+## Switching Between Projects
+
+In the dashboard, use the **project switcher** in the sidebar to navigate between your projects. Each project has its own overview, events list, and settings pages.
+
+Dashboard URLs follow the pattern:
+
+```
+/dashboard/p/{slug}/          → Project overview
+/dashboard/p/{slug}/events    → Churn events
+/dashboard/p/{slug}/settings  → Project settings
+```
+
+## Connecting Payment Providers
+
+Each project connects to its own payment provider accounts. Go to **Settings > Integrations** within a project to configure:
+
+- **Stripe** — Enter your Stripe account ID
+- **Razorpay** — Enter your Razorpay key ID
+
+Webhook URLs are project-scoped via the project's public API key:
+
+```
+https://api.windback.dev/api/v1/webhooks/stripe/{project_public_key}
+https://api.windback.dev/api/v1/webhooks/razorpay/{project_public_key}
+```
+
+## Managing API Keys
+
+Each project has its own key pair:
+
+| Type | Prefix | Use |
+|---|---|---|
+| **Public** | `cg_pub_` | Widget, webhook URLs |
+| **Secret** | `cg_sk_` | SDK calls, server-side API access |
+
+View your project's API keys at **Settings > API Keys** within the project.
+
+<Callout type="warn">
+API keys are shown only once when a project is created. Store them securely.
+</Callout>
+
+## Allowed Origins
+
+Configure per-project CORS origins to control which domains can use the cancellation widget:
+
+```bash
+curl -X PUT \
+  https://api.windback.dev/api/v1/projects/acme-pro/allowed-origins \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"allowed_origins": ["https://acme.com", "https://staging.acme.com"]}'
+```
+
+## Updating a Project
+
+```bash
+curl -X PUT https://api.windback.dev/api/v1/projects/acme-pro \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Acme Pro",
+    "product_type": "SaaS",
+    "support_email": "help@acme.com"
+  }'
+```
+
+## Deleting a Project
+
+```bash
+curl -X DELETE https://api.windback.dev/api/v1/projects/acme-pro \
+  -H "Authorization: Bearer <token>"
+```
+
+<Callout type="warn">
+Deleting a project permanently removes all its churn events, recovery variants, and API keys. This action cannot be undone.
+</Callout>
+
+## Slug Uniqueness
+
+Project slugs are unique **per user**, not globally. If a slug collision is detected within your account, a short UUID suffix is appended automatically (e.g. `acme-pro-a1b2c3`).
+
+## Next Steps
+
+- [Authentication](/docs/authentication) — Understand JWT and API key auth
+- [API Reference](/docs/api-reference) — Full endpoint reference
+- [Stripe Integration](/docs/integrations/stripe) — Connect Stripe to a project
+- [Widget Installation](/docs/widget/installation) — Add the cancellation widget

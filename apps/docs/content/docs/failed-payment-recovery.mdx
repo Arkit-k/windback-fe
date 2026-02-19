@@ -1,0 +1,118 @@
+---
+title: Failed Payment Recovery
+description: Automatically recover involuntary churn from failed payments with smart dunning emails.
+---
+
+# Failed Payment Recovery (Dunning)
+
+Windback automatically detects failed payments and sends a series of smart, AI-generated dunning emails to help customers update their payment method before their subscription is lost.
+
+## How It Works
+
+When a payment fails, Windback:
+
+1. **Detects the failure** via your Stripe webhook (`invoice.payment_failed`)
+2. **Creates a payment failure record** with status `failing`
+3. **Generates an AI dunning email** with the appropriate tone
+4. **Sends the email** to the customer
+5. **Retries on a schedule** — up to 4 attempts over 7 days
+6. **Auto-recovers** when payment succeeds (`invoice.payment_succeeded`)
+
+## Retry Schedule
+
+| Retry | Day | Tone | Style |
+|-------|-----|------|-------|
+| 1 | Day 1 | Gentle Reminder | "Heads up, your payment didn't go through" |
+| 2 | Day 3 | Urgency | "Your subscription is at risk" |
+| 3 | Day 5 | Help Offer | "Need help updating payment? We're here" |
+| 4 | Day 7 | Final Warning | "Last chance before access is paused" |
+
+After the 4th attempt, the failure is marked as `abandoned`.
+
+## Webhook Events
+
+Windback handles these Stripe webhook events for dunning:
+
+### `invoice.payment_failed`
+
+Triggered when a subscription payment fails. Windback will:
+- Create or update a payment failure record
+- Schedule the first dunning email
+- Begin the retry sequence
+
+### `invoice.payment_succeeded`
+
+Triggered when a previously failed payment succeeds. Windback will:
+- Mark the payment failure as `recovered`
+- Cancel any pending retries
+- Log the recovery for your dashboard stats
+
+<Callout type="info">
+Make sure both `invoice.payment_failed` and `invoice.payment_succeeded` events are enabled in your Stripe webhook configuration.
+</Callout>
+
+## Payment Failure Statuses
+
+| Status | Description |
+|--------|-------------|
+| `failing` | Payment has failed, dunning emails are being sent |
+| `recovered` | Customer updated their payment and the charge succeeded |
+| `abandoned` | All retry attempts exhausted without recovery |
+
+## Dashboard
+
+Navigate to **Failed Payments** in the sidebar to view:
+
+- **Stats cards** — Failing count, recovered count, MRR at risk, recovery rate
+- **Payment failures table** — Filterable by status, with retry progress
+- **Detail view** — Click any row to see the dunning email timeline
+
+## API Reference
+
+### List Payment Failures
+
+```
+GET /api/v1/projects/:slug/payment-failures
+```
+
+Query parameters:
+- `status` — Filter by `failing`, `recovered`, or `abandoned`
+- `limit` — Results per page (default 20, max 100)
+- `offset` — Pagination offset
+
+### Get Payment Failure Detail
+
+```
+GET /api/v1/projects/:slug/payment-failures/:id
+```
+
+Returns the payment failure with its full dunning email timeline.
+
+### Get Payment Failure Stats
+
+```
+GET /api/v1/projects/:slug/payment-failures/stats
+```
+
+Returns:
+```json
+{
+  "data": {
+    "total_failing": 12,
+    "total_recovered": 45,
+    "total_abandoned": 8,
+    "mrr_at_risk_cents": 120000,
+    "mrr_recovered_cents": 450000,
+    "recovery_rate": 69.2
+  }
+}
+```
+
+## Setup
+
+Failed payment recovery works automatically once you've connected your Stripe webhook. No additional configuration is needed beyond what's described in the [Stripe integration guide](/docs/integrations/stripe).
+
+Make sure your webhook URL includes both payment events:
+- `invoice.payment_failed`
+- `invoice.payment_succeeded`
+- `customer.subscription.deleted` (for voluntary churn)

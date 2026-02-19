@@ -1,0 +1,94 @@
+---
+title: Authentication
+description: How Windback API authentication works.
+---
+
+# Authentication
+
+Windback supports two authentication methods: **JWT tokens** for the dashboard and **API keys** for programmatic access (SDKs, widgets, webhooks).
+
+## Authentication Methods
+
+### 1. JWT (Dashboard & User Sessions)
+
+Sign up or log in with email and password. The API returns a JWT token that you include as a Bearer token:
+
+```bash
+curl -H "Authorization: Bearer eyJhbGciOi..." \
+  https://api.windback.dev/api/v1/stats
+```
+
+**Getting a token:**
+
+```bash
+# Register
+curl -X POST https://api.windback.dev/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Jane Doe", "email": "jane@example.com", "password": "your-password"}'
+
+# Login
+curl -X POST https://api.windback.dev/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "jane@example.com", "password": "your-password"}'
+```
+
+Both return:
+
+```json
+{
+  "data": {
+    "user": { "id": "...", "name": "Jane Doe", "email": "jane@example.com" },
+    "token": "eyJhbGciOi..."
+  }
+}
+```
+
+Tokens expire after **7 days**. Re-authenticate to get a new one.
+
+### 2. API Keys (SDKs, Widgets & Webhooks)
+
+API keys are generated from the dashboard after you sign in. Use them for server-side integrations and the widget.
+
+| Type | Prefix | Use |
+|---|---|---|
+| **Public** | `pub_` | Widget, cancel flow, webhook URLs |
+| **Secret** | `sk_` | SDK calls, managing events, generating emails |
+
+Include the secret key via the `X-API-Key` header:
+
+```bash
+curl -H "X-API-Key: sk_your_secret_key" \
+  https://api.windback.dev/api/v1/stats
+```
+
+## Dual Authentication
+
+Most dashboard API endpoints accept **either** a JWT Bearer token or an API secret key. The server tries JWT first, then falls back to API key auth. This means you can use whichever method suits your use case:
+
+- **Dashboard / Browser sessions** → JWT token
+- **Server-side scripts / SDKs** → API secret key
+- **Widget / Cancel flow** → Public API key only
+
+## Security Best Practices
+
+1. **Never expose your secret key in client-side code.** Use server-side API calls or the BFF proxy pattern.
+2. **Use the public key** for the cancellation widget and webhook URLs.
+3. **Store secret keys** in environment variables, not in source code.
+4. **Use strong passwords** (minimum 8 characters) for your account.
+
+## Allowed Origins
+
+Configure allowed origins to restrict which domains can use the cancellation widget:
+
+```bash
+curl -X PUT \
+  -H "Authorization: Bearer eyJhbGciOi..." \
+  -H "Content-Type: application/json" \
+  -d '{"allowed_origins": ["https://myapp.com", "https://staging.myapp.com"]}' \
+  https://api.windback.dev/api/v1/auth/allowed-origins
+```
+
+## Rate Limits
+
+- **General API**: Rate limited per IP
+- **Cancel Flow (Widget)**: 10 requests per 15 seconds per API key
