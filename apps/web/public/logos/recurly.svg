@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" fill="none">
+  <path d="M12 16h20c14 0 24 8 24 20s-10 20-24 20h-4l16 20H28L14 56v20H0V16h12z" fill="#7B58C3"/>
+  <circle cx="44" cy="36" r="4" fill="white"/>
+  <text x="72" y="56" fill="#2D1B4E" style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;font-size:44px;font-weight:700;letter-spacing:-0.5px">recurly</text>
+</svg>

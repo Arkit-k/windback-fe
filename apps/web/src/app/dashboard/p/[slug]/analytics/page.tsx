@@ -61,22 +61,22 @@ export default function AnalyticsPage() {
         {[
           {
             title: "Total Sent",
-            value: analytics?.total_sent.toLocaleString() ?? "0",
+            value: (analytics?.total_sent ?? 0).toLocaleString(),
             icon: Mail,
           },
           {
             title: "Open Rate",
-            value: analytics ? formatPercent(analytics.open_rate) : "0%",
+            value: analytics ? formatPercent(analytics.open_rate ?? 0) : "0%",
             subtitle: analytics
-              ? `${analytics.total_opened.toLocaleString()} opened`
+              ? `${(analytics.total_opened ?? 0).toLocaleString()} opened`
               : undefined,
             icon: Eye,
           },
           {
             title: "Click Rate",
-            value: analytics ? formatPercent(analytics.click_rate) : "0%",
+            value: analytics ? formatPercent(analytics.click_rate ?? 0) : "0%",
             subtitle: analytics
-              ? `${analytics.total_clicked.toLocaleString()} clicked`
+              ? `${(analytics.total_clicked ?? 0).toLocaleString()} clicked`
               : undefined,
             icon: MousePointerClick,
           },

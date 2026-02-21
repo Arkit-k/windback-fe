@@ -100,6 +100,12 @@ export function Navbar() {
                         ? "var(--accent)"
                         : undefined,
                   }}
+                  onClick={(e) => {
+                    if (link.section) {
+                      e.preventDefault();
+                      document.getElementById(link.section)?.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}
                 >
                   <span
                     className={
@@ -189,7 +195,15 @@ export function Navbar() {
                       <Link
                         href={link.href}
                         className="block rounded-sm px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
-                        onClick={() => setMobileOpen(false)}
+                        onClick={(e) => {
+                          setMobileOpen(false);
+                          if (link.section) {
+                            e.preventDefault();
+                            setTimeout(() => {
+                              document.getElementById(link.section)?.scrollIntoView({ behavior: "smooth" });
+                            }, 300);
+                          }
+                        }}
                       >
                         {link.label}
                       </Link>

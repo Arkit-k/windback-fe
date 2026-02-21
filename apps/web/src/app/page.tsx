@@ -23,6 +23,7 @@ import {
   motion,
 } from "@/components/animations/motion";
 import { RotatingWords } from "@/components/animations/rotating-words";
+import { AnimatedBadge } from "@/components/animations/animated-badge";
 import { SpotlightCard } from "@/components/animations/spotlight-card";
 import { FloatingParticles } from "@/components/animations/floating-particles";
 import { AbstractVisual } from "@/components/marketing/abstract-visual";
@@ -131,20 +132,15 @@ export default function LandingPage() {
             {/* Left: text */}
             <div>
               <FadeUp delay={0.1}>
-                <motion.div
-                  className="group relative mb-6 inline-flex items-center gap-2 rounded-full bg-[var(--accent)]/10 px-4 py-1.5 text-sm font-medium text-[var(--accent)]"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                >
-                  <motion.div
-                    animate={{ rotate: [0, 15, -15, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", repeatDelay: 3 }}
-                  >
-                    <Zap className="h-3.5 w-3.5" />
-                  </motion.div>
-                  AI-Powered Churn Recovery
-                </motion.div>
+                <AnimatedBadge className="mb-6">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)] opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--accent)]" />
+                  </span>
+                  <span className="bg-gradient-to-r from-[var(--accent)] via-blue-500 to-violet-500 bg-clip-text text-transparent">
+                    AI-Powered Churn Recovery
+                  </span>
+                </AnimatedBadge>
               </FadeUp>
 
               <FadeUp delay={0.2}>
@@ -153,12 +149,11 @@ export default function LandingPage() {
                   <br className="hidden sm:block" />
                   into{" "}
                   <span className="relative inline-block italic">
-                    <span className="bg-gradient-to-r from-[var(--accent)] to-blue-400 bg-clip-text text-transparent">
                       <RotatingWords
                         words={["Revenue", "Growth", "Customers"]}
                         interval={3000}
+                        className="bg-gradient-to-r from-[var(--accent)] to-blue-400 bg-clip-text text-transparent"
                       />
-                    </span>
                     <motion.span
                       className="absolute -bottom-1 left-0 h-[3px] rounded-full bg-gradient-to-r from-[var(--accent)] to-blue-400"
                       initial={{ width: "0%" }}
@@ -234,7 +229,7 @@ export default function LandingPage() {
       <MetricsStrip />
 
       {/* ─── Capabilities (editorial pitch-deck style) ─── */}
-      <section className="py-20">
+      <section id="features" className="scroll-mt-20 py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <ScrollReveal>
             <div className="overflow-hidden rounded-2xl border border-border bg-card transition-shadow duration-500 hover:shadow-xl hover:shadow-black/[0.03]">
@@ -362,7 +357,7 @@ export default function LandingPage() {
       </section>
 
       {/* ─── How it works (horizontal steps) ─── */}
-      <section className="py-20">
+      <section id="how-it-works" className="scroll-mt-20 py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <ScrollReveal>
             <div className="mx-auto max-w-2xl text-center">
@@ -481,37 +476,36 @@ export default function LandingPage() {
 
             {/* ── Card 2: Payment Recovery (top middle) ── */}
             <ScrollReveal delay={0.05} className="sm:col-span-2">
-              <motion.div
-                className="h-full rounded-2xl border border-border bg-background p-5 transition-all duration-200 hover:border-primary hover:shadow-lg hover:shadow-primary/5 cursor-default"
-                whileHover={{ y: -5, transition: { type: "spring", stiffness: 300, damping: 20 } }}
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="text-sm font-semibold text-foreground">Failed Payment Recovery</h3>
-                    <p className="text-[11px] text-muted-foreground">Smart dunning sequences</p>
-                  </div>
-                  {/* Provider avatars */}
-                  <div className="flex -space-x-2">
-                    {[
-                      { letter: "S", bg: "bg-violet-100", text: "text-violet-600" },
-                      { letter: "R", bg: "bg-blue-100", text: "text-blue-600" },
-                      { letter: "P", bg: "bg-amber-100", text: "text-amber-600" },
-                    ].map((p, i) => (
-                      <motion.div
-                        key={p.letter}
-                        className={`flex h-8 w-8 items-center justify-center rounded-full ${p.bg} border-2 border-background text-[10px] font-bold ${p.text}`}
-                        whileHover={{ scale: 1.2, zIndex: 10, y: -4 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                      >
-                        {p.letter}
-                      </motion.div>
-                    ))}
+              <SpotlightCard className="h-full rounded-2xl border border-border bg-background cursor-default">
+                <div className="p-5">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground">Failed Payment Recovery</h3>
+                      <p className="text-[11px] text-muted-foreground">Smart dunning sequences</p>
+                    </div>
+                    {/* Provider avatars */}
+                    <div className="flex -space-x-2">
+                      {[
+                        { letter: "S", bg: "bg-violet-100", text: "text-violet-600" },
+                        { letter: "R", bg: "bg-blue-100", text: "text-blue-600" },
+                        { letter: "P", bg: "bg-amber-100", text: "text-amber-600" },
+                      ].map((p, i) => (
+                        <motion.div
+                          key={p.letter}
+                          className={`flex h-8 w-8 items-center justify-center rounded-full ${p.bg} border-2 border-background text-[10px] font-bold ${p.text}`}
+                          whileHover={{ scale: 1.2, zIndex: 10, y: -4 }}
+                          transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                          initial={{ opacity: 0, x: -10 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                        >
+                          {p.letter}
+                        </motion.div>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </motion.div>
+              </SpotlightCard>
             </ScrollReveal>
 
             {/* ── Card 3: Big stat "26.6%" (top right, tall) ── */}
@@ -543,101 +537,98 @@ export default function LandingPage() {
 
             {/* ── Card 4: Email Analytics (middle center) ── */}
             <ScrollReveal delay={0.15} className="sm:col-span-2">
-              <motion.div
-                className="h-full rounded-2xl border border-border bg-background p-5 transition-all duration-200 hover:border-primary hover:shadow-lg hover:shadow-primary/5 cursor-default"
-                whileHover={{ y: -5, transition: { type: "spring", stiffness: 300, damping: 20 } }}
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="text-sm font-semibold text-foreground">Email Analytics</h3>
-                    <p className="text-[11px] text-muted-foreground">Recovery Performance</p>
+              <SpotlightCard className="h-full rounded-2xl border border-border bg-background cursor-default">
+                <div className="p-5">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground">Email Analytics</h3>
+                      <p className="text-[11px] text-muted-foreground">Recovery Performance</p>
+                    </div>
+                    <motion.span
+                      className="rounded-full bg-[var(--accent-light)] px-2.5 py-0.5 text-[10px] font-semibold text-[var(--accent)]"
+                      whileHover={{ scale: 1.08 }}
+                      transition={{ type: "spring", stiffness: 400 }}
+                    >
+                      Open Rate
+                    </motion.span>
                   </div>
-                  <motion.span
-                    className="rounded-full bg-[var(--accent-light)] px-2.5 py-0.5 text-[10px] font-semibold text-[var(--accent)]"
-                    whileHover={{ scale: 1.08 }}
-                    transition={{ type: "spring", stiffness: 400 }}
-                  >
-                    Open Rate
-                  </motion.span>
-                </div>
-                <div className="mt-4 flex items-baseline gap-2">
-                  <motion.span
-                    className="font-serif text-4xl tracking-tight text-foreground italic"
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
-                  >
-                    42%
-                  </motion.span>
-                  <div className="text-right">
-                    <p className="text-[10px] text-muted-foreground">Avg. email open rate</p>
-                    <p className="text-[11px] font-medium text-foreground">Track opens, clicks & recoveries</p>
+                  <div className="mt-4 flex items-baseline gap-2">
+                    <motion.span
+                      className="font-serif text-4xl tracking-tight text-foreground italic"
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: 0.3 }}
+                    >
+                      42%
+                    </motion.span>
+                    <div className="text-right">
+                      <p className="text-[10px] text-muted-foreground">Avg. email open rate</p>
+                      <p className="text-[11px] font-medium text-foreground">Track opens, clicks & recoveries</p>
+                    </div>
                   </div>
                 </div>
-              </motion.div>
+              </SpotlightCard>
             </ScrollReveal>
 
             {/* ── Card 5: Platform features (bottom wide) ── */}
             <ScrollReveal delay={0.2} className="sm:col-span-4">
-              <motion.div
-                className="h-full rounded-2xl border border-border bg-background px-5 py-4 flex items-center justify-between gap-4 transition-all duration-200 hover:border-primary hover:shadow-lg hover:shadow-primary/5 cursor-default"
-                whileHover={{ y: -5, transition: { type: "spring", stiffness: 300, damping: 20 } }}
-              >
-                <div className="flex items-center gap-3">
-                  <motion.div
-                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100"
-                    whileHover={{ rotate: 12, scale: 1.1 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                  >
-                    <Zap className="h-4 w-4 text-slate-600" />
-                  </motion.div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-foreground">Built for Teams</h3>
-                    <p className="text-[11px] text-muted-foreground">SDKs, team management, 2FA, and API key rotation</p>
+              <SpotlightCard className="h-full rounded-2xl border border-border bg-background cursor-default">
+                <div className="px-5 py-4 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <motion.div
+                      className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100"
+                      whileHover={{ rotate: 12, scale: 1.1 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                    >
+                      <Zap className="h-4 w-4 text-slate-600" />
+                    </motion.div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground">Built for Teams</h3>
+                      <p className="text-[11px] text-muted-foreground">SDKs, team management, 2FA, and API key rotation</p>
+                    </div>
+                  </div>
+                  {/* Feature badges */}
+                  <div className="flex items-center gap-2">
+                    {["Node.js SDK", "Team Roles", "2FA", "Dunning"].map((badge) => (
+                      <motion.span
+                        key={badge}
+                        className="inline-flex items-center rounded-lg border border-border bg-card px-3 py-1.5 font-mono text-[11px] font-medium text-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
+                        whileHover={{ y: -2, scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                      >
+                        {badge}
+                      </motion.span>
+                    ))}
                   </div>
                 </div>
-                {/* Feature badges */}
-                <div className="flex items-center gap-2">
-                  {["Node.js SDK", "Team Roles", "2FA", "Dunning"].map((badge) => (
-                    <motion.span
-                      key={badge}
-                      className="inline-flex items-center rounded-lg border border-border bg-card px-3 py-1.5 font-mono text-[11px] font-medium text-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
-                      whileHover={{ y: -2, scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                    >
-                      {badge}
-                    </motion.span>
-                  ))}
-                </div>
-              </motion.div>
+              </SpotlightCard>
             </ScrollReveal>
 
             {/* ── Card 6: Recovery stat (bottom right) ── */}
             <ScrollReveal delay={0.25} className="sm:col-span-2">
-              <motion.div
-                className="h-full rounded-2xl border border-border bg-background p-5 flex items-center justify-between transition-all duration-200 hover:border-primary hover:shadow-lg hover:shadow-primary/5 cursor-default"
-                whileHover={{ y: -5, transition: { type: "spring", stiffness: 300, damping: 20 } }}
-              >
-                <div>
-                  <motion.p
-                    className="font-serif text-3xl text-foreground italic"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 300 }}
+              <SpotlightCard className="h-full rounded-2xl border border-border bg-background cursor-default">
+                <div className="p-5 flex items-center justify-between">
+                  <div>
+                    <motion.p
+                      className="font-serif text-3xl text-foreground italic"
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      $2.4k
+                    </motion.p>
+                    <p className="text-[11px] text-muted-foreground">Avg MRR Recovered</p>
+                  </div>
+                  <motion.div
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-green-50"
+                    whileHover={{ scale: 1.2, rotate: 20, backgroundColor: "rgb(220 252 231)" }}
+                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
                   >
-                    $2.4k
-                  </motion.p>
-                  <p className="text-[11px] text-muted-foreground">Avg MRR Recovered</p>
+                    <ArrowRight className="h-5 w-5 text-green-600 -rotate-45" />
+                  </motion.div>
                 </div>
-                <motion.div
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-green-50"
-                  whileHover={{ scale: 1.2, rotate: 20, backgroundColor: "rgb(220 252 231)" }}
-                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                >
-                  <ArrowRight className="h-5 w-5 text-green-600 -rotate-45" />
-                </motion.div>
-              </motion.div>
+              </SpotlightCard>
             </ScrollReveal>
 
           </div>

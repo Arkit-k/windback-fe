@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { Button, Card, CardContent, CardHeader, CardTitle, CardDescription, Input, Label } from "@windback/ui";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth, useChangePassword } from "@/hooks/use-auth";
 import { useEnable2FA, useVerify2FA, useDisable2FA } from "@/hooks/use-totp";
-import { Shield, ShieldCheck, ShieldOff } from "lucide-react";
+import { Shield, ShieldCheck, ShieldOff, KeyRound } from "lucide-react";
 
 export default function SecuritySettingsPage() {
   const { user } = useAuth();
@@ -77,7 +77,13 @@ export default function SecuritySettingsPage() {
               <div>
                 <p className="text-sm font-medium">1. Scan this QR code with your authenticator app:</p>
                 <div className="mt-2 rounded-lg border border-border bg-white p-4 inline-block">
-                  <img src={qrUrl} alt="2FA QR Code" className="h-48 w-48" />
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=192x192&data=${encodeURIComponent(qrUrl)}`}
+                    alt="2FA QR Code"
+                    className="h-48 w-48"
+                    width={192}
+                    height={192}
+                  />
                 </div>
               </div>
               <div>
@@ -139,6 +145,113 @@ export default function SecuritySettingsPage() {
           )}
         </CardContent>
       </Card>
+      <ChangePasswordCard />
     </div>
+  );
+}
+
+function ChangePasswordCard() {
+  const changePassword = useChangePassword();
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [validationError, setValidationError] = useState("");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setValidationError("");
+    setSuccess(false);
+
+    if (newPassword.length < 8) {
+      setValidationError("New password must be at least 8 characters.");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setValidationError("Passwords do not match.");
+      return;
+    }
+
+    try {
+      await changePassword.mutateAsync({
+        current_password: currentPassword,
+        new_password: newPassword,
+      });
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch {
+      // error is in changePassword.error
+    }
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <KeyRound className="h-5 w-5 text-muted-foreground" />
+          Change Password
+        </CardTitle>
+        <CardDescription>Update your account password.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="current-password">Current Password</Label>
+            <Input
+              id="current-password"
+              type="password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              required
+              className="max-w-sm"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="new-password">New Password</Label>
+            <Input
+              id="new-password"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+              minLength={8}
+              className="max-w-sm"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="confirm-password">Confirm New Password</Label>
+            <Input
+              id="confirm-password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              minLength={8}
+              className="max-w-sm"
+            />
+          </div>
+
+          {validationError && (
+            <p className="text-sm text-destructive">{validationError}</p>
+          )}
+          {changePassword.error && (
+            <p className="text-sm text-destructive">{changePassword.error.message}</p>
+          )}
+          {success && (
+            <p className="text-sm text-green-600">Password changed successfully!</p>
+          )}
+
+          <Button type="submit" disabled={changePassword.isPending}>
+            {changePassword.isPending ? "Changing..." : "Change Password"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

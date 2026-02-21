@@ -34,6 +34,7 @@ import {
   Shield,
   Users,
   RefreshCw,
+  UserRound,
 } from "lucide-react";
 
 
@@ -62,7 +63,6 @@ export function Sidebar() {
     : [
         { href: "/dashboard/projects", label: "Projects", icon: FolderOpen },
         { href: "/dashboard/billing", label: "Billing", icon: Receipt },
-        { href: "/dashboard/settings/security", label: "Security", icon: Shield },
       ];
 
   const settingsNav = isProjectRoute
@@ -74,7 +74,10 @@ export function Sidebar() {
         { href: `/dashboard/p/${currentSlug}/settings/team`, label: "Team", icon: Users },
         { href: `/dashboard/p/${currentSlug}/settings/dunning`, label: "Dunning", icon: RefreshCw },
       ]
-    : [];
+    : [
+        { href: "/dashboard/settings/profile", label: "Profile", icon: UserRound },
+        { href: "/dashboard/settings/security", label: "Security", icon: Shield },
+      ];
 
   const bottomNav = [
     { href: "/dashboard/support", label: "Support", icon: HelpCircle },
@@ -131,7 +134,7 @@ export function Sidebar() {
               <SelectTrigger className="w-full text-xs">
                 <SelectValue placeholder="Select project" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent position="popper" className="min-w-[var(--radix-select-trigger-width)]">
                 {projects.map((p) => (
                   <SelectItem key={p.slug} value={p.slug}>
                     {p.name}

@@ -37,7 +37,7 @@ export function LoginForm() {
   return (
     <Card className="relative w-full max-w-md overflow-visible">
       <ConfettiBurst trigger={showSuccess} className="z-50" />
-      <div className="mx-auto -mt-16 mb-2 h-32 w-32">
+      <div className="mx-auto mb-2 hidden h-32 w-32 sm:-mt-16 sm:block">
         <RiveLoginCharacter
           emailInputRef={emailRef}
           isPasswordFocused={isPasswordFocused}

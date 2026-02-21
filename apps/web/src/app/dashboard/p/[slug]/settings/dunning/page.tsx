@@ -44,9 +44,9 @@ export default function DunningConfigPage() {
   // Load existing config when data arrives
   useEffect(() => {
     if (config) {
-      setMaxRetries(config.max_retries);
-      setRetryInterval(config.retry_interval_hours);
-      setToneSequence(config.tone_sequence);
+      setMaxRetries(config.max_retries ?? DEFAULT_CONFIG.max_retries);
+      setRetryInterval(config.retry_interval_hours ?? DEFAULT_CONFIG.retry_interval_hours);
+      setToneSequence(config.tone_sequence ?? DEFAULT_CONFIG.tone_sequence);
       setCustomFromName(config.custom_from_name ?? "");
     }
   }, [config]);

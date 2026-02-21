@@ -102,3 +102,48 @@ export function useAuth() {
     logout: logoutMutation,
   };
 }
+
+export interface UpdateProfileRequest {
+  name?: string;
+  business_name?: string;
+  business_location?: string;
+  business_type?: string;
+}
+
+export function useUpdateProfile() {
+  const queryClient = useQueryClient();
+
+  return useMutation<{ data: User }, Error, UpdateProfileRequest>({
+    mutationFn: async (body) => {
+      const res = await fetch("/api/proxy/auth/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to update profile");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.auth });
+    },
+  });
+}
+
+export function useChangePassword() {
+  return useMutation<void, Error, { current_password: string; new_password: string }>({
+    mutationFn: async (body) => {
+      const res = await fetch("/api/proxy/auth/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to change password");
+      }
+    },
+  });
+}

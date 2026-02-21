@@ -9,8 +9,9 @@ import {
   Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
 } from "@windback/ui";
 import { useProjects, useCreateProject } from "@/hooks/use-projects";
+import { useUsage } from "@/hooks/use-billing";
 import { formatDate } from "@/lib/utils";
-import { Plus, FolderOpen, ArrowRight } from "lucide-react";
+import { Plus, FolderOpen, ArrowRight, Zap } from "lucide-react";
 
 const productTypes = [
   { value: "SaaS", label: "SaaS" },
@@ -24,10 +25,14 @@ export default function ProjectsPage() {
   const router = useRouter();
   const { data: projects, isLoading } = useProjects();
   const createProject = useCreateProject();
+  const { data: usage } = useUsage();
   const [showCreate, setShowCreate] = useState(false);
   const [name, setName] = useState("");
   const [productType, setProductType] = useState("SaaS");
   const [supportEmail, setSupportEmail] = useState("");
+
+  const atProjectLimit =
+    usage != null && usage.projects_used >= usage.projects_limit;
 
   function handleCreate() {
     if (!name.trim()) return;
@@ -115,53 +120,84 @@ export default function ProjectsPage() {
       <Dialog open={showCreate} onOpenChange={setShowCreate}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create Project</DialogTitle>
+            <DialogTitle>
+              {atProjectLimit ? "Project Limit Reached" : "Create Project"}
+            </DialogTitle>
             <DialogDescription>
-              Set up a new project for your SaaS product.
+              {atProjectLimit
+                ? `Your ${usage?.plan_tier ?? "starter"} plan allows up to ${usage?.projects_limit ?? 1} project${(usage?.projects_limit ?? 1) === 1 ? "" : "s"}. Upgrade your plan to create more projects.`
+                : "Set up a new project for your SaaS product."}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 mt-2">
-            <div className="space-y-2">
-              <Label>SaaS Name</Label>
-              <Input
-                placeholder="My SaaS Product"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleCreate()}
-              />
+          {atProjectLimit ? (
+            <div className="flex flex-col gap-3">
+              <Button
+                className="w-full"
+                onClick={() => {
+                  setShowCreate(false);
+                  router.push("/dashboard/billing");
+                }}
+              >
+                <Zap className="mr-2 h-4 w-4" />
+                Upgrade Plan
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => setShowCreate(false)}
+              >
+                Cancel
+              </Button>
             </div>
-            <div className="space-y-2">
-              <Label>Product Type</Label>
-              <Select value={productType} onValueChange={setProductType}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {productTypes.map((t) => (
-                    <SelectItem key={t.value} value={t.value}>
-                      {t.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+          ) : (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>SaaS Name</Label>
+                <Input
+                  placeholder="My SaaS Product"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleCreate()}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Product Type</Label>
+                <Select value={productType} onValueChange={setProductType}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {productTypes.map((t) => (
+                      <SelectItem key={t.value} value={t.value}>
+                        {t.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Support Email</Label>
+                <Input
+                  type="email"
+                  placeholder="support@example.com"
+                  value={supportEmail}
+                  onChange={(e) => setSupportEmail(e.target.value)}
+                />
+              </div>
+              {createProject.isError && (
+                <p className="text-sm text-destructive">
+                  {createProject.error.message}
+                </p>
+              )}
+              <Button
+                className="w-full"
+                onClick={handleCreate}
+                disabled={!name.trim() || createProject.isPending}
+              >
+                {createProject.isPending ? "Creating..." : "Create Project"}
+              </Button>
             </div>
-            <div className="space-y-2">
-              <Label>Support Email</Label>
-              <Input
-                type="email"
-                placeholder="support@example.com"
-                value={supportEmail}
-                onChange={(e) => setSupportEmail(e.target.value)}
-              />
-            </div>
-            <Button
-              className="w-full"
-              onClick={handleCreate}
-              disabled={!name.trim() || createProject.isPending}
-            >
-              {createProject.isPending ? "Creating..." : "Create Project"}
-            </Button>
-          </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>

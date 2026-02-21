@@ -35,9 +35,9 @@ export default function TeamSettingsPage() {
   const [role, setRole] = useState<TeamRole>("member");
 
   const members = teamData?.data ?? [];
-  const isOwner = members.some(
-    (m) => m.user_id === user?.id && m.role === "owner"
-  );
+  const isOwner =
+    user?.id === project.user_id ||
+    members.some((m) => m.user_id === user?.id && m.role === "owner");
 
   function handleInvite(e: React.FormEvent) {
     e.preventDefault();

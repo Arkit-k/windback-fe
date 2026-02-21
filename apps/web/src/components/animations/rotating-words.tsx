@@ -20,7 +20,7 @@ export function RotatingWords({ words, interval = 3000, className }: RotatingWor
   }, [words.length, interval]);
 
   return (
-    <span className={`relative inline-block ${className ?? ""}`}>
+    <span className="relative inline-block">
       <AnimatePresence mode="wait">
         <motion.span
           key={words[index]}
@@ -28,7 +28,7 @@ export function RotatingWords({ words, interval = 3000, className }: RotatingWor
           animate={{ y: 0, opacity: 1, rotateX: 0 }}
           exit={{ y: -30, opacity: 0, rotateX: 40 }}
           transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-          className="inline-block"
+          className={`inline-block ${className ?? ""}`}
         >
           {words[index]}
         </motion.span>

@@ -103,14 +103,14 @@ export default function BillingPage() {
           {
             title: "Events Used",
             value: usage
-              ? `${usage.events_used.toLocaleString()} / ${usage.events_limit.toLocaleString()}`
+              ? `${(usage.events_used ?? 0).toLocaleString()} / ${(usage.events_limit ?? 0).toLocaleString()}`
               : "0 / 0",
             icon: Zap,
           },
           {
             title: "Projects Used",
             value: usage
-              ? `${usage.projects_used} / ${usage.projects_limit}`
+              ? `${usage.projects_used ?? 0} / ${usage.projects_limit ?? 0}`
               : "0 / 0",
             icon: FolderOpen,
           },
@@ -141,13 +141,13 @@ export default function BillingPage() {
             <>
               <UsageMeter
                 label="Events"
-                used={usage.events_used}
-                limit={usage.events_limit}
+                used={usage.events_used ?? 0}
+                limit={usage.events_limit ?? 0}
               />
               <UsageMeter
                 label="Projects"
-                used={usage.projects_used}
-                limit={usage.projects_limit}
+                used={usage.projects_used ?? 0}
+                limit={usage.projects_limit ?? 0}
               />
               {usage.billing_period_start && (
                 <p className="text-xs text-muted-foreground">

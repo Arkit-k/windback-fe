@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 80" fill="none">
+  <rect x="4" y="8" width="64" height="64" rx="16" fill="#FFC439"/>
+  <path d="M24 28c0-4.4 3.6-8 8-8h8c4.4 0 8 3.6 8 8v8c0 4.4-3.6 8-8 8h-8c-4.4 0-8-3.6-8-8v-8z" fill="#0E1A2A"/>
+  <circle cx="36" cy="54" r="5" fill="#0E1A2A"/>
+  <text x="80" y="58" fill="#0E1A2A" style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;font-size:46px;font-weight:700;letter-spacing:-1px">Paddle</text>
+</svg>

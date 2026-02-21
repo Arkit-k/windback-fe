@@ -38,23 +38,23 @@ export default function ProjectOverviewPage() {
         {[
           {
             title: "Total Events",
-            value: stats?.total_events.toString() ?? "0",
+            value: (stats?.total_events ?? 0).toString(),
             icon: Activity,
           },
           {
             title: "Recovered",
-            value: stats?.recovered_events.toString() ?? "0",
-            subtitle: stats ? `of ${stats.total_events} events` : undefined,
+            value: (stats?.recovered_events ?? 0).toString(),
+            subtitle: stats ? `of ${stats.total_events ?? 0} events` : undefined,
             icon: CheckCircle2,
           },
           {
             title: "MRR at Risk",
-            value: stats ? formatCurrency(stats.total_mrr_at_risk, "usd") : "$0",
+            value: stats ? formatCurrency(stats.total_mrr_at_risk ?? 0, "usd") : "$0",
             icon: DollarSign,
           },
           {
             title: "Recovery Rate",
-            value: stats ? formatPercent(stats.recovery_rate) : "0%",
+            value: stats ? formatPercent(stats.recovery_rate ?? 0) : "0%",
             icon: TrendingUp,
           },
         ].map((stat, i) => (

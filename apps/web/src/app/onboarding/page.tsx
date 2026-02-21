@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -58,12 +58,13 @@ export default function OnboardingPage() {
   });
 
   // Redirect if already onboarded
-  if (!isLoading && user?.onboarding_completed) {
-    router.push("/dashboard");
-    return null;
-  }
+  useEffect(() => {
+    if (!isLoading && user?.onboarding_completed) {
+      router.push("/dashboard");
+    }
+  }, [isLoading, user?.onboarding_completed, router]);
 
-  if (isLoading) {
+  if (isLoading || user?.onboarding_completed) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
