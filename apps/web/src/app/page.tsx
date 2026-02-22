@@ -100,7 +100,7 @@ export default function LandingPage() {
       <div className="pointer-events-none fixed inset-0 -z-10 bg-gradient-to-b from-[#C7D9F7] via-[#DBEAFE] to-background" />
 
       {/* Ribbon visual — starts from top, spans full hero */}
-      <div className="pointer-events-none absolute right-0 top-0 z-0 hidden h-[100vh] w-[55%] lg:block">
+      <div className="pointer-events-none absolute right-0 top-0 z-0 hidden h-[140vh] w-[55%] lg:block">
         <HeroWave />
       </div>
 

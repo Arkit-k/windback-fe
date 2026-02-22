@@ -20,6 +20,8 @@ export function HeroWave() {
         className="object-contain object-right-top scale-[1.6] origin-top-right"
         sizes="60vw"
       />
+      {/* Bottom gradient fade — blends ribbon into the blue section below */}
+      <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-b from-transparent to-[var(--accent)]" />
     </motion.div>
   );
 }
