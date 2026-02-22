@@ -27,9 +27,11 @@ import { AnimatedBadge } from "@/components/animations/animated-badge";
 import { SpotlightCard } from "@/components/animations/spotlight-card";
 import { FloatingParticles } from "@/components/animations/floating-particles";
 import { AbstractVisual } from "@/components/marketing/abstract-visual";
+import { HeroWave } from "@/components/marketing/hero-wave";
 import { DashboardPreview } from "@/components/marketing/dashboard-preview";
 import { LogoCloud } from "@/components/marketing/logo-cloud";
 import { MetricsStrip } from "@/components/marketing/metrics-strip";
+import { ScrollTextSection } from "@/components/marketing/scroll-text-section";
 
 const features = [
   {
@@ -74,10 +76,21 @@ const capabilities = [
 ];
 
 const steps = [
-  { step: "01", title: "Connect", description: "Add a webhook URL in your payment provider — Stripe, Razorpay, or Paddle" },
-  { step: "02", title: "Detect", description: "Windback catches cancellations and failed payments instantly with full context" },
-  { step: "03", title: "Recover", description: "AI generates personalized winback emails and smart dunning sequences automatically" },
-  { step: "04", title: "Grow", description: "Track recovery analytics, MRR saved, and email performance in real time" },
+  {
+    step: "01",
+    title: "Connect your stack",
+    description: "Add a webhook URL in your payment provider — Stripe, Razorpay, or Paddle. That's it. No long forms or hours of setup required.",
+  },
+  {
+    step: "02",
+    title: "Detect & recover automatically",
+    description: "Windback catches cancellations and failed payments instantly, then generates personalized AI winback emails and smart dunning sequences.",
+  },
+  {
+    step: "03",
+    title: "Track. Optimize. Grow.",
+    description: "Monitor recovery analytics, MRR saved, and email performance in real time. No guesswork — just professional, data-driven recovery.",
+  },
 ];
 
 export default function LandingPage() {
@@ -85,6 +98,12 @@ export default function LandingPage() {
     <div className="relative flex min-h-screen flex-col">
       {/* Very light blue gradient across the entire page */}
       <div className="pointer-events-none fixed inset-0 -z-10 bg-gradient-to-b from-[#C7D9F7] via-[#DBEAFE] to-background" />
+
+      {/* Ribbon visual — starts from top, spans full hero */}
+      <div className="pointer-events-none absolute right-0 top-0 z-0 hidden h-[100vh] w-[55%] lg:block">
+        <HeroWave />
+      </div>
+
       <Navbar />
 
       {/* ─── Hero (split layout) ─── */}
@@ -128,9 +147,9 @@ export default function LandingPage() {
         />
 
         <div className="mx-auto max-w-6xl px-4 pb-8 pt-24 sm:px-6 sm:pt-32">
-          <div className="grid items-center gap-12 lg:grid-cols-2">
+          <div className="relative z-10">
             {/* Left: text */}
-            <div>
+            <div className="max-w-xl">
               <FadeUp delay={0.1}>
                 <AnimatedBadge className="mb-6">
                   <span className="relative flex h-2 w-2">
@@ -214,16 +233,16 @@ export default function LandingPage() {
 
             </div>
 
-            {/* Right: abstract visual */}
-            <div className="hidden lg:flex lg:justify-end">
-              <AbstractVisual />
-            </div>
           </div>
         </div>
+
       </section>
 
       {/* ─── Logo Cloud ─── */}
       <LogoCloud />
+
+      {/* ─── Scroll-reveal text → blue transition ─── */}
+      <ScrollTextSection />
 
       {/* ─── Metrics Strip (blue bg like reference) ─── */}
       <MetricsStrip />
@@ -356,66 +375,59 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ─── How it works (horizontal steps) ─── */}
+      {/* ─── How it works (horizontal cards) ─── */}
       <section id="how-it-works" className="scroll-mt-20 py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <ScrollReveal>
-            <div className="mx-auto max-w-2xl text-center">
+            <div className="max-w-md">
               <h2 className="font-serif text-3xl text-foreground italic sm:text-4xl">
-                How it works
+                How it works ?
               </h2>
               <p className="mt-3 text-muted-foreground">
-                Get set up in minutes, not days.
+                Your new favorite workflow shortcut.
               </p>
             </div>
           </ScrollReveal>
 
-          <motion.div
-            className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-40px" }}
-            variants={{
-              visible: { transition: { staggerChildren: 0.12 } },
-            }}
-          >
+          <div className="relative mt-12 grid grid-cols-1 gap-5 sm:grid-cols-3">
             {steps.map((item, i) => (
               <motion.div
-                key={item.step}
-                className="group relative rounded-sm border border-border bg-card p-6 transition-all duration-200 hover:border-primary hover:shadow-lg hover:shadow-primary/5 cursor-default"
-                variants={{
-                  hidden: { opacity: 0, y: 24 },
-                  visible: { opacity: 1, y: 0 },
-                }}
-                transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-                whileHover={{ y: -6, transition: { type: "spring", stiffness: 300, damping: 20 } }}
+                key={item.title}
+                className={`group relative flex min-h-[230px] flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br from-[#1E3A8A] via-[#2563EB] to-[#60A5FA] p-7 cursor-default ${
+                  i === 1 ? "sm:mt-16" : ""
+                }`}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.15, ease: [0.25, 0.1, 0.25, 1] }}
+                whileHover={{ y: i === 1 ? 59 : -5, transition: { type: "spring", stiffness: 300, damping: 20 } }}
               >
-                <motion.span
-                  className="font-serif text-4xl text-blue-500 italic block"
-                  whileHover={{ scale: 1.1, rotate: -3 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                >
-                  {item.step}
-                </motion.span>
-                <h3 className="mt-2 text-base font-semibold text-foreground">{item.title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
-                {i < steps.length - 1 && (
+                <div>
+                  <span className="text-sm text-white/50">{item.step}</span>
+                  <h3 className="mt-3 font-serif text-lg leading-snug text-white italic sm:text-xl">
+                    {item.title}
+                  </h3>
+                  <p className="mt-3 text-[13px] leading-relaxed text-white/50">
+                    {item.description}
+                  </p>
+                </div>
+                <div className="mt-5 flex items-center justify-end">
                   <motion.div
-                    className="pointer-events-none absolute -right-3 top-1/2 hidden -translate-y-1/2 text-border lg:block"
-                    animate={{ x: [0, 3, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors duration-200 group-hover:bg-white/20"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
                   >
-                    <ArrowRight className="h-5 w-5" />
+                    <ArrowRight className="h-4 w-4" />
                   </motion.div>
-                )}
+                </div>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* ─── Bento grid capabilities ─── */}
-      <section className="border-t border-border bg-card py-20">
+      <section className="border-t border-border bg-[#F4F6FA] py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <ScrollReveal>
             <div className="mx-auto max-w-2xl text-center">
@@ -508,25 +520,25 @@ export default function LandingPage() {
               </SpotlightCard>
             </ScrollReveal>
 
-            {/* ── Card 3: Big stat "26.6%" (top right, tall) ── */}
+            {/* ── Card 3: Big stat "26.6%" (top right, tall) — BLUE GRADIENT ── */}
             <ScrollReveal delay={0.1} className="sm:col-span-2 sm:row-span-2">
-              <SpotlightCard className="h-full rounded-2xl border border-border bg-background cursor-default">
+              <SpotlightCard className="h-full rounded-2xl border border-transparent bg-gradient-to-br from-[var(--accent)] to-blue-500 cursor-default">
               <div className="p-6 flex flex-col justify-between h-full">
                 <motion.p
-                  className="font-serif text-6xl tracking-tight text-foreground italic sm:text-7xl"
+                  className="font-serif text-6xl tracking-tight text-white italic sm:text-7xl"
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                   whileHover={{ scale: 1.03, transition: { type: "spring", stiffness: 300 } }}
                 >
-                  26.6<span className="text-[var(--accent)]">%</span>
+                  26.6<span className="text-white/80">%</span>
                 </motion.p>
                 <div className="mt-4">
-                  <h3 className="text-base font-semibold text-foreground">
+                  <h3 className="text-base font-semibold text-white">
                     Recovery Rate
                   </h3>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                  <p className="mt-1 text-sm leading-relaxed text-white/70">
                     Boost your team&apos;s efficiency with our AI-powered
                     recovery engine and proven email strategies.
                   </p>
@@ -636,7 +648,7 @@ export default function LandingPage() {
       </section>
 
       {/* ─── CTA ─── */}
-      <section className="relative overflow-hidden bg-[var(--accent)] py-24 sm:py-28">
+      <section className="relative overflow-hidden rounded-t-[2rem] sm:rounded-t-[3rem] bg-[var(--accent)] py-24 sm:py-28">
         {/* Background texture layers */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.12),transparent_50%)]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(0,0,0,0.18),transparent_50%)]" />
