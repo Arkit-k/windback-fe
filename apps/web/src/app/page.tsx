@@ -95,7 +95,7 @@ const steps = [
 
 export default function LandingPage() {
   return (
-    <div className="relative flex min-h-screen flex-col">
+    <div className="relative flex min-h-screen flex-col overflow-x-hidden">
       {/* Very light blue gradient across the entire page */}
       <div className="pointer-events-none fixed inset-0 -z-10 bg-gradient-to-b from-[#C7D9F7] via-[#DBEAFE] to-background" />
 
