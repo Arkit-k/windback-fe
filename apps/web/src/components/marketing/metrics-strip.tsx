@@ -81,23 +81,11 @@ const metrics = [
 
 export function MetricsStrip() {
   return (
-    <section className="relative overflow-hidden bg-[var(--accent)] py-20">
-      {/* Grid pattern overlay */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
-          backgroundSize: "64px 64px",
-        }}
-      />
-      {/* Subtle gradient wash */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.06] via-transparent to-black/[0.08]" />
-
+    <section className="relative overflow-hidden bg-background py-20">
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
         {/* Section header */}
         <motion.p
-          className="mb-12 text-center text-sm font-medium uppercase tracking-[0.2em] text-white/40"
+          className="mb-12 text-center text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -128,21 +116,21 @@ export function MetricsStrip() {
             >
               {/* Vertical divider */}
               {i > 0 && (
-                <div className="absolute left-0 top-1/2 hidden h-16 w-px -translate-y-1/2 bg-white/15 lg:block" />
+                <div className="absolute left-0 top-1/2 hidden h-16 w-px -translate-y-1/2 bg-border lg:block" />
               )}
 
               {/* Icon */}
               <motion.div
-                className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-sm bg-white/10"
-                whileHover={{ scale: 1.15, rotate: 5, backgroundColor: "rgba(255,255,255,0.18)" }}
+                className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-sm bg-[var(--accent-light)]"
+                whileHover={{ scale: 1.15, rotate: 5 }}
                 transition={{ type: "spring", stiffness: 400, damping: 15 }}
               >
-                <metric.icon className="h-4.5 w-4.5 text-white/80" />
+                <metric.icon className="h-4.5 w-4.5 text-[var(--accent)]" />
               </motion.div>
 
               {/* Number */}
               <motion.div
-                className="font-serif text-4xl font-normal text-white sm:text-5xl italic"
+                className="font-serif text-4xl font-normal text-[var(--accent)] sm:text-5xl italic"
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
@@ -161,8 +149,8 @@ export function MetricsStrip() {
               </motion.div>
 
               {/* Label */}
-              <p className="mt-2 text-sm font-medium text-white/90">{metric.label}</p>
-              <p className="mt-0.5 text-xs text-white/40 transition-colors duration-200 group-hover:text-white/60">{metric.sublabel}</p>
+              <p className="mt-2 text-sm font-medium text-foreground">{metric.label}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground transition-colors duration-200 group-hover:text-foreground">{metric.sublabel}</p>
             </motion.div>
           ))}
         </motion.div>

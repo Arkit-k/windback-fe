@@ -83,7 +83,12 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative border-t border-border bg-card">
+    <footer className="relative border-t border-border bg-card overflow-hidden">
+      {/* Centered half-circular gradient glow at bottom */}
+      <div
+        className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 h-[600px] w-[900px]"
+        style={{ background: "radial-gradient(ellipse at center, rgba(37,99,235,0.6) 0%, rgba(96,165,250,0.35) 30%, rgba(191,219,254,0.15) 55%, transparent 75%)" }}
+      />
       {/* Subtle gradient accent at top */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--accent)]/20 to-transparent" />
 
