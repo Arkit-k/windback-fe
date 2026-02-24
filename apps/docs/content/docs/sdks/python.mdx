@@ -39,7 +39,7 @@ client.churn_events.mark_recovered("event-id")
 ```
 
 <Callout type="info">
-The SDK uses your **secret API key** (`sk_...`) for authentication, not JWT tokens. Get your API key from **Settings** in the [dashboard](https://app.windback.dev/dashboard).
+The SDK uses your **secret API key** (`sk_...`) for authentication, not JWT tokens. Get your API key from **Settings** in the [dashboard](https://app.windbackai.com/dashboard).
 </Callout>
 
 ## Configuration
@@ -47,7 +47,7 @@ The SDK uses your **secret API key** (`sk_...`) for authentication, not JWT toke
 ```python
 client = Windback(
     api_key=os.environ["PAYBACK_SECRET_KEY"],
-    base_url="https://api.windback.dev",  # optional
+    base_url="https://api.windbackai.com",  # optional
     timeout=30,  # seconds, optional
 )
 ```

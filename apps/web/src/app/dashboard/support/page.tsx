@@ -57,7 +57,7 @@ export default function SupportPage() {
           </CardHeader>
           <CardContent>
             <Button variant="outline" asChild>
-              <a href="mailto:support@windback.dev">Contact Us</a>
+              <a href="mailto:support@windbackai.com">Contact Us</a>
             </Button>
           </CardContent>
         </Card>

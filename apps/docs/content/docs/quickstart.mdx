@@ -9,7 +9,7 @@ Get from zero to recovering churned customers in 5 minutes.
 
 ## 1. Create an Account
 
-Sign up at the [Windback dashboard](https://app.windback.dev/register) with your email, name, and password.
+Sign up at the [Windback dashboard](https://app.windbackai.com/register) with your email, name, and password.
 
 After signing up you'll be logged in automatically and taken to the dashboard.
 
@@ -29,7 +29,7 @@ Keep your secret key safe. Never expose it in client-side code.
 Add a webhook URL in your payment provider's dashboard:
 
 ```
-https://api.windback.dev/api/v1/webhooks/{provider}/{your_public_key}
+https://api.windbackai.com/api/v1/webhooks/{provider}/{your_public_key}
 ```
 
 Replace `{provider}` with `stripe`, `razorpay`, or `custom`.
@@ -42,7 +42,7 @@ Add this snippet to your app's cancellation flow:
 
 ```html
 <script
-  src="https://api.windback.dev/widget.js"
+  src="https://api.windbackai.com/widget.js"
   data-api-key="pub_your_key_here"
   async
 ></script>
@@ -52,7 +52,7 @@ This captures cancellation reasons before the customer leaves.
 
 ## 5. View Events in the Dashboard
 
-Once webhooks start flowing, you'll see churn events in your [dashboard](https://app.windback.dev/dashboard).
+Once webhooks start flowing, you'll see churn events in your [dashboard](https://app.windbackai.com/dashboard).
 
 ## 6. Generate & Send Recovery Emails
 

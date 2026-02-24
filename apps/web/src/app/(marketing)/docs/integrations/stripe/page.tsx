@@ -66,7 +66,7 @@ export default function StripeIntegrationPage() {
               Copy the webhook URL displayed for Stripe.
             </p>
             <div className="mt-3">
-              <CodeBlock lang="text">{`https://api.windback.dev/webhooks/stripe/<your-project-id>`}</CodeBlock>
+              <CodeBlock lang="text">{`https://api.windbackai.com/webhooks/stripe/<your-project-id>`}</CodeBlock>
             </div>
           </section>
 

@@ -16,10 +16,10 @@ export default function ProjectIntegrationsPage() {
   }
 
   const publicKey = "cg_pub_your_key_here";
-  const webhookBase = `${process.env.NEXT_PUBLIC_BACKEND_URL || "https://api.windback.dev"}/api/v1/webhooks`;
+  const webhookBase = `${process.env.NEXT_PUBLIC_BACKEND_URL || "https://api.windbackai.com"}/api/v1/webhooks`;
 
   const widgetSnippet = `<script
-  src="${process.env.NEXT_PUBLIC_BACKEND_URL || "https://api.windback.dev"}/widget.js"
+  src="${process.env.NEXT_PUBLIC_BACKEND_URL || "https://api.windbackai.com"}/widget.js"
   data-api-key="${publicKey}"
   async
 ></script>`;

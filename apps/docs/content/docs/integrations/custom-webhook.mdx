@@ -10,7 +10,7 @@ If your payment provider isn't directly supported, use the custom webhook endpoi
 ## Endpoint
 
 ```
-POST https://api.windback.dev/api/v1/webhooks/custom/{your_public_key}
+POST https://api.windbackai.com/api/v1/webhooks/custom/{your_public_key}
 ```
 
 ## Payload Format
@@ -73,5 +73,5 @@ curl -X POST \
     "tenure_days": 90,
     "cancel_reason": "too_expensive"
   }' \
-  https://api.windback.dev/api/v1/webhooks/custom/pub_your_key
+  https://api.windbackai.com/api/v1/webhooks/custom/pub_your_key
 ```

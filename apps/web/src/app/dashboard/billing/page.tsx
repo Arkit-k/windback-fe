@@ -1,20 +1,49 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@windback/ui";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { useUsage, useCheckout, usePortal } from "@/hooks/use-billing";
+import { useAuth } from "@/hooks/use-auth";
 import { CreditCard, Package, FolderOpen, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 
 const PLAN_CONFIG: Record<
   string,
-  { label: string; price: string; eventsLimit: number; projectsLimit: number }
+  { label: string; price: string; priceCents: number; eventsLimit: number; projectsLimit: number }
 > = {
-  starter: { label: "Starter", price: "Free", eventsLimit: 100, projectsLimit: 1 },
-  growth: { label: "Growth", price: "$29/mo", eventsLimit: 5000, projectsLimit: 5 },
-  scale: { label: "Scale", price: "$99/mo", eventsLimit: 50000, projectsLimit: 20 },
+  starter: { label: "Starter", price: "Free", priceCents: 0, eventsLimit: 100, projectsLimit: 1 },
+  growth: { label: "Growth", price: "$29/mo", priceCents: 2900, eventsLimit: 5000, projectsLimit: 5 },
+  scale: { label: "Scale", price: "$99/mo", priceCents: 9900, eventsLimit: 50000, projectsLimit: 20 },
 };
+
+type PaybackWidgetConfig = {
+  customerEmail?: string;
+  customerName?: string;
+  provider?: string;
+  planName?: string;
+  mrr?: number;
+  currency?: string;
+  tenureDays?: number;
+};
+
+type PaybackWidgetCallbacks = {
+  onSuccess?: (response: unknown) => void;
+  onError?: (error: string) => void;
+  onDismiss?: () => void;
+};
+
+type PaybackWidget = {
+  init: (opts: { publicKey: string; baseURL?: string }) => void;
+  showCancelForm: (customerData: PaybackWidgetConfig, callbacks?: PaybackWidgetCallbacks) => void;
+};
+
+declare global {
+  interface Window {
+    Payback?: PaybackWidget;
+  }
+}
 
 function UsageMeter({
   label,
@@ -51,14 +80,66 @@ function UsageMeter({
 export default function BillingPage() {
   const searchParams = useSearchParams();
   const { data: usage, isLoading } = useUsage();
+  const { user } = useAuth();
   const checkout = useCheckout();
   const portal = usePortal();
+  const [widgetReady, setWidgetReady] = useState(false);
 
   const successParam = searchParams.get("success");
   const cancelParam = searchParams.get("cancel");
 
   const currentPlan = usage?.plan_tier ?? "starter";
   const planConfig = PLAN_CONFIG[currentPlan] ?? PLAN_CONFIG.starter;
+  const paybackBaseURL = process.env.NEXT_PUBLIC_BACKEND_URL || "https://api.windbackai.com";
+  const paybackPublicKey = process.env.NEXT_PUBLIC_PAYBACK_PUBLIC_KEY || "";
+
+  useEffect(() => {
+    if (!paybackPublicKey) return;
+
+    const existing = document.querySelector<HTMLScriptElement>('script[data-payback-widget="true"]');
+    if (existing && window.Payback) {
+      window.Payback.init({ publicKey: paybackPublicKey, baseURL: paybackBaseURL });
+      setWidgetReady(true);
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = `${paybackBaseURL}/widget.js`;
+    script.async = true;
+    script.dataset.paybackWidget = "true";
+    script.onload = () => {
+      if (!window.Payback) return;
+      window.Payback.init({ publicKey: paybackPublicKey, baseURL: paybackBaseURL });
+      setWidgetReady(true);
+    };
+    document.body.appendChild(script);
+  }, [paybackBaseURL, paybackPublicKey]);
+
+  const cancelFlowPayload = useMemo(
+    () => ({
+      customerEmail: user?.email || "",
+      customerName: user?.name || "",
+      provider: "custom",
+      planName: planConfig.label,
+      mrr: planConfig.priceCents,
+      currency: "USD",
+      tenureDays: 0,
+    }),
+    [planConfig.label, planConfig.priceCents, user?.email, user?.name],
+  );
+
+  function handleManageSubscription() {
+    if (!paybackPublicKey || !widgetReady || !window.Payback) {
+      portal.mutate();
+      return;
+    }
+
+    window.Payback.showCancelForm(cancelFlowPayload, {
+      onSuccess: () => portal.mutate(),
+      // Never block subscription management if cancel-flow API has transient issues.
+      onError: () => portal.mutate(),
+    });
+  }
 
   return (
     <div className="space-y-6">
@@ -224,7 +305,7 @@ export default function BillingPage() {
               via the Stripe customer portal.
             </p>
             <button
-              onClick={() => portal.mutate()}
+              onClick={handleManageSubscription}
               disabled={portal.isPending}
               className="inline-flex items-center gap-2 rounded-sm border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-50"
             >

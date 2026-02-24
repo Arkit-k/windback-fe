@@ -101,7 +101,7 @@ export function DashboardPreview() {
             ))}
           </div>
           <div className="mx-auto flex h-6 w-64 items-center justify-center rounded-sm bg-background/80 text-[10px] text-muted-foreground">
-            app.windback.dev/dashboard
+            app.windbackai.com/dashboard
           </div>
         </div>
 

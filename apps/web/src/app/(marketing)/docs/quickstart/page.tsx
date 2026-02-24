@@ -86,7 +86,7 @@ go get github.com/windback-dev/windback-go`}</CodeBlock>
               </Link>.
             </p>
             <div className="mt-4">
-              <CodeBlock lang="text">{`Webhook URL: https://api.windback.dev/webhooks/<your-project-id>
+              <CodeBlock lang="text">{`Webhook URL: https://api.windbackai.com/webhooks/<your-project-id>
 
 Events to listen for:
   - customer.subscription.deleted

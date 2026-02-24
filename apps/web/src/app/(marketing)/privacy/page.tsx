@@ -72,8 +72,8 @@ export default function PrivacyPage() {
               You have the right to access, correct, or delete your personal data. You
               may also request a copy of your data in a portable format. To exercise any
               of these rights, contact us at{" "}
-              <a href="mailto:support@windback.dev" className="text-[var(--accent)] hover:underline">
-                support@windback.dev
+              <a href="mailto:support@windbackai.com" className="text-[var(--accent)] hover:underline">
+                support@windbackai.com
               </a>
               .
             </p>
@@ -99,8 +99,8 @@ export default function PrivacyPage() {
           <section className="rounded-lg border border-border bg-card p-5">
             <p>
               Questions about this policy? Contact us at{" "}
-              <a href="mailto:support@windback.dev" className="text-[var(--accent)] hover:underline">
-                support@windback.dev
+              <a href="mailto:support@windbackai.com" className="text-[var(--accent)] hover:underline">
+                support@windbackai.com
               </a>
               .
             </p>

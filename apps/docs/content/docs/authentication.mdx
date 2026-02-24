@@ -15,19 +15,19 @@ Sign up or log in with email and password. The API returns a JWT token that you 
 
 ```bash
 curl -H "Authorization: Bearer eyJhbGciOi..." \
-  https://api.windback.dev/api/v1/stats
+  https://api.windbackai.com/api/v1/stats
 ```
 
 **Getting a token:**
 
 ```bash
 # Register
-curl -X POST https://api.windback.dev/api/v1/auth/register \
+curl -X POST https://api.windbackai.com/api/v1/auth/register \
   -H "Content-Type: application/json" \
   -d '{"name": "Jane Doe", "email": "jane@example.com", "password": "your-password"}'
 
 # Login
-curl -X POST https://api.windback.dev/api/v1/auth/login \
+curl -X POST https://api.windbackai.com/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email": "jane@example.com", "password": "your-password"}'
 ```
@@ -58,7 +58,7 @@ Include the secret key via the `X-API-Key` header:
 
 ```bash
 curl -H "X-API-Key: sk_your_secret_key" \
-  https://api.windback.dev/api/v1/stats
+  https://api.windbackai.com/api/v1/stats
 ```
 
 ## Dual Authentication
@@ -85,7 +85,7 @@ curl -X PUT \
   -H "Authorization: Bearer eyJhbGciOi..." \
   -H "Content-Type: application/json" \
   -d '{"allowed_origins": ["https://myapp.com", "https://staging.myapp.com"]}' \
-  https://api.windback.dev/api/v1/auth/allowed-origins
+  https://api.windbackai.com/api/v1/auth/allowed-origins
 ```
 
 ## Rate Limits

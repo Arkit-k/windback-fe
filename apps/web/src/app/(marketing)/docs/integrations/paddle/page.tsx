@@ -66,7 +66,7 @@ export default function PaddleIntegrationPage() {
               the Paddle webhook URL.
             </p>
             <div className="mt-3">
-              <CodeBlock lang="text">{`https://api.windback.dev/webhooks/paddle/<your-project-id>`}</CodeBlock>
+              <CodeBlock lang="text">{`https://api.windbackai.com/webhooks/paddle/<your-project-id>`}</CodeBlock>
             </div>
           </section>
 

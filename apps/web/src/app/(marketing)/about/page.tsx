@@ -115,7 +115,7 @@ export default function AboutPage() {
                       X / Twitter
                     </a>
                     <a
-                      href="mailto:arkit@windback.dev"
+                      href="mailto:arkit@windbackai.com"
                       className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-[var(--accent)]/40 hover:text-foreground"
                     >
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">
@@ -136,8 +136,8 @@ export default function AboutPage() {
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
               Have questions or want to partner with us? Reach out at{" "}
-              <a href="mailto:support@windback.dev" className="text-[var(--accent)] hover:underline">
-                support@windback.dev
+              <a href="mailto:support@windbackai.com" className="text-[var(--accent)] hover:underline">
+                support@windbackai.com
               </a>{" "}
               or{" "}
               <Link href="/docs" className="text-[var(--accent)] hover:underline">
