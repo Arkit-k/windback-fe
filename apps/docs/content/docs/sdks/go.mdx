@@ -60,7 +60,7 @@ func main() {
 ```
 
 <Callout type="info">
-The SDK uses your **secret API key** (`sk_...`) for authentication, not JWT tokens. Get your API key from **Settings** in the [dashboard](https://app.windback.dev/dashboard).
+The SDK uses your **secret API key** (`sk_...`) for authentication, not JWT tokens. Get your API key from **Settings** in the [dashboard](https://app.windbackai.com/dashboard).
 </Callout>
 
 ## Configuration
@@ -68,7 +68,7 @@ The SDK uses your **secret API key** (`sk_...`) for authentication, not JWT toke
 ```go
 client := windback.NewClient(
     os.Getenv("PAYBACK_SECRET_KEY"),
-    windback.WithBaseURL("https://api.windback.dev"),
+    windback.WithBaseURL("https://api.windbackai.com"),
     windback.WithTimeout(30 * time.Second),
 )
 ```

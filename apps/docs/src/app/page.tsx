@@ -165,7 +165,7 @@ recovery, _ := client.ChurnEvents.Generate(
   {
     lang: "cURL",
     code: `curl -X POST \\
-  https://api.windback.dev/api/v1/projects/my-app/\\
+  https://api.windbackai.com/api/v1/projects/my-app/\\
 churn-events/evt_123/generate \\
   -H "X-API-Key: cg_sk_..." \\
   -H "Content-Type: application/json"`,

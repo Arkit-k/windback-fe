@@ -352,7 +352,7 @@ export default function PricingPage() {
               className="mt-6 bg-white text-[var(--accent)] hover:bg-white/90"
               asChild
             >
-              <a href="mailto:support@windback.dev">Talk to Sales</a>
+              <a href="mailto:support@windbackai.com">Talk to Sales</a>
             </Button>
           </div>
         </ScrollReveal>

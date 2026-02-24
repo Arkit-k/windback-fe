@@ -36,7 +36,7 @@ const footerLinks = [
     title: "Company",
     links: [
       { href: "/about", label: "About" },
-      { href: "mailto:support@windback.dev", label: "Support", external: true },
+      { href: "mailto:support@windbackai.com", label: "Support", external: true },
       { href: "/privacy", label: "Privacy Policy" },
       { href: "/terms", label: "Terms of Service" },
     ],

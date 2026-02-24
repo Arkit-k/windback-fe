@@ -62,7 +62,7 @@ export default function CustomWebhookPage() {
               Endpoint
             </h2>
             <div className="mt-3">
-              <CodeBlock lang="text">{`POST https://api.windback.dev/webhooks/custom/<your-project-id>
+              <CodeBlock lang="text">{`POST https://api.windbackai.com/webhooks/custom/<your-project-id>
 
 Headers:
   Content-Type: application/json
@@ -146,7 +146,7 @@ const signature = crypto
               Example: cURL
             </h2>
             <div className="mt-3">
-              <CodeBlock lang="bash">{`curl -X POST https://api.windback.dev/webhooks/custom/<project-id> \\
+              <CodeBlock lang="bash">{`curl -X POST https://api.windbackai.com/webhooks/custom/<project-id> \\
   -H "Content-Type: application/json" \\
   -H "X-Windback-Signature: sha256=abc123..." \\
   -d '{

@@ -66,7 +66,7 @@ export default function RazorpayIntegrationPage() {
               the Razorpay webhook URL.
             </p>
             <div className="mt-3">
-              <CodeBlock lang="text">{`https://api.windback.dev/webhooks/razorpay/<your-project-id>`}</CodeBlock>
+              <CodeBlock lang="text">{`https://api.windbackai.com/webhooks/razorpay/<your-project-id>`}</CodeBlock>
             </div>
           </section>
 
