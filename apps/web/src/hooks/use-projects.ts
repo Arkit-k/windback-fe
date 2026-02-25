@@ -9,7 +9,7 @@ interface ApiResponse<T> {
   data: T;
 }
 
-export function useProjects() {
+export function useProjects(options?: { enabled?: boolean }) {
   return useQuery<Project[]>({
     queryKey: QUERY_KEYS.projects,
     queryFn: async () => {
@@ -17,6 +17,7 @@ export function useProjects() {
       return res.data;
     },
     staleTime: STALE_TIMES.projects,
+    enabled: options?.enabled ?? true,
   });
 }
 

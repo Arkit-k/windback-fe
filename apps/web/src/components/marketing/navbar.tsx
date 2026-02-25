@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Button } from "@windback/ui";
 import { useState, useEffect, useCallback } from "react";
 import { Menu, X } from "lucide-react";
@@ -24,6 +25,7 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("");
+  const pathname = usePathname();
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
@@ -32,6 +34,11 @@ export function Navbar() {
 
   // Detect active section in viewport
   useEffect(() => {
+    if (pathname !== "/") {
+      setActiveSection("");
+      return;
+    }
+
     const sectionIds = navLinks.map((l) => l.section).filter(Boolean);
     if (sectionIds.length === 0) return;
 
@@ -52,7 +59,7 @@ export function Navbar() {
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [pathname]);
 
   // Close mobile menu on outside click
   const handleBackdropClick = useCallback(() => {
@@ -102,6 +109,7 @@ export function Navbar() {
                   }}
                   onClick={(e) => {
                     if (link.section) {
+                      if (pathname !== "/") return;
                       e.preventDefault();
                       document.getElementById(link.section)?.scrollIntoView({ behavior: "smooth" });
                     }
@@ -198,6 +206,7 @@ export function Navbar() {
                         onClick={(e) => {
                           setMobileOpen(false);
                           if (link.section) {
+                            if (pathname !== "/") return;
                             e.preventDefault();
                             setTimeout(() => {
                               document.getElementById(link.section)?.scrollIntoView({ behavior: "smooth" });
