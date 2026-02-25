@@ -69,10 +69,10 @@ export function Navbar() {
   return (
     <>
       <motion.nav
-        className="sticky top-0 z-40 transition-[background-color,border-color,box-shadow] duration-300"
+        className="fixed left-0 right-0 top-0 z-40 transition-[background-color,border-color,box-shadow] duration-300"
         style={{
-          backgroundColor: scrolled ? "hsl(from var(--card) h s l / 0.8)" : "transparent",
-          backdropFilter: scrolled ? "blur(12px)" : "none",
+          backgroundColor: scrolled ? "#FFFFFF" : "transparent",
+          backdropFilter: scrolled ? "blur(8px)" : "none",
           borderBottom: scrolled
             ? "1px solid var(--border)"
             : "1px solid transparent",
@@ -232,6 +232,7 @@ export function Navbar() {
           )}
         </AnimatePresence>
       </motion.nav>
+      <div className="h-14" aria-hidden="true" />
 
       {/* Mobile backdrop overlay */}
       <AnimatePresence>
