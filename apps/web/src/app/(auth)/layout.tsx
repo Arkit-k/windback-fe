@@ -103,12 +103,18 @@ export default function AuthLayout({
   const pathname = usePathname();
   const isLogin = pathname === "/login";
   const content = isLogin ? loginContent : registerContent;
+  const panelBackground = isLogin ? "/gradient-signin.jfif" : "/gradient-signup.jfif";
 
   return (
     <div className="flex min-h-screen">
       {/* Left panel */}
-      <div className="hidden lg:flex lg:w-1/2 flex-col justify-between bg-[var(--accent)] text-white p-12">
+      <div
+        className="relative hidden lg:flex lg:w-1/2 flex-col justify-between bg-cover bg-center text-white p-12"
+        style={{ backgroundImage: `url('${panelBackground}')` }}
+      >
+        <div className="absolute inset-0 bg-slate-900/25" />
         <motion.div
+          className="relative z-10"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
@@ -118,7 +124,7 @@ export default function AuthLayout({
           </Link>
         </motion.div>
 
-        <div className="space-y-10">
+        <div className="relative z-10 space-y-10">
           <motion.div
             key={pathname}
             initial={{ opacity: 0, y: 20 }}
@@ -159,10 +165,10 @@ export default function AuthLayout({
         </div>
 
         <motion.p
+          className="relative z-10 text-xs text-white/70"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.8 }}
-          className="text-xs text-white/40"
         >
           {content.footer}
         </motion.p>
