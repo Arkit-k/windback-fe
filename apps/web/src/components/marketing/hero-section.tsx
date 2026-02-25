@@ -47,9 +47,9 @@ export function HeroSection() {
 
         <div className="mx-auto max-w-6xl px-4 pb-8 pt-24 sm:px-6 sm:pt-32">
           <div className="relative z-10">
-            <div className="max-w-xl">
+            <div className="mx-auto max-w-xl text-center lg:mx-0 lg:text-left">
               <FadeUp delay={0.1}>
-                <AnimatedBadge className="mb-6">
+                <AnimatedBadge className="mb-6 mx-auto lg:mx-0">
                   <span className="relative flex h-2 w-2">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)] opacity-75" />
                     <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--accent)]" />
@@ -82,14 +82,14 @@ export function HeroSection() {
               </FadeUp>
 
               <FadeUp delay={0.35}>
-                <p className="mt-6 max-w-lg text-[1.075rem] leading-relaxed text-muted-foreground">
+                <p className="mt-6 max-w-lg text-[1.075rem] leading-relaxed text-muted-foreground lg:max-w-none">
                   Whatever your payment stack, Windback detects cancellations and failed payments,
                   then generates personalized AI recovery emails and smart dunning sequences to bring customers back.
                 </p>
               </FadeUp>
 
               <FadeUp delay={0.5}>
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start lg:items-start">
                   <MagneticHover strength={0.12}>
                     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
                       <Button size="lg" asChild className="relative overflow-hidden shadow-[0_0_20px_hsl(from_var(--accent)_h_s_l_/_0.25)] hover:shadow-[0_0_32px_hsl(from_var(--accent)_h_s_l_/_0.4)] transition-shadow duration-300">

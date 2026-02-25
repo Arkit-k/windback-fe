@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button, Card, CardContent, CardHeader, CardTitle, CardDescription } from "@windback/ui";
-import { CheckCircle2, ChevronDown } from "lucide-react";
+import { ChevronDown, Sparkles, Circle, Square, Triangle, Diamond, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ScrollReveal } from "@/components/animations/motion";
 import { FloatingParticles } from "@/components/animations/floating-particles";
@@ -116,6 +116,8 @@ const faqs = [
       "Yes! Annual billing saves you 2 months compared to paying monthly. Toggle to annual billing above to see the discounted prices.",
   },
 ];
+
+const featureIcons = [Circle, Square, Triangle, Diamond, Star, Sparkles];
 
 function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
@@ -247,7 +249,7 @@ export default function PricingPage() {
             visible: { transition: { staggerChildren: 0.12, delayChildren: 0.2 } },
           }}
         >
-          {plans.map((plan) => (
+          {plans.map((plan, planIndex) => (
             <motion.div
               key={plan.name}
               variants={{
@@ -261,7 +263,7 @@ export default function PricingPage() {
               <Card
                 className={`transition-all duration-300 hover:border-[var(--accent)] hover:shadow-lg hover:shadow-[var(--accent)]/10 ${
                   plan.popular
-                    ? "relative border-[var(--accent)] shadow-[0_0_24px_hsl(from_var(--accent)_h_s_l_/_0.12)]"
+                    ? "relative border-[var(--accent)] bg-gradient-to-br from-[var(--accent)] to-blue-500 text-white shadow-[0_0_24px_hsl(from_var(--accent)_h_s_l_/_0.22)]"
                     : ""
                 }`}
               >
@@ -277,18 +279,18 @@ export default function PricingPage() {
                 )}
                 <CardHeader className="pb-4">
                   <CardTitle className="font-display">{plan.name}</CardTitle>
-                  <CardDescription>{plan.description}</CardDescription>
+                  <CardDescription className={plan.popular ? "text-white/80" : ""}>{plan.description}</CardDescription>
                   <div className="mt-4">
-                    <span className="font-display text-4xl font-semibold text-foreground">
+                    <span className={`font-display text-4xl font-semibold ${plan.popular ? "text-white" : "text-foreground"}`}>
                       {annual ? plan.annualPrice : plan.monthlyPrice}
                     </span>
                     {(annual ? plan.annualPeriod : plan.monthlyPeriod) && (
-                      <span className="text-muted-foreground">
+                      <span className={plan.popular ? "text-white/80" : "text-muted-foreground"}>
                         {annual ? plan.annualPeriod : plan.monthlyPeriod}
                       </span>
                     )}
                     {annual && plan.annualNote && (
-                      <p className="mt-1 text-xs text-muted-foreground">
+                      <p className={`mt-1 text-xs ${plan.popular ? "text-white/80" : "text-muted-foreground"}`}>
                         {plan.annualNote}
                       </p>
                     )}
@@ -296,23 +298,30 @@ export default function PricingPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <ul className="space-y-2.5">
-                    {plan.features.map((feature, i) => (
-                      <motion.li
-                        key={feature}
-                        className="flex items-start gap-2 text-sm text-muted-foreground"
-                        initial={{ opacity: 0, x: -8 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.4 + i * 0.04, duration: 0.3 }}
-                      >
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
-                        {feature}
-                      </motion.li>
-                    ))}
+                    {plan.features.map((feature, i) => {
+                      const FeatureIcon = featureIcons[(planIndex + i) % featureIcons.length];
+                      return (
+                        <motion.li
+                          key={feature}
+                          className={`flex items-start gap-2 text-sm ${plan.popular ? "text-white/90" : "text-muted-foreground"}`}
+                          initial={{ opacity: 0, x: -8 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: 0.4 + i * 0.04, duration: 0.3 }}
+                        >
+                          <span className={`mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-sm ${plan.popular ? "bg-white/20 text-white" : "bg-[var(--accent-light)] text-[var(--accent)]"}`}>
+                            <FeatureIcon className="h-2.5 w-2.5" />
+                          </span>
+                          {feature}
+                        </motion.li>
+                      );
+                    })}
                   </ul>
                   <Button
-                    className="w-full"
-                    variant={plan.popular ? "default" : "outline"}
+                    className={plan.popular
+                      ? "w-full bg-white text-[var(--accent)] hover:bg-white/90"
+                      : "w-full bg-[var(--accent)] text-white hover:bg-[var(--accent)]/90"}
+                    variant={plan.popular ? "secondary" : "default"}
                     asChild
                   >
                     <Link href="/register">{plan.cta}</Link>
