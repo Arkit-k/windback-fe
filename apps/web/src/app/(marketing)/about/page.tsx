@@ -2,8 +2,14 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About — Windback",
-  description: "Learn about Windback's mission to help SaaS companies recover churned revenue with AI.",
+  title: "About",
+  description: "Learn about Windback's mission to help SaaS founders recover churned revenue with AI-powered recovery emails and smart dunning sequences.",
+  alternates: { canonical: "https://windback.io/about" },
+  openGraph: {
+    title: "About Windback",
+    description: "Learn about Windback's mission to help SaaS founders recover churned revenue with AI.",
+    url: "https://windback.io/about",
+  },
 };
 
 export default function AboutPage() {

@@ -2,8 +2,10 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Paddle Integration — Windback Docs",
-  description: "Set up Paddle webhooks with Windback to detect subscription cancellations.",
+  title: "Paddle Integration",
+  description: "Connect Paddle to Windback. Automatically detect subscription cancellations and failed payments, and trigger AI-generated recovery emails and dunning sequences.",
+  alternates: { canonical: "https://windback.io/docs/integrations/paddle" },
+  openGraph: { title: "Paddle + Windback Integration", url: "https://windback.io/docs/integrations/paddle" },
 };
 
 function Breadcrumb() {

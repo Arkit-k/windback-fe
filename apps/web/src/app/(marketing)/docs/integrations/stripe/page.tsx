@@ -2,8 +2,10 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Stripe Integration — Windback Docs",
-  description: "Set up Stripe webhooks with Windback to detect subscription cancellations.",
+  title: "Stripe Integration",
+  description: "Connect Stripe to Windback in minutes. Detect subscription cancellations and failed payments, then automatically trigger AI recovery emails and dunning sequences.",
+  alternates: { canonical: "https://windback.io/docs/integrations/stripe" },
+  openGraph: { title: "Stripe + Windback Integration", url: "https://windback.io/docs/integrations/stripe" },
 };
 
 function Breadcrumb() {

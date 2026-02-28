@@ -2,8 +2,10 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Razorpay Integration — Windback Docs",
-  description: "Set up Razorpay webhooks with Windback to detect subscription cancellations.",
+  title: "Razorpay Integration",
+  description: "Connect Razorpay to Windback. Detect subscription cancellations and failed payments, then automatically send AI-powered recovery emails to win back customers.",
+  alternates: { canonical: "https://windback.io/docs/integrations/razorpay" },
+  openGraph: { title: "Razorpay + Windback Integration", url: "https://windback.io/docs/integrations/razorpay" },
 };
 
 function Breadcrumb() {
