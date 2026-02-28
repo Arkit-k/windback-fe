@@ -157,7 +157,7 @@ export default function BillingPage() {
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 dark:border-green-800 dark:bg-green-950 dark:text-green-200"
+          className="rounded-md border border-[var(--accent-light)] bg-[var(--accent-light)] px-4 py-3 text-sm text-[var(--accent)]"
         >
           Your subscription has been updated successfully.
         </motion.div>
@@ -166,7 +166,7 @@ export default function BillingPage() {
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-md border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800 dark:border-yellow-800 dark:bg-yellow-950 dark:text-yellow-200"
+          className="rounded-md border border-[#DED9F0] bg-[#F4F3FB] px-4 py-3 text-sm text-[#4C4869]"
         >
           Checkout was cancelled. No changes were made.
         </motion.div>

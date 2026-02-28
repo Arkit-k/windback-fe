@@ -63,7 +63,7 @@ function MiniTableRow({ name, email, status, mrr, delay }: {
     recovered: "bg-green-50 text-green-700",
     processing: "bg-amber-50 text-amber-700",
     new: "bg-blue-50 text-blue-700",
-    email_sent: "bg-orange-50 text-orange-700",
+    email_sent: "bg-sky-50 text-sky-700",
   };
 
   return (
@@ -368,10 +368,10 @@ export function DashboardPreview() {
                 <div className="rounded-sm border border-border/50 bg-card px-3 py-2.5">
                   <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Integrations</p>
                   <div className="mt-1 flex items-center gap-2 text-[11px]">
-                    <span className={`rounded-full px-2 py-0.5 ${activeProject?.stripe_account_id ? "bg-green-50 text-green-700" : "bg-secondary text-muted-foreground"}`}>
+                    <span className={`rounded-full px-2 py-0.5 ${activeProject?.stripe_account_id ? "bg-blue-50 text-blue-700" : "bg-secondary text-muted-foreground"}`}>
                       Stripe {activeProject?.stripe_account_id ? "connected" : "not connected"}
                     </span>
-                    <span className={`rounded-full px-2 py-0.5 ${activeProject?.razorpay_key_id ? "bg-green-50 text-green-700" : "bg-secondary text-muted-foreground"}`}>
+                    <span className={`rounded-full px-2 py-0.5 ${activeProject?.razorpay_key_id ? "bg-blue-50 text-blue-700" : "bg-secondary text-muted-foreground"}`}>
                       Razorpay {activeProject?.razorpay_key_id ? "connected" : "not connected"}
                     </span>
                   </div>
@@ -409,10 +409,10 @@ export function DashboardPreview() {
                 <div className="rounded-sm border border-border/50 bg-card px-3 py-2.5">
                   <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Payment Providers</p>
                   <div className="mt-2 flex items-center gap-2 text-[11px]">
-                    <span className={`rounded-full px-2 py-0.5 ${activeProject?.stripe_account_id ? "bg-green-50 text-green-700" : "bg-secondary text-muted-foreground"}`}>
+                    <span className={`rounded-full px-2 py-0.5 ${activeProject?.stripe_account_id ? "bg-blue-50 text-blue-700" : "bg-secondary text-muted-foreground"}`}>
                       Stripe {activeProject?.stripe_account_id ? "connected" : "not connected"}
                     </span>
-                    <span className={`rounded-full px-2 py-0.5 ${activeProject?.razorpay_key_id ? "bg-green-50 text-green-700" : "bg-secondary text-muted-foreground"}`}>
+                    <span className={`rounded-full px-2 py-0.5 ${activeProject?.razorpay_key_id ? "bg-blue-50 text-blue-700" : "bg-secondary text-muted-foreground"}`}>
                       Razorpay {activeProject?.razorpay_key_id ? "connected" : "not connected"}
                     </span>
                   </div>

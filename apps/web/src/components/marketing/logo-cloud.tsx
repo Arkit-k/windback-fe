@@ -17,7 +17,7 @@ const logos = [
 export function LogoCloud() {
   return (
     <motion.section
-      className="border-t border-border/40 bg-transparent py-12"
+      className="bg-transparent py-12"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}

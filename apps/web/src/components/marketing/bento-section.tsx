@@ -54,7 +54,7 @@ export function CapabilitiesSection() {
                 </ScrollReveal>
                 <div className="mt-8 flex items-end gap-4">
                   <ScrollReveal delay={0.15}>
-                    <motion.div className="flex h-36 w-36 flex-col justify-end rounded-xl bg-gradient-to-br from-[var(--accent)] to-blue-400 p-5 sm:h-40 sm:w-40 cursor-default" whileHover={{ scale: 1.04, rotate: -1, transition: { type: "spring", stiffness: 300, damping: 20 } }} whileTap={{ scale: 0.98 }}>
+                    <motion.div className="flex h-36 w-36 flex-col justify-end rounded-xl bg-gradient-to-br from-[var(--gradient-to)] to-[var(--gradient-from)] p-5 sm:h-40 sm:w-40 cursor-default" whileHover={{ scale: 1.15, rotate: -1, transition: { type: "spring", stiffness: 300, damping: 20 } }} whileTap={{ scale: 0.98 }}>
                       <p className="text-[10px] leading-snug text-white/70">Average recovery rate with AI-generated email variants</p>
                       <p className="mt-2 font-serif text-4xl text-white italic sm:text-5xl">26.6%</p>
                     </motion.div>
@@ -103,7 +103,7 @@ export function HowItWorksSection() {
         </ScrollReveal>
         <div className="relative mt-12 grid grid-cols-1 gap-5 sm:grid-cols-3">
           {steps.map((item, i) => (
-            <motion.div key={item.title} className={`group relative flex min-h-[230px] flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br from-[#1E3A8A] via-[#2563EB] to-[#60A5FA] p-7 cursor-default ${i === 1 ? "sm:mt-16" : ""}`} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.15, ease: [0.25, 0.1, 0.25, 1] }} whileHover={{ y: i === 1 ? 59 : -5, transition: { type: "spring", stiffness: 300, damping: 20 } }}>
+            <motion.div key={item.title} className={`group relative flex min-h-[230px] flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br from-[#0F1733] via-[#2563EB] to-[#FBAA8A] p-7 cursor-default ${i === 1 ? "sm:mt-16" : ""}`} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.15, ease: [0.25, 0.1, 0.25, 1] }} whileHover={{ y: i === 1 ? 59 : -5, transition: { type: "spring", stiffness: 300, damping: 20 } }}>
               <div>
                 <span className="text-sm text-white/50">{item.step}</span>
                 <h3 className="mt-3 font-serif text-lg leading-snug text-white italic sm:text-xl">{item.title}</h3>
@@ -124,7 +124,7 @@ export function HowItWorksSection() {
 
 export function BentoGridSection() {
   return (
-    <section className="border-t border-border bg-[#F4F6FA] py-20">
+    <section className="border-t border-border bg-[#EEF2FF] py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <ScrollReveal>
           <div className="mx-auto max-w-2xl text-center">
@@ -136,8 +136,8 @@ export function BentoGridSection() {
           <ScrollReveal delay={0} className="sm:col-span-2 sm:row-span-2">
             <SpotlightCard className="h-full rounded-2xl border border-border bg-background cursor-default">
               <div className="p-6 flex flex-col h-full">
-                <motion.div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50" whileHover={{ rotate: 8, scale: 1.1 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
-                  <Webhook className="h-5 w-5 text-amber-600" />
+                <motion.div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--accent-light)]" whileHover={{ rotate: 8, scale: 1.1 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
+                  <Webhook className="h-5 w-5 text-[var(--accent)]" />
                 </motion.div>
                 <h3 className="mt-5 text-base font-semibold text-foreground">Webhook Integration</h3>
                 <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">Unlock effortless automation. Connect your payment providers, streamline workflows, and supercharge recovery with ease.</p>
@@ -146,7 +146,7 @@ export function BentoGridSection() {
                     <Shield className="h-4 w-4 text-muted-foreground" />
                     <span className="text-[12px] font-medium text-foreground">Configure</span>
                   </div>
-                  <motion.div className="h-5 w-9 rounded-full bg-green-500 p-0.5 flex justify-end" whileTap={{ scale: 0.9 }}>
+                  <motion.div className="h-5 w-9 rounded-full bg-[var(--accent)] p-0.5 flex justify-end" whileTap={{ scale: 0.9 }}>
                     <motion.div className="h-4 w-4 rounded-full bg-white shadow-sm" layout transition={{ type: "spring", stiffness: 500, damping: 30 }} />
                   </motion.div>
                 </motion.div>
@@ -162,7 +162,7 @@ export function BentoGridSection() {
                     <p className="text-[11px] text-muted-foreground">Smart dunning sequences</p>
                   </div>
                   <div className="flex -space-x-2">
-                    {[{ letter: "S", bg: "bg-violet-100", text: "text-violet-600" }, { letter: "R", bg: "bg-blue-100", text: "text-blue-600" }, { letter: "P", bg: "bg-amber-100", text: "text-amber-600" }].map((p) => (
+                    {[{ letter: "S", bg: "bg-blue-100", text: "text-blue-700" }, { letter: "R", bg: "bg-indigo-100", text: "text-indigo-700" }, { letter: "P", bg: "bg-violet-100", text: "text-violet-700" }].map((p) => (
                       <motion.div key={p.letter} className={`flex h-8 w-8 items-center justify-center rounded-full ${p.bg} border-2 border-background text-[10px] font-bold ${p.text}`} whileHover={{ scale: 1.2, zIndex: 10, y: -4 }} transition={{ type: "spring", stiffness: 400, damping: 15 }} initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
                         {p.letter}
                       </motion.div>
@@ -173,7 +173,7 @@ export function BentoGridSection() {
             </SpotlightCard>
           </ScrollReveal>
           <ScrollReveal delay={0.1} className="sm:col-span-2 sm:row-span-2">
-            <SpotlightCard className="h-full rounded-2xl border border-transparent bg-gradient-to-br from-[var(--accent)] to-blue-500 cursor-default">
+            <SpotlightCard className="h-full rounded-2xl border border-transparent bg-gradient-to-br from-[var(--gradient-to)] to-[var(--gradient-from)] cursor-default">
               <div className="p-6 flex flex-col justify-between h-full">
                 <motion.p className="font-serif text-6xl tracking-tight text-white italic sm:text-7xl" initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }} whileHover={{ scale: 1.03, transition: { type: "spring", stiffness: 300 } }}>26.6<span className="text-white/80">%</span></motion.p>
                 <div className="mt-4">
@@ -207,8 +207,8 @@ export function BentoGridSection() {
             <SpotlightCard className="h-full rounded-2xl border border-border bg-background cursor-default">
               <div className="px-5 py-4 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <motion.div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100" whileHover={{ rotate: 12, scale: 1.1 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
-                    <Zap className="h-4 w-4 text-slate-600" />
+                  <motion.div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--accent-light)]" whileHover={{ rotate: 12, scale: 1.1 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
+                    <Zap className="h-4 w-4 text-[var(--accent)]" />
                   </motion.div>
                   <div>
                     <h3 className="text-sm font-semibold text-foreground">Built for Teams</h3>
@@ -230,8 +230,8 @@ export function BentoGridSection() {
                   <motion.p className="font-serif text-3xl text-foreground italic" whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300 }}>$2.4k</motion.p>
                   <p className="text-[11px] text-muted-foreground">Avg MRR Recovered</p>
                 </div>
-                <motion.div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-50" whileHover={{ scale: 1.2, rotate: 20, backgroundColor: "rgb(220 252 231)" }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
-                  <ArrowRight className="h-5 w-5 text-green-600 -rotate-45" />
+                <motion.div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--accent-light)]" whileHover={{ scale: 1.2, rotate: 20 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
+                  <ArrowRight className="h-5 w-5 text-[var(--accent)] -rotate-45" />
                 </motion.div>
               </div>
             </SpotlightCard>

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@windback/ui";
 import { ArrowRight } from "lucide-react";
@@ -7,15 +8,18 @@ import { ScrollReveal, MagneticHover, motion } from "@/components/animations/mot
 
 export function CTASection() {
   return (
-    <section className="relative overflow-hidden rounded-t-[2rem] sm:rounded-t-[3rem] bg-[var(--accent)] py-24 sm:py-28">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.12),transparent_50%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(0,0,0,0.18),transparent_50%)]" />
-      <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.04]">
-        <pattern id="ctaDots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
-          <circle cx="1" cy="1" r="1" fill="white" />
-        </pattern>
-        <rect width="100%" height="100%" fill="url(#ctaDots)" />
-      </svg>
+    <section className="relative overflow-hidden rounded-t-[2rem] sm:rounded-t-[3rem] py-24 sm:py-28">
+      {/* Background image */}
+      <Image
+        src="/cta.jfif"
+        alt=""
+        fill
+        className="object-cover object-center"
+        sizes="100vw"
+        priority={false}
+      />
+      {/* Minimal dark overlay just for text readability */}
+      <div className="absolute inset-0 bg-black/30" />
 
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
         <div className="grid items-start gap-12 lg:grid-cols-2">
@@ -64,7 +68,7 @@ export function CTASection() {
 
               <div className="mt-10 flex items-center gap-4">
                 <div className="flex -space-x-2">
-                  {["bg-blue-300", "bg-emerald-300", "bg-amber-300", "bg-rose-300", "bg-violet-300"].map((color, i) => (
+                  {["bg-blue-400", "bg-blue-300", "bg-[#FBAA8A]", "bg-sky-400", "bg-blue-200"].map((color, i) => (
                     <motion.div
                       key={i}
                       className={`flex h-7 w-7 items-center justify-center rounded-full ${color} border-2 border-[var(--accent)] text-[9px] font-bold text-white`}

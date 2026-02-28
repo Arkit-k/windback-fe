@@ -16,8 +16,8 @@ const badgeVariants = cva(
         // Status badges
         new: "bg-blue-50 text-blue-700",
         processing: "bg-amber-50 text-amber-700",
-        variants_generated: "bg-violet-50 text-violet-700",
-        email_sent: "bg-orange-50 text-orange-700",
+        variants_generated: "bg-indigo-50 text-indigo-700",
+        email_sent: "bg-sky-50 text-sky-700",
         recovered: "bg-green-50 text-green-700",
         lost: "bg-red-50 text-red-700",
       },

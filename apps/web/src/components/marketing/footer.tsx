@@ -87,7 +87,7 @@ export function Footer() {
       {/* Centered half-circular gradient glow at bottom */}
       <div
         className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 h-[600px] w-[900px]"
-        style={{ background: "radial-gradient(ellipse at center, rgba(37,99,235,0.6) 0%, rgba(96,165,250,0.35) 30%, rgba(191,219,254,0.15) 55%, transparent 75%)" }}
+        style={{ background: "radial-gradient(ellipse at center, rgba(37,99,235,0.5) 0%, rgba(96,165,250,0.28) 30%, rgba(191,219,254,0.12) 55%, transparent 75%)" }}
       />
       {/* Subtle gradient accent at top */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--accent)]/20 to-transparent" />
@@ -110,20 +110,6 @@ export function Footer() {
               in real-time and uses AI to win customers back — automatically.
             </p>
 
-            {/* Status badge */}
-            <motion.div
-              className="mt-4 inline-flex items-center gap-2 rounded-full border border-border/60 bg-background px-3 py-1.5"
-              whileHover={{ scale: 1.03 }}
-              transition={{ type: "spring", stiffness: 400 }}
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-              </span>
-              <span className="text-[11px] font-medium text-muted-foreground">
-                All systems operational
-              </span>
-            </motion.div>
           </div>
 
           {/* Newsletter */}

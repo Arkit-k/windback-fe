@@ -32,7 +32,7 @@ export function AnimatedBadge({ children, className }: AnimatedBadgeProps) {
       <div
         className="absolute -inset-[1px] rounded-full opacity-70 blur-[1px] transition-opacity duration-300 group-hover:opacity-100"
         style={{
-          background: `conic-gradient(from ${angle}deg, var(--accent), #60a5fa, #a78bfa, var(--accent))`,
+          background: `conic-gradient(from ${angle}deg, var(--accent), #60a5fa, #FBAA8A, var(--accent))`,
         }}
       />
 
