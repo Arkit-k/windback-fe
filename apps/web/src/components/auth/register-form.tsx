@@ -35,7 +35,7 @@ export function RegisterForm() {
   }, [register.isError]);
 
   return (
-    <Card className="relative w-full max-w-md overflow-visible">
+    <Card className="relative w-full max-w-md overflow-visible border-0 bg-transparent text-white shadow-none lg:border lg:border-border/70 lg:bg-card lg:text-card-foreground lg:shadow-sm">
       <ConfettiBurst trigger={showSuccess} className="z-50" />
       <div className="mx-auto mb-2 hidden h-32 w-32 sm:-mt-16 sm:block">
         <RiveLoginCharacter
@@ -48,16 +48,17 @@ export function RegisterForm() {
       </div>
       <CardHeader className="space-y-2 pt-0">
         <CardTitle className="text-3xl font-bold tracking-tight">Create your account</CardTitle>
-        <CardDescription>
+        <CardDescription className="text-white/75 lg:text-muted-foreground">
           Start recovering churned customers in minutes.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name" className="text-white/90 lg:text-foreground">Name</Label>
             <Input
               id="name"
+              className="border-white/25 bg-white/10 text-white placeholder:text-white/60 focus-visible:ring-white/40 lg:border-input lg:bg-background lg:text-foreground lg:placeholder:text-muted-foreground"
               placeholder="Your name"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -65,11 +66,12 @@ export function RegisterForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-white/90 lg:text-foreground">Email</Label>
             <Input
               ref={emailRef}
               id="email"
               type="email"
+              className="border-white/25 bg-white/10 text-white placeholder:text-white/60 focus-visible:ring-white/40 lg:border-input lg:bg-background lg:text-foreground lg:placeholder:text-muted-foreground"
               placeholder="you@company.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -77,10 +79,11 @@ export function RegisterForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="text-white/90 lg:text-foreground">Password</Label>
             <Input
               id="password"
               type="password"
+              className="border-white/25 bg-white/10 text-white placeholder:text-white/60 focus-visible:ring-white/40 lg:border-input lg:bg-background lg:text-foreground lg:placeholder:text-muted-foreground"
               placeholder="Min. 8 characters"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -98,15 +101,15 @@ export function RegisterForm() {
           </Button>
           <div className="relative my-2">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
+              <span className="w-full border-t border-white/20 lg:border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">or</span>
+              <span className="bg-transparent px-2 text-white/70 lg:bg-card lg:text-muted-foreground">or</span>
             </div>
           </div>
           <a
             href="/api/auth/oauth/google"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-0 lg:border-input lg:bg-background lg:text-foreground lg:ring-offset-background lg:hover:bg-accent lg:hover:text-accent-foreground lg:focus-visible:ring-ring lg:focus-visible:ring-offset-2"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24">
               <path
@@ -129,7 +132,7 @@ export function RegisterForm() {
             Continue with Google
           </a>
         </form>
-        <p className="mt-4 text-center text-sm text-muted-foreground">
+        <p className="mt-4 text-center text-sm text-white/80 lg:text-muted-foreground">
           Already have an account?{" "}
           <Link href="/login" className="text-primary hover:underline">
             Log in
@@ -139,3 +142,4 @@ export function RegisterForm() {
     </Card>
   );
 }
+
