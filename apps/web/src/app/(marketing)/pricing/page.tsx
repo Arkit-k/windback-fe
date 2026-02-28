@@ -158,7 +158,7 @@ export default function PricingPage() {
   return (
     <div className="relative py-20">
       {/* Light blue gradient background */}
-      <div className="pointer-events-none fixed inset-0 -z-10 bg-gradient-to-b from-[#C7D9F7] via-[#DBEAFE] to-background" />
+      <div className="pointer-events-none fixed inset-0 -z-10 bg-gradient-to-b from-[#BFCFF8] via-[#DBEAFE] to-background" />
 
       {/* Hero effects */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -177,7 +177,7 @@ export default function PricingPage() {
         />
         <motion.div
           className="absolute -right-20 top-10 h-[350px] w-[350px] rounded-full blur-[100px]"
-          style={{ background: "radial-gradient(circle, rgba(129, 140, 248, 0.25), transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, rgba(251, 170, 138, 0.28), transparent 70%)" }}
           animate={{
             x: [0, -60, -15, 0],
             y: [0, 60, 10, 0],
@@ -187,7 +187,7 @@ export default function PricingPage() {
         />
         <motion.div
           className="absolute left-1/3 -top-10 h-[300px] w-[300px] rounded-full blur-[100px]"
-          style={{ background: "radial-gradient(circle, rgba(96, 165, 250, 0.2), transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, rgba(129, 140, 248, 0.22), transparent 70%)" }}
           animate={{
             x: [0, 50, -30, 0],
             y: [0, -30, 40, 0],
@@ -231,7 +231,7 @@ export default function PricingPage() {
                 <motion.span
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700"
+                  className="rounded-full bg-[var(--accent-light)] px-2.5 py-0.5 text-xs font-medium text-[var(--accent)]"
                 >
                   Save 2 months
                 </motion.span>
@@ -263,7 +263,7 @@ export default function PricingPage() {
               <Card
                 className={`transition-all duration-300 hover:border-[var(--accent)] hover:shadow-lg hover:shadow-[var(--accent)]/10 ${
                   plan.popular
-                    ? "relative border-[var(--accent)] bg-gradient-to-br from-[var(--accent)] to-blue-500 text-white shadow-[0_0_24px_hsl(from_var(--accent)_h_s_l_/_0.22)]"
+                    ? "relative border-[var(--accent)] bg-gradient-to-br from-[var(--gradient-to)] to-[var(--gradient-from)] text-white shadow-[0_0_24px_hsl(from_var(--accent)_h_s_l_/_0.22)]"
                     : ""
                 }`}
               >

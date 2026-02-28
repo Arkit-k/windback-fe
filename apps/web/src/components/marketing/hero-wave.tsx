@@ -15,7 +15,7 @@ export function HeroWave() {
         src="/hero-ribbon.png"
         alt=""
         fill
-        quality={80}
+        quality={90}
         priority
         className="object-contain object-right-top scale-[1.6] origin-top-right"
         sizes="60vw"

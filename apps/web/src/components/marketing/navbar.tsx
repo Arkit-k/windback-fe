@@ -15,7 +15,7 @@ const navLinks = [
 
 function WindbackLogo() {
   return (
-    <span className="font-display text-xl font-semibold tracking-tight text-[var(--accent)] select-none">
+    <span id="navbar-logo" className="font-display text-xl font-semibold tracking-tight text-[var(--accent)] select-none">
       Windback<span className="text-[var(--accent)]">.</span>
     </span>
   );
@@ -71,7 +71,7 @@ export function Navbar() {
       <motion.nav
         className="fixed left-0 right-0 top-0 z-40 transition-[background-color,border-color,box-shadow] duration-300"
         style={{
-          backgroundColor: scrolled ? "#FFFFFF" : "transparent",
+          backgroundColor: scrolled ? "var(--surface-1)" : "transparent",
           backdropFilter: scrolled ? "blur(8px)" : "none",
           borderBottom: scrolled
             ? "1px solid var(--border)"
@@ -158,7 +158,7 @@ export function Navbar() {
               <Button
                 size="sm"
                 asChild
-                className="shadow-[0_0_16px_hsl(from_var(--accent)_h_s_l_/_0.3)] hover:shadow-[0_0_24px_hsl(from_var(--accent)_h_s_l_/_0.45)] transition-shadow duration-300"
+                className="bg-gradient-to-r from-[var(--gradient-to)] to-[var(--gradient-from)] border-0 text-white shadow-[0_2px_12px_rgba(75,63,199,0.4)] hover:shadow-[0_4px_20px_rgba(75,63,199,0.55)] hover:scale-[1.03] transition-all duration-200"
               >
                 <Link href="/register">Get Started</Link>
               </Button>

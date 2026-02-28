@@ -11,18 +11,21 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Zed Light Mode Tokens */
-  --surface-0: #FAFAF9;
+  /* Blue + Peach SaaS tokens */
+  --surface-0: #F6F8FF;
   --surface-1: #FFFFFF;
-  --surface-2: #F5F5F4;
-  --border-default: #E7E5E4;
-  --border-subtle: #F5F5F4;
-  --text-primary: #1C1917;
-  --text-secondary: #57534E;
-  --text-tertiary: #A8A29E;
-  --accent: #084CCF;
-  --accent-hover: #063BA3;
-  --accent-light: #E9F0FB;
+  --surface-2: #EEF2FF;
+  --border-default: #D1DCF5;
+  --border-subtle: #EEF2FF;
+  --text-primary: #0F1733;
+  --text-secondary: #4A5580;
+  --text-tertiary: #8B97C0;
+  --accent: #2563EB;
+  --accent-hover: #1D4ED8;
+  --accent-light: #EFF6FF;
+  /* Blue + Peach gradient */
+  --gradient-from: #FBAA8A;
+  --gradient-to: #2563EB;
 
   /* shadcn/ui CSS variables mapped to Zed tokens */
   --background: var(--surface-0);
@@ -47,7 +50,7 @@
   --radius: 0.25rem;
 
   /* Chart colors */
-  --chart-1: #084CCF;
+  --chart-1: #2563EB;
   --chart-2: #10B981;
   --chart-3: #F59E0B;
   --chart-4: #8B5CF6;
@@ -120,7 +123,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #084CCF;
+  background: #2563EB;
   border-radius: 3px;
 }
 

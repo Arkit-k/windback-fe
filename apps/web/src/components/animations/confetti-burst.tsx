@@ -14,13 +14,13 @@ interface ConfettiBurstProps {
 }
 
 const COLORS = [
-  "#6366f1", // indigo
-  "#22c55e", // green
-  "#f59e0b", // amber
-  "#ec4899", // pink
-  "#3b82f6", // blue
-  "#8b5cf6", // violet
-  "#14b8a6", // teal
+  "#2563EB", // blue
+  "#60A5FA", // light blue
+  "#FBAA8A", // peach
+  "#38BDF8", // sky
+  "#FDD0BC", // light peach
+  "#93C5FD", // blue-300
+  "#BFDBFE", // blue-200
 ];
 
 function randomBetween(min: number, max: number) {

@@ -17,30 +17,33 @@ import { HeroWave } from "@/components/marketing/hero-wave";
 export function HeroSection() {
   return (
     <>
-      {/* Ribbon visual */}
-      <div className="pointer-events-none absolute right-0 top-0 z-0 hidden h-[140vh] w-[55%] lg:block">
+      {/* Ribbon visual — left edge faded out so no hard seam */}
+      <div
+        className="pointer-events-none absolute right-0 top-0 z-0 hidden h-[140vh] w-[55%] lg:block"
+        style={{ maskImage: "linear-gradient(to right, transparent, white 18%)" }}
+      >
         <HeroWave />
       </div>
 
-      <section className="relative overflow-hidden">
+      <section className="relative">
         <FloatingParticles count={24} />
         <div className="pointer-events-none absolute left-1/4 top-16 -z-[1] h-[480px] w-[640px] -translate-x-1/2 opacity-[0.07] blur-[80px]" style={{ background: "radial-gradient(ellipse, var(--accent), transparent 70%)" }} />
 
         <motion.div
           className="pointer-events-none absolute -left-20 top-0 h-[500px] w-[500px] rounded-full blur-[120px]"
-          style={{ background: "radial-gradient(circle, hsl(from var(--accent) h s l / 0.35), transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, rgba(37, 99, 235, 0.3), transparent 70%)" }}
           animate={{ x: [0, 100, 40, 0], y: [0, 60, -30, 0], scale: [1, 1.2, 0.9, 1] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
           className="pointer-events-none absolute -right-20 top-12 h-[420px] w-[420px] rounded-full blur-[100px]"
-          style={{ background: "radial-gradient(circle, rgba(129, 140, 248, 0.3), transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, rgba(251, 170, 138, 0.3), transparent 70%)" }}
           animate={{ x: [0, -80, -20, 0], y: [0, 80, 10, 0], scale: [1, 0.85, 1.15, 1] }}
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
           className="pointer-events-none absolute left-1/3 -top-10 h-[350px] w-[350px] rounded-full blur-[100px]"
-          style={{ background: "radial-gradient(circle, rgba(96, 165, 250, 0.25), transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, rgba(96, 165, 250, 0.2), transparent 70%)" }}
           animate={{ x: [0, 60, -40, 0], y: [0, -40, 50, 0], scale: [1, 1.25, 0.8, 1] }}
           transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
         />
@@ -48,17 +51,6 @@ export function HeroSection() {
         <div className="mx-auto max-w-6xl px-4 pb-8 pt-24 sm:px-6 sm:pt-32">
           <div className="relative z-10">
             <div className="mx-auto max-w-xl text-center lg:mx-0 lg:text-left">
-              <FadeUp delay={0.1}>
-                <AnimatedBadge className="mb-6 mx-auto lg:mx-0">
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)] opacity-75" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--accent)]" />
-                  </span>
-                  <span className="bg-gradient-to-r from-[var(--accent)] via-blue-500 to-violet-500 bg-clip-text text-transparent">
-                    AI-Powered Churn Recovery
-                  </span>
-                </AnimatedBadge>
-              </FadeUp>
 
               <FadeUp delay={0.2}>
                 <h1 className="font-serif text-[2.75rem] leading-[1.08] tracking-tight text-foreground sm:text-5xl lg:text-[3.75rem]">
@@ -69,10 +61,10 @@ export function HeroSection() {
                     <RotatingWords
                       words={["Revenue", "Growth", "Customers"]}
                       interval={3000}
-                      className="bg-gradient-to-r from-[var(--accent)] to-blue-400 bg-clip-text text-transparent"
+                      className="text-[var(--accent)]"
                     />
                     <motion.span
-                      className="absolute -bottom-1 left-0 h-[3px] rounded-full bg-gradient-to-r from-[var(--accent)] to-blue-400"
+                      className="absolute -bottom-1 left-0 h-[3px] rounded-full bg-gradient-to-r from-[var(--gradient-from)] to-[var(--gradient-to)]"
                       initial={{ width: "0%" }}
                       animate={{ width: "100%" }}
                       transition={{ duration: 0.5, delay: 1, ease: "easeOut" }}
@@ -92,17 +84,10 @@ export function HeroSection() {
                 <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start lg:items-start">
                   <MagneticHover strength={0.12}>
                     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
-                      <Button size="lg" asChild className="relative overflow-hidden shadow-[0_0_20px_hsl(from_var(--accent)_h_s_l_/_0.25)] hover:shadow-[0_0_32px_hsl(from_var(--accent)_h_s_l_/_0.4)] transition-shadow duration-300">
+                      <Button size="lg" asChild>
                         <Link href="/register">
-                          <motion.span
-                            className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12"
-                            animate={{ x: ["-200%", "200%"] }}
-                            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", repeatDelay: 4 }}
-                          />
                           Start Free
-                          <motion.span className="inline-block ml-1" animate={{ x: [0, 3, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut", repeatDelay: 2 }}>
-                            <ArrowRight className="h-4 w-4" />
-                          </motion.span>
+                          <ArrowRight className="h-4 w-4" />
                         </Link>
                       </Button>
                     </motion.div>
