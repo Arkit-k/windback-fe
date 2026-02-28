@@ -3,8 +3,14 @@ import type { Metadata } from "next";
 import { BookOpen, Zap, Puzzle, Code2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Documentation — Windback",
-  description: "Windback documentation — guides, API reference, SDKs, and integrations.",
+  title: "Documentation",
+  description: "Windback docs — quickstart guide, Stripe/Razorpay/Paddle/Dodo Payments integration, SDK reference, and webhook setup.",
+  alternates: { canonical: "https://windback.io/docs" },
+  openGraph: {
+    title: "Windback Documentation",
+    description: "Quickstart guide, payment provider integrations, SDK reference, and webhook setup.",
+    url: "https://windback.io/docs",
+  },
 };
 
 const sections = [

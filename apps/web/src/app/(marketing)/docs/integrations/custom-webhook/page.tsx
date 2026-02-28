@@ -2,8 +2,10 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Custom Webhook — Windback Docs",
-  description: "Send churn events from any payment provider using Windback's generic webhook endpoint.",
+  title: "Custom Webhook Integration",
+  description: "Connect any payment provider to Windback using the generic webhook endpoint. Works with any billing system that can send HTTP webhooks.",
+  alternates: { canonical: "https://windback.io/docs/integrations/custom-webhook" },
+  openGraph: { title: "Custom Webhook — Windback", url: "https://windback.io/docs/integrations/custom-webhook" },
 };
 
 function Breadcrumb() {
