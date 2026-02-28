@@ -13,9 +13,9 @@ const PLAN_CONFIG: Record<
   string,
   { label: string; price: string; priceCents: number; eventsLimit: number; projectsLimit: number }
 > = {
-  starter: { label: "Starter", price: "Free", priceCents: 0, eventsLimit: 100, projectsLimit: 1 },
-  growth: { label: "Growth", price: "$29/mo", priceCents: 2900, eventsLimit: 5000, projectsLimit: 5 },
-  scale: { label: "Scale", price: "$99/mo", priceCents: 9900, eventsLimit: 50000, projectsLimit: 20 },
+  starter: { label: "Starter", price: "Free",    priceCents: 0,    eventsLimit: 50,  projectsLimit: 1  },
+  growth:  { label: "Growth",  price: "$29/mo",  priceCents: 2900, eventsLimit: 500, projectsLimit: 5  },
+  scale:   { label: "Scale",   price: "$99/mo",  priceCents: 9900, eventsLimit: -1,  projectsLimit: -1 },
 };
 
 type PaybackWidgetConfig = {
@@ -54,23 +54,24 @@ function UsageMeter({
   used: number;
   limit: number;
 }) {
-  const percent = limit > 0 ? Math.min((used / limit) * 100, 100) : 0;
-  const isNearLimit = percent >= 80;
+  const unlimited = limit <= 0;
+  const percent = unlimited ? 0 : Math.min((used / limit) * 100, 100);
+  const isNearLimit = !unlimited && percent >= 80;
 
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between text-sm">
         <span className="text-muted-foreground">{label}</span>
         <span className="font-medium text-foreground">
-          {used.toLocaleString()} / {limit.toLocaleString()}
+          {used.toLocaleString()} / {unlimited ? "Unlimited" : limit.toLocaleString()}
         </span>
       </div>
       <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
         <div
           className={`h-full rounded-full transition-all duration-500 ${
-            isNearLimit ? "bg-red-500" : "bg-[var(--accent)]"
+            unlimited ? "bg-[var(--accent)] opacity-30" : isNearLimit ? "bg-red-500" : "bg-[var(--accent)]"
           }`}
-          style={{ width: `${percent}%` }}
+          style={{ width: unlimited ? "100%" : `${percent}%` }}
         />
       </div>
     </div>
@@ -184,15 +185,15 @@ export default function BillingPage() {
           {
             title: "Events Used",
             value: usage
-              ? `${(usage.events_used ?? 0).toLocaleString()} / ${(usage.events_limit ?? 0).toLocaleString()}`
-              : "0 / 0",
+              ? `${(usage.events_used ?? 0).toLocaleString()} / ${(usage.events_limit ?? 0) <= 0 ? "Unlimited" : (usage.events_limit ?? 0).toLocaleString()}`
+              : "— / —",
             icon: Zap,
           },
           {
             title: "Projects Used",
             value: usage
-              ? `${usage.projects_used ?? 0} / ${usage.projects_limit ?? 0}`
-              : "0 / 0",
+              ? `${usage.projects_used ?? 0} / ${(usage.projects_limit ?? 0) <= 0 ? "Unlimited" : usage.projects_limit ?? 0}`
+              : "— / —",
             icon: FolderOpen,
           },
         ].map((stat, i) => (
@@ -268,8 +269,8 @@ export default function BillingPage() {
                     {config.price}
                   </p>
                   <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
-                    <li>{config.eventsLimit.toLocaleString()} events/mo</li>
-                    <li>{config.projectsLimit} projects</li>
+                    <li>{config.eventsLimit <= 0 ? "Unlimited" : config.eventsLimit.toLocaleString()} events/mo</li>
+                    <li>{config.projectsLimit <= 0 ? "Unlimited" : config.projectsLimit} projects</li>
                   </ul>
                   <div className="mt-4">
                     {isCurrent ? (
