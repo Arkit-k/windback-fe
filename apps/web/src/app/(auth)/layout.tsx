@@ -101,12 +101,16 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isLogin = pathname === "/login";
+  const isLogin = pathname.startsWith("/login");
   const content = isLogin ? loginContent : registerContent;
   const panelBackground = isLogin ? "/gradient-signin.jfif" : "/gradient-signup.jfif";
 
   return (
-    <div className="flex min-h-screen">
+    <div
+      className="relative flex min-h-screen bg-cover bg-center lg:bg-none"
+      style={{ backgroundImage: `url('${panelBackground}')` }}
+    >
+      <div className="absolute inset-0 bg-slate-900/25 lg:hidden" />
       {/* Left panel */}
       <div
         className="relative hidden lg:flex lg:w-1/2 flex-col justify-between bg-cover bg-center text-white p-12"
@@ -175,14 +179,14 @@ export default function AuthLayout({
       </div>
 
       {/* Right panel — form */}
-      <div className="flex w-full lg:w-1/2 flex-col items-center justify-center bg-background px-4 py-12">
+      <div className="relative z-10 flex w-full lg:w-1/2 flex-col items-center justify-center bg-transparent lg:bg-background px-4 py-12">
         <motion.div
           className="mb-8 lg:hidden"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
         >
-          <Link href="/" className="font-display text-2xl font-semibold text-[var(--accent)]">
+          <Link href="/" className="font-display text-2xl font-semibold text-white">
             Windback<span>.</span>
           </Link>
         </motion.div>

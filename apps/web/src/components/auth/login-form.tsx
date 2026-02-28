@@ -35,7 +35,7 @@ export function LoginForm() {
   }, [login.isError]);
 
   return (
-    <Card className="relative w-full max-w-md overflow-visible">
+    <Card className="relative w-full max-w-md overflow-visible border-0 bg-transparent text-white shadow-none lg:border lg:border-border/70 lg:bg-card lg:text-card-foreground lg:shadow-sm">
       <ConfettiBurst trigger={showSuccess} className="z-50" />
       <div className="mx-auto mb-2 hidden h-32 w-32 sm:-mt-16 sm:block">
         <RiveLoginCharacter
@@ -48,18 +48,19 @@ export function LoginForm() {
       </div>
       <CardHeader className="space-y-2 pt-0">
         <CardTitle className="text-3xl font-bold tracking-tight">Welcome back</CardTitle>
-        <CardDescription>
+        <CardDescription className="text-white/75 lg:text-muted-foreground">
           Sign in to access your dashboard.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-white/90 lg:text-foreground">Email</Label>
             <Input
               ref={emailRef}
               id="email"
               type="email"
+              className="border-white/25 bg-white/10 text-white placeholder:text-white/60 focus-visible:ring-white/40 lg:border-input lg:bg-background lg:text-foreground lg:placeholder:text-muted-foreground"
               placeholder="you@company.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -67,10 +68,11 @@ export function LoginForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="text-white/90 lg:text-foreground">Password</Label>
             <Input
               id="password"
               type="password"
+              className="border-white/25 bg-white/10 text-white placeholder:text-white/60 focus-visible:ring-white/40 lg:border-input lg:bg-background lg:text-foreground lg:placeholder:text-muted-foreground"
               placeholder="Your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -82,7 +84,7 @@ export function LoginForm() {
           <div className="flex justify-end">
             <Link
               href="/forgot-password"
-              className="text-sm text-muted-foreground hover:text-primary hover:underline"
+              className="text-sm text-white/80 hover:text-white hover:underline lg:text-muted-foreground lg:hover:text-primary"
             >
               Forgot password?
             </Link>
@@ -95,15 +97,15 @@ export function LoginForm() {
           </Button>
           <div className="relative my-2">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
+              <span className="w-full border-t border-white/20 lg:border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">or</span>
+              <span className="bg-transparent px-2 text-white/70 lg:bg-card lg:text-muted-foreground">or</span>
             </div>
           </div>
           <a
             href="/api/auth/oauth/google"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-0 lg:border-input lg:bg-background lg:text-foreground lg:ring-offset-background lg:hover:bg-accent lg:hover:text-accent-foreground lg:focus-visible:ring-ring lg:focus-visible:ring-offset-2"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24">
               <path
@@ -126,7 +128,7 @@ export function LoginForm() {
             Continue with Google
           </a>
         </form>
-        <p className="mt-4 text-center text-sm text-muted-foreground">
+        <p className="mt-4 text-center text-sm text-white/80 lg:text-muted-foreground">
           Don&apos;t have an account?{" "}
           <Link href="/register" className="text-primary hover:underline">
             Register
@@ -136,3 +138,4 @@ export function LoginForm() {
     </Card>
   );
 }
+
