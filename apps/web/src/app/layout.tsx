@@ -22,7 +22,7 @@ const instrumentSerif = Instrument_Serif({
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
+  metadataBase: SITE_URL ? new URL(SITE_URL) : undefined,
   title: {
     default: "Windback — AI-Powered Subscription Churn Recovery",
     template: "%s — Windback",
