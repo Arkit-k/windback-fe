@@ -13,18 +13,24 @@ import { RotatingWords } from "@/components/animations/rotating-words";
 import { AnimatedBadge } from "@/components/animations/animated-badge";
 import { FloatingParticles } from "@/components/animations/floating-particles";
 import { HeroWave } from "@/components/marketing/hero-wave";
+import { useAuth } from "@/hooks/use-auth";
 
-/** Wave + gradient blobs — always rendered, even during loading animation. */
+/** Ribbon only — rendered after loading completes. */
+export function HeroRibbon() {
+  return (
+    <div
+      className="pointer-events-none absolute right-0 top-0 z-0 hidden h-[135vh] w-[45%] lg:block"
+      style={{ maskImage: "linear-gradient(to right, transparent, white 18%), linear-gradient(to bottom, white 65%, transparent 100%)", WebkitMaskImage: "linear-gradient(to right, transparent, white 18%), linear-gradient(to bottom, white 65%, transparent 100%)", maskComposite: "intersect", WebkitMaskComposite: "source-in" }}
+    >
+      <HeroWave />
+    </div>
+  );
+}
+
+/** Gradient blobs only — always rendered, matches loading screen. */
 export function HeroBackground() {
   return (
     <>
-      {/* Ribbon visual */}
-      <div
-        className="pointer-events-none absolute right-0 top-0 z-0 hidden h-[135vh] w-[45%] lg:block"
-        style={{ maskImage: "linear-gradient(to right, transparent, white 18%), linear-gradient(to bottom, white 65%, transparent 100%)", WebkitMaskImage: "linear-gradient(to right, transparent, white 18%), linear-gradient(to bottom, white 65%, transparent 100%)", maskComposite: "intersect", WebkitMaskComposite: "source-in" }}
-      >
-        <HeroWave />
-      </div>
       {/* Peach glow — top left */}
       <motion.div
         className="pointer-events-none absolute -left-20 -top-10 h-[520px] w-[520px] rounded-full blur-[90px]"
@@ -44,6 +50,9 @@ export function HeroBackground() {
 }
 
 export function HeroSection() {
+  const { isAuthenticated } = useAuth();
+  const ctaHref = isAuthenticated ? "/dashboard/projects" : "/register";
+
   return (
     <section className="relative">
         <FloatingParticles count={24} />
@@ -85,7 +94,7 @@ export function HeroSection() {
                   <MagneticHover strength={0.12}>
                     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
                       <Button size="lg" asChild>
-                        <Link href="/register">
+                        <Link href={ctaHref}>
                           Start Free
                           <ArrowRight className="h-4 w-4" />
                         </Link>

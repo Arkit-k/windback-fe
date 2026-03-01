@@ -38,6 +38,7 @@ export default function EmailSenderPage() {
   const [domain, setDomain] = useState("");
   const [fromEmail, setFromEmail] = useState("");
   const [fromName, setFromName] = useState("");
+  const [replyTo, setReplyTo] = useState("");
   const [dnsRecords, setDnsRecords] = useState<DNSRecord[]>([]);
 
   useEffect(() => {
@@ -45,6 +46,7 @@ export default function EmailSenderPage() {
       if (config.custom_domain) setDomain(config.custom_domain);
       if (config.custom_from_email) setFromEmail(config.custom_from_email);
       if (config.custom_from_name) setFromName(config.custom_from_name);
+      if (config.custom_reply_to) setReplyTo(config.custom_reply_to);
       if (config.dns_records && config.dns_records.length > 0) {
         setDnsRecords(config.dns_records);
       }
@@ -87,7 +89,7 @@ export default function EmailSenderPage() {
   function handleInitDomain() {
     if (!domain || !fromEmail) return;
     initDomain.mutate(
-      { domain, from_email: fromEmail, from_name: fromName || undefined },
+      { domain, from_email: fromEmail, from_name: fromName || undefined, reply_to: replyTo || undefined },
       {
         onSuccess: (data) => {
           setDnsRecords(data.dns_records);
@@ -118,6 +120,7 @@ export default function EmailSenderPage() {
         setDomain("");
         setFromEmail("");
         setFromName("");
+        setReplyTo("");
         toast({ title: "Domain disconnected" });
       },
       onError: (e) => toast({ title: "Error", description: e.message, variant: "destructive" }),
@@ -263,12 +266,21 @@ export default function EmailSenderPage() {
                 onChange={(e) => setFromEmail(e.target.value)}
               />
             </div>
-            <div className="space-y-1.5 sm:col-span-2">
+            <div className="space-y-1.5">
               <Label>From Name (optional)</Label>
               <Input
                 placeholder="Your Name or Company"
                 value={fromName}
                 onChange={(e) => setFromName(e.target.value)}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Reply To (optional)</Label>
+              <Input
+                type="email"
+                placeholder="support@yourdomain.com"
+                value={replyTo}
+                onChange={(e) => setReplyTo(e.target.value)}
               />
             </div>
           </div>

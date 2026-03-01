@@ -5,8 +5,12 @@ import Link from "next/link";
 import { Button } from "@windback/ui";
 import { ArrowRight } from "lucide-react";
 import { ScrollReveal, MagneticHover, motion } from "@/components/animations/motion";
+import { useAuth } from "@/hooks/use-auth";
 
 export function CTASection() {
+  const { isAuthenticated } = useAuth();
+  const ctaHref = isAuthenticated ? "/dashboard/projects" : "/register";
+
   return (
     <section className="relative overflow-hidden rounded-t-[2rem] sm:rounded-t-[3rem] py-24 sm:py-28">
       {/* Background image */}
@@ -43,7 +47,7 @@ export function CTASection() {
                 <MagneticHover strength={0.12}>
                   <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
                     <Button size="lg" variant="secondary" asChild className="relative bg-white text-[var(--accent)] hover:bg-white/90 shadow-lg shadow-black/10 overflow-hidden">
-                      <Link href="/register">
+                      <Link href={ctaHref}>
                         <motion.span
                           className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -skew-x-12"
                           animate={{ x: ["-200%", "200%"] }}

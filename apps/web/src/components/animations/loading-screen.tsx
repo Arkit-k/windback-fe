@@ -51,9 +51,23 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
     <AnimatePresence>
       {phase !== "done" && (
         <motion.div
-          className="fixed inset-0 z-[9999] flex items-center justify-center"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-background"
           exit={{ opacity: 0, transition: { duration: 0.5, ease: "easeInOut" } }}
         >
+          {/* Ambient glow behind logo */}
+          <motion.div
+            className="pointer-events-none absolute"
+            style={{
+              width: 480,
+              height: 240,
+              borderRadius: "50%",
+              background: "radial-gradient(ellipse, rgba(37,99,235,0.18) 0%, rgba(251,170,138,0.12) 50%, transparent 70%)",
+              filter: "blur(40px)",
+            }}
+            animate={{ opacity: [0.5, 1, 0.5], scale: [0.95, 1.08, 0.95] }}
+            transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+          />
+
           <motion.div
             className="relative overflow-hidden origin-center"
             animate={
@@ -79,7 +93,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
               Windback<span>.</span>
             </motion.span>
 
-            {/* Shimmer — text shine: narrow bright band sweeps left→right→left */}
+            {/* Shimmer — narrow bright band sweeps left→right repeatedly */}
             <motion.div
               className="pointer-events-none absolute inset-0 -skew-x-12"
               style={{

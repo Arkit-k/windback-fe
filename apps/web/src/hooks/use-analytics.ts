@@ -5,6 +5,8 @@ import { apiClient } from "@/lib/api-client";
 import { QUERY_KEYS, STALE_TIMES } from "@/lib/constants";
 import type { EmailAnalytics, RecoveryTrend } from "@/types/api";
 
+interface ApiResponse<T> { data: T; }
+
 export function useEmailAnalytics(slug: string, from?: string, to?: string) {
   const queryParams = new URLSearchParams();
   if (from) queryParams.set("from", from);
@@ -15,7 +17,10 @@ export function useEmailAnalytics(slug: string, from?: string, to?: string) {
 
   return useQuery<EmailAnalytics>({
     queryKey: QUERY_KEYS.emailAnalytics(slug, from, to),
-    queryFn: () => apiClient<EmailAnalytics>(path),
+    queryFn: async () => {
+      const res = await apiClient<ApiResponse<EmailAnalytics>>(path);
+      return res.data;
+    },
     staleTime: STALE_TIMES.emailAnalytics,
     enabled: !!slug,
   });

@@ -22,6 +22,7 @@ import {
   usePaymentFailures,
   usePaymentFailureStats,
 } from "@/hooks/use-payment-failures";
+import { useEmailConfig } from "@/hooks/use-email-config";
 import {
   PAYMENT_FAILURE_STATUS_LABELS,
   ITEMS_PER_PAGE,
@@ -34,7 +35,9 @@ import {
   CheckCircle2,
   DollarSign,
   TrendingUp,
+  MailWarning,
 } from "lucide-react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 
 const statusOptions = [
@@ -54,8 +57,12 @@ function FailedPaymentsContent() {
   const page = parseInt(searchParams.get("page") || "1", 10);
 
   const { data, isLoading } = usePaymentFailures(slug, { status, page });
-  const { data: stats, isLoading: statsLoading } =
-    usePaymentFailureStats(slug);
+  const { data: stats, isLoading: statsLoading } = usePaymentFailureStats(slug);
+  const { data: emailConfig } = useEmailConfig(slug);
+
+  const emailReady =
+    (emailConfig?.method === "gmail_oauth" && !!emailConfig?.gmail_sender_email) ||
+    (emailConfig?.method === "custom_domain" && emailConfig?.domain_verified === true);
 
   function updateParams(updates: Record<string, string>) {
     const params = new URLSearchParams(searchParams.toString());
@@ -83,6 +90,24 @@ function FailedPaymentsContent() {
           Track and recover failed payments with automated dunning emails.
         </p>
       </div>
+
+      {/* Email sender warning */}
+      {emailConfig !== undefined && !emailReady && (
+        <div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300">
+          <MailWarning className="mt-0.5 h-4 w-4 shrink-0" />
+          <div>
+            <span className="font-medium">Dunning emails are paused.</span>{" "}
+            Failed payment recovery emails require your own email sender. Configure a verified custom domain or connect Gmail in{" "}
+            <Link
+              href={`/dashboard/p/${slug}/settings/email`}
+              className="underline underline-offset-2 font-medium hover:text-amber-700 dark:hover:text-amber-200"
+            >
+              Email Sender settings
+            </Link>
+            .
+          </div>
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

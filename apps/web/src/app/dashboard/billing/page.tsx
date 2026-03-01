@@ -76,7 +76,7 @@ function UsageMeter({ label, used, limit }: { label: string; used: number; limit
 // Cancel Insights — why users are leaving Windback
 // ---------------------------------------------------------------------------
 function CancelInsights({ stats, isLoading }: { stats?: CancelSurveyStats; isLoading: boolean }) {
-  const maxCount = stats && stats.reasons.length > 0 ? stats.reasons[0].count : 1;
+  const maxCount = stats?.reasons?.length > 0 ? stats.reasons[0].count : 1;
 
   return (
     <Card>
@@ -103,7 +103,7 @@ function CancelInsights({ stats, isLoading }: { stats?: CancelSurveyStats; isLoa
 
             {/* Reason breakdown */}
             <div className="space-y-3">
-              {stats.reasons.map((r) => (
+              {(stats?.reasons ?? []).map((r) => (
                 <div key={r.reason} className="space-y-1">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-foreground">{r.reason}</span>
@@ -122,13 +122,13 @@ function CancelInsights({ stats, isLoading }: { stats?: CancelSurveyStats; isLoa
             </div>
 
             {/* Recent free-text responses */}
-            {stats.recent.some((e) => e.custom_reason) && (
+            {stats?.recent?.some((e) => e.custom_reason) && (
               <div className="border-t border-border pt-4">
                 <p className="mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                   Recent written feedback
                 </p>
                 <div className="space-y-2">
-                  {stats.recent
+                  {(stats?.recent ?? [])
                     .filter((e) => e.custom_reason)
                     .slice(0, 8)
                     .map((e, i) => (

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button, Input, Label, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@windback/ui";
 import { useAuth } from "@/hooks/use-auth";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { RiveLoginCharacter } from "@/components/animations/rive-login-character";
 import { ConfettiBurst } from "@/components/animations/confetti-burst";
 
@@ -14,7 +15,14 @@ export function LoginForm() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showFail, setShowFail] = useState(false);
   const emailRef = useRef<HTMLInputElement>(null);
-  const { login } = useAuth();
+  const { login, isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.replace("/dashboard/projects");
+    }
+  }, [isAuthenticated, isLoading, router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

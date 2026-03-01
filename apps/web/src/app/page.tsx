@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Navbar } from "@/components/marketing/navbar";
 import { Footer } from "@/components/marketing/footer";
 import { LoadingScreen } from "@/components/animations/loading-screen";
-import { HeroBackground } from "@/components/marketing/hero-section";
+import { HeroBackground, HeroRibbon } from "@/components/marketing/hero-section";
 
 const HeroSection = dynamic(() => import("@/components/marketing/hero-section").then((m) => m.HeroSection));
 const LogoCloud = dynamic(() => import("@/components/marketing/logo-cloud").then((m) => m.LogoCloud));
@@ -50,10 +50,20 @@ export default function LandingPage() {
           <Navbar />
         </motion.div>
 
-        {/* Hero background (wave + blobs) always visible — matches loading screen exactly */}
+        {/* Blobs always visible — matches loading screen exactly */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <HeroBackground />
         </div>
+
+        {/* Ribbon — only appears after loading completes */}
+        <motion.div
+          className="pointer-events-none absolute inset-0 overflow-hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: loaded ? 1 : 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+        >
+          <HeroRibbon />
+        </motion.div>
 
         <Reveal loaded={loaded} delay={0.1}>
           <HeroSection />
