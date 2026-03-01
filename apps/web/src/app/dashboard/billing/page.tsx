@@ -76,7 +76,7 @@ function UsageMeter({ label, used, limit }: { label: string; used: number; limit
 // Cancel Insights — why users are leaving Windback
 // ---------------------------------------------------------------------------
 function CancelInsights({ stats, isLoading }: { stats?: CancelSurveyStats; isLoading: boolean }) {
-  const maxCount = stats?.reasons?.length > 0 ? stats.reasons[0].count : 1;
+  const maxCount = (stats?.reasons?.length ?? 0) > 0 ? stats!.reasons[0].count : 1;
 
   return (
     <Card>
