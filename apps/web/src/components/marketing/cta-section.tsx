@@ -11,7 +11,7 @@ export function CTASection() {
     <section className="relative overflow-hidden rounded-t-[2rem] sm:rounded-t-[3rem] py-24 sm:py-28">
       {/* Background image */}
       <Image
-        src="/cta-nice.jfif"
+        src="/newcta.png"
         alt=""
         fill
         className="object-cover object-[center_70%]"
