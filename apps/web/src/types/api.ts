@@ -66,6 +66,19 @@ export interface CreateProjectRequest {
   support_email: string;
 }
 
+export interface CreateProjectResponse {
+  project: Project;
+  raw_public_key: string;
+  raw_secret_key: string;
+}
+
+export interface APIKeyInfo {
+  id: string;
+  key_type: "public" | "secret";
+  key_masked: string;
+  created_at: string;
+}
+
 export interface UpdateProjectRequest {
   name?: string;
   product_type?: string;
@@ -115,6 +128,21 @@ export interface ChurnEventListResponse {
   total: number;
   limit: number;
   offset: number;
+}
+
+export interface CreateChurnEventRequest {
+  customer_email: string;
+  provider: string;
+  mrr: number;
+  currency: string;
+  customer_name?: string;
+  provider_customer_id?: string;
+  provider_subscription_id?: string;
+  plan_name?: string;
+  tenure_days?: number;
+  cancel_reason?: string;
+  cancel_reason_text?: string;
+  notes?: string;
 }
 
 export interface ChurnStats {
@@ -246,6 +274,24 @@ export interface PortalResponse {
   url: string;
 }
 
+export interface CancelSurveyReasonStat {
+  reason: string;
+  count: number;
+  percent: number;
+}
+
+export interface CancelSurveyEntry {
+  reason: string;
+  custom_reason?: string;
+  created_at: string;
+}
+
+export interface CancelSurveyStats {
+  total: number;
+  reasons: CancelSurveyReasonStat[];
+  recent: CancelSurveyEntry[];
+}
+
 // Analytics types
 
 export interface DailyEmailStat {
@@ -313,6 +359,114 @@ export interface UpdateDunningConfigRequest {
   retry_interval_hours: number;
   tone_sequence: string[];
   custom_from_name?: string;
+}
+
+// Email config types
+
+export type EmailMethod = "windback_default" | "gmail_oauth" | "custom_domain";
+
+export interface DNSRecord {
+  type: string;
+  host: string;
+  value: string;
+}
+
+export interface ProjectEmailConfig {
+  id?: string;
+  project_id: string;
+  method: EmailMethod;
+  sender_display_name?: string;
+  gmail_sender_email?: string;
+  custom_domain?: string;
+  custom_from_email?: string;
+  custom_from_name?: string;
+  dns_records?: DNSRecord[];
+  domain_verified: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface SetEmailMethodRequest {
+  method: EmailMethod;
+}
+
+export interface InitDomainAuthRequest {
+  domain: string;
+  from_email: string;
+  from_name?: string;
+}
+
+export interface InitDomainAuthResponse {
+  dns_records: DNSRecord[];
+}
+
+export interface GmailAuthURLResponse {
+  url: string;
+}
+
+// Notification config types
+
+export interface NotificationConfig {
+  id?: string;
+  project_id: string;
+  slack_webhook_url: string | null;
+  slack_enabled: boolean;
+  custom_webhook_url: string | null;
+  custom_webhook_secret_preview: string;
+  custom_webhook_enabled: boolean;
+  notify_churn_created: boolean;
+  notify_churn_recovered: boolean;
+  notify_payment_failed: boolean;
+  notify_payment_recovered: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface UpdateNotificationConfigRequest {
+  slack_webhook_url: string | null;
+  slack_enabled: boolean;
+  custom_webhook_url: string | null;
+  custom_webhook_enabled: boolean;
+  notify_churn_created: boolean;
+  notify_churn_recovered: boolean;
+  notify_payment_failed: boolean;
+  notify_payment_recovered: boolean;
+}
+
+// Stripe Connect types
+
+export interface StripeConnectStatus {
+  connected: boolean;
+  account_id: string | null;
+}
+
+// Recovery template types
+
+export interface RecoveryTemplate {
+  id: string;
+  project_id: string;
+  cancel_reason: string;
+  name: string;
+  subject: string;
+  body: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateTemplateRequest {
+  cancel_reason: string;
+  name: string;
+  subject: string;
+  body: string;
+  is_active: boolean;
+}
+
+export interface UpdateTemplateRequest {
+  name?: string;
+  subject?: string;
+  body?: string;
+  is_active?: boolean;
 }
 
 // Recovery trends types

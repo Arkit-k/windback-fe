@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
@@ -9,7 +11,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/dashboard/", "/api/", "/onboarding/"],
       },
     ],
-    sitemap: "https://windback.io/sitemap.xml",
-    host: "https://windback.io",
+    sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
   };
 }

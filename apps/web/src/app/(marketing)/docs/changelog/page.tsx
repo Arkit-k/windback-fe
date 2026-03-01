@@ -18,6 +18,18 @@ function Breadcrumb() {
 
 const entries = [
   {
+    version: "1.5.0",
+    date: "March 1, 2026",
+    title: "Email Review, Approval Flow & Custom Templates",
+    changes: [
+      "Edit variant — modify the AI-generated subject or body before sending directly from the event detail page",
+      "Approval UX — when auto-send is off, an amber banner highlights which email is waiting for your review and the recommended variant is visually marked",
+      "Custom email templates — write your own winback email per cancel reason (too_expensive, missing_features, etc.); active templates bypass AI generation entirely",
+      "Template variable substitution — use {{customer_name}}, {{customer_email}}, {{plan_name}}, {{cancel_reason}} in subject and body",
+      "SDK v0.3.0 — Node.js, Python, Go SDKs and the MCP server now expose updateVariant, listTemplates, createTemplate, updateTemplate, and deleteTemplate",
+    ],
+  },
+  {
     version: "1.4.0",
     date: "February 10, 2026",
     title: "Paddle Integration & Email Analytics",

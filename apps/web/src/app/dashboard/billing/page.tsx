@@ -1,59 +1,49 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@windback/ui";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Button,
+  Textarea,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  toast,
+} from "@windback/ui";
 import { StatCard } from "@/components/dashboard/stat-card";
-import { useUsage, useCheckout, usePortal } from "@/hooks/use-billing";
+import { useUsage, useCheckout, usePortal, useCancelSubscription, useCancelSurveyStats } from "@/hooks/use-billing";
 import { useAuth } from "@/hooks/use-auth";
-import { CreditCard, Package, FolderOpen, Zap } from "lucide-react";
+import { CreditCard, Package, FolderOpen, Zap, TrendingDown } from "lucide-react";
+import type { CancelSurveyStats } from "@/types/api";
 import { motion } from "framer-motion";
 
 const PLAN_CONFIG: Record<
   string,
   { label: string; price: string; priceCents: number; eventsLimit: number; projectsLimit: number }
 > = {
-  starter: { label: "Starter", price: "Free",    priceCents: 0,    eventsLimit: 50,  projectsLimit: 1  },
-  growth:  { label: "Growth",  price: "$29/mo",  priceCents: 2900, eventsLimit: 500, projectsLimit: 5  },
-  scale:   { label: "Scale",   price: "$99/mo",  priceCents: 9900, eventsLimit: -1,  projectsLimit: -1 },
+  starter: { label: "Starter", price: "Free",   priceCents: 0,    eventsLimit: 50,  projectsLimit: 1  },
+  growth:  { label: "Growth",  price: "$29/mo", priceCents: 2900, eventsLimit: 500, projectsLimit: 5  },
+  scale:   { label: "Scale",   price: "$99/mo", priceCents: 9900, eventsLimit: -1,  projectsLimit: -1 },
 };
 
-type PaybackWidgetConfig = {
-  customerEmail?: string;
-  customerName?: string;
-  provider?: string;
-  planName?: string;
-  mrr?: number;
-  currency?: string;
-  tenureDays?: number;
-};
+const CANCEL_REASONS = [
+  "It's too expensive",
+  "I'm not using it enough",
+  "Missing features I need",
+  "Switching to another tool",
+  "Too difficult to set up or use",
+] as const;
 
-type PaybackWidgetCallbacks = {
-  onSuccess?: (response: unknown) => void;
-  onError?: (error: string) => void;
-  onDismiss?: () => void;
-};
+type CancelReason = (typeof CANCEL_REASONS)[number] | "other";
 
-type PaybackWidget = {
-  init: (opts: { publicKey: string; baseURL?: string }) => void;
-  showCancelForm: (customerData: PaybackWidgetConfig, callbacks?: PaybackWidgetCallbacks) => void;
-};
-
-declare global {
-  interface Window {
-    Payback?: PaybackWidget;
-  }
-}
-
-function UsageMeter({
-  label,
-  used,
-  limit,
-}: {
-  label: string;
-  used: number;
-  limit: number;
-}) {
+function UsageMeter({ label, used, limit }: { label: string; used: number; limit: number }) {
   const unlimited = limit <= 0;
   const percent = unlimited ? 0 : Math.min((used / limit) * 100, 100);
   const isNearLimit = !unlimited && percent >= 80;
@@ -69,7 +59,11 @@ function UsageMeter({
       <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
         <div
           className={`h-full rounded-full transition-all duration-500 ${
-            unlimited ? "bg-[var(--accent)] opacity-30" : isNearLimit ? "bg-red-500" : "bg-[var(--accent)]"
+            unlimited
+              ? "bg-[var(--accent)] opacity-30"
+              : isNearLimit
+                ? "bg-red-500"
+                : "bg-[var(--accent)]"
           }`}
           style={{ width: unlimited ? "100%" : `${percent}%` }}
         />
@@ -78,82 +72,251 @@ function UsageMeter({
   );
 }
 
+// ---------------------------------------------------------------------------
+// Cancel Insights — why users are leaving Windback
+// ---------------------------------------------------------------------------
+function CancelInsights({ stats, isLoading }: { stats?: CancelSurveyStats; isLoading: boolean }) {
+  const maxCount = stats && stats.reasons.length > 0 ? stats.reasons[0].count : 1;
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center gap-2">
+          <TrendingDown className="h-4 w-4 text-muted-foreground" />
+          <CardTitle>Why Users Leave</CardTitle>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {isLoading ? (
+          <div className="space-y-3">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="h-8 animate-pulse rounded bg-secondary" />
+            ))}
+          </div>
+        ) : !stats || stats.total === 0 ? (
+          <p className="text-sm text-muted-foreground">No cancellation data yet.</p>
+        ) : (
+          <>
+            <p className="text-sm text-muted-foreground">
+              Based on <span className="font-medium text-foreground">{stats.total}</span> cancellation{stats.total !== 1 ? "s" : ""}.
+            </p>
+
+            {/* Reason breakdown */}
+            <div className="space-y-3">
+              {stats.reasons.map((r) => (
+                <div key={r.reason} className="space-y-1">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-foreground">{r.reason}</span>
+                    <span className="tabular-nums text-muted-foreground">
+                      {r.count} &mdash; {r.percent.toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
+                    <div
+                      className="h-full rounded-full bg-[var(--accent)] transition-all duration-500"
+                      style={{ width: `${(r.count / maxCount) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Recent free-text responses */}
+            {stats.recent.some((e) => e.custom_reason) && (
+              <div className="border-t border-border pt-4">
+                <p className="mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  Recent written feedback
+                </p>
+                <div className="space-y-2">
+                  {stats.recent
+                    .filter((e) => e.custom_reason)
+                    .slice(0, 8)
+                    .map((e, i) => (
+                      <div
+                        key={i}
+                        className="rounded-md border border-border bg-secondary/40 px-3 py-2 text-sm"
+                      >
+                        <p className="text-foreground">&ldquo;{e.custom_reason}&rdquo;</p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {e.reason} &middot;{" "}
+                          {new Date(e.created_at).toLocaleDateString(undefined, {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </p>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Cancel Survey Dialog
+// ---------------------------------------------------------------------------
+function CancelSurveyDialog({
+  open,
+  onOpenChange,
+  onConfirm,
+  isPending,
+}: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  onConfirm: (reason: string, customReason: string) => void;
+  isPending: boolean;
+}) {
+  const [selected, setSelected] = useState<CancelReason | "">("");
+  const [customReason, setCustomReason] = useState("");
+
+  const canSubmit = selected !== "" && (selected !== "other" || customReason.trim() !== "");
+
+  function handleSubmit() {
+    if (!canSubmit) return;
+    const reason = selected === "other" ? "Other" : (selected as string);
+    onConfirm(reason, customReason.trim());
+  }
+
+  function handleClose(v: boolean) {
+    if (!v) {
+      setSelected("");
+      setCustomReason("");
+    }
+    onOpenChange(v);
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Before you go — what&apos;s the reason?</DialogTitle>
+          <DialogDescription>
+            Help us improve by telling us why you&apos;re cancelling. Your subscription stays
+            active until the end of the billing period.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-2 py-2">
+          {CANCEL_REASONS.map((reason) => (
+            <label
+              key={reason}
+              className={`flex cursor-pointer items-center gap-3 rounded-md border px-4 py-3 text-sm transition-colors ${
+                selected === reason
+                  ? "border-[var(--accent)] bg-[var(--accent-light)] text-[var(--accent)]"
+                  : "border-border text-foreground hover:bg-secondary"
+              }`}
+            >
+              <input
+                type="radio"
+                name="cancel-reason"
+                value={reason}
+                checked={selected === reason}
+                onChange={() => setSelected(reason)}
+                className="accent-[var(--accent)]"
+              />
+              {reason}
+            </label>
+          ))}
+
+          {/* Other */}
+          <label
+            className={`flex cursor-pointer items-center gap-3 rounded-md border px-4 py-3 text-sm transition-colors ${
+              selected === "other"
+                ? "border-[var(--accent)] bg-[var(--accent-light)] text-[var(--accent)]"
+                : "border-border text-foreground hover:bg-secondary"
+            }`}
+          >
+            <input
+              type="radio"
+              name="cancel-reason"
+              value="other"
+              checked={selected === "other"}
+              onChange={() => setSelected("other")}
+              className="accent-[var(--accent)]"
+            />
+            Other — write your own reason
+          </label>
+
+          {/* Free-text — always visible for extra context, required only for "Other" */}
+          <Textarea
+            placeholder={
+              selected === "other"
+                ? "Tell us what's missing or what went wrong…"
+                : "Anything else you'd like us to know? (optional)"
+            }
+            value={customReason}
+            onChange={(e) => setCustomReason(e.target.value)}
+            rows={3}
+            className="mt-1 resize-none text-sm"
+          />
+        </div>
+
+        <DialogFooter className="gap-2 sm:gap-0">
+          <Button variant="outline" onClick={() => handleClose(false)} disabled={isPending}>
+            Keep my subscription
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={handleSubmit}
+            disabled={!canSubmit || isPending}
+          >
+            {isPending ? "Cancelling…" : "Cancel subscription"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
 export default function BillingPage() {
   const searchParams = useSearchParams();
   const { data: usage, isLoading } = useUsage();
-  const { user } = useAuth();
+  const { data: cancelStats, isLoading: cancelStatsLoading } = useCancelSurveyStats();
   const checkout = useCheckout();
   const portal = usePortal();
-  const [widgetReady, setWidgetReady] = useState(false);
+  const cancelSubscription = useCancelSubscription();
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 
   const successParam = searchParams.get("success");
   const cancelParam = searchParams.get("cancel");
 
   const currentPlan = usage?.plan_tier ?? "starter";
   const planConfig = PLAN_CONFIG[currentPlan] ?? PLAN_CONFIG.starter;
-  const paybackBaseURL = process.env.NEXT_PUBLIC_BACKEND_URL || "https://api.windbackai.com";
-  const paybackPublicKey = process.env.NEXT_PUBLIC_PAYBACK_PUBLIC_KEY || "";
 
-  useEffect(() => {
-    if (!paybackPublicKey) return;
-
-    const existing = document.querySelector<HTMLScriptElement>('script[data-payback-widget="true"]');
-    if (existing && window.Payback) {
-      window.Payback.init({ publicKey: paybackPublicKey, baseURL: paybackBaseURL });
-      setWidgetReady(true);
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.src = `${paybackBaseURL}/widget.js`;
-    script.async = true;
-    script.dataset.paybackWidget = "true";
-    script.onload = () => {
-      if (!window.Payback) return;
-      window.Payback.init({ publicKey: paybackPublicKey, baseURL: paybackBaseURL });
-      setWidgetReady(true);
-    };
-    document.body.appendChild(script);
-  }, [paybackBaseURL, paybackPublicKey]);
-
-  const cancelFlowPayload = useMemo(
-    () => ({
-      customerEmail: user?.email || "",
-      customerName: user?.name || "",
-      provider: "custom",
-      planName: planConfig.label,
-      mrr: planConfig.priceCents,
-      currency: "USD",
-      tenureDays: 0,
-    }),
-    [planConfig.label, planConfig.priceCents, user?.email, user?.name],
-  );
-
-  function handleManageSubscription() {
-    if (!paybackPublicKey || !widgetReady || !window.Payback) {
-      portal.mutate();
-      return;
-    }
-
-    window.Payback.showCancelForm(cancelFlowPayload, {
-      onSuccess: () => portal.mutate(),
-      // Never block subscription management if cancel-flow API has transient issues.
-      onError: () => portal.mutate(),
-    });
+  function handleConfirmCancel(reason: string, customReason: string) {
+    cancelSubscription.mutate(
+      { reason, custom_reason: customReason },
+      {
+        onSuccess: () => {
+          setCancelDialogOpen(false);
+          toast({
+            title: "Subscription cancelled",
+            description: "You'll keep access until the end of your billing period.",
+          });
+        },
+        onError: (e) => {
+          toast({ title: "Failed to cancel", description: e.message, variant: "destructive" });
+        },
+      },
+    );
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-foreground">
-          Billing
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Manage your subscription and usage.
-        </p>
+        <h1 className="font-display text-2xl font-semibold text-foreground">Billing</h1>
+        <p className="text-sm text-muted-foreground">Manage your subscription and usage.</p>
       </div>
 
-      {/* Success / Cancel Messages */}
+      {/* Success / checkout-cancel banners */}
       {successParam === "true" && (
         <motion.div
           initial={{ opacity: 0, y: -8 }}
@@ -173,15 +336,10 @@ export default function BillingPage() {
         </motion.div>
       )}
 
-      {/* Current Plan */}
+      {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {[
-          {
-            title: "Current Plan",
-            value: planConfig.label,
-            subtitle: planConfig.price,
-            icon: Package,
-          },
+          { title: "Current Plan", value: planConfig.label, subtitle: planConfig.price, icon: Package },
           {
             title: "Events Used",
             value: usage
@@ -192,7 +350,7 @@ export default function BillingPage() {
           {
             title: "Projects Used",
             value: usage
-              ? `${usage.projects_used ?? 0} / ${(usage.projects_limit ?? 0) <= 0 ? "Unlimited" : usage.projects_limit ?? 0}`
+              ? `${usage.projects_used ?? 0} / ${(usage.projects_limit ?? 0) <= 0 ? "Unlimited" : (usage.projects_limit ?? 0)}`
               : "— / —",
             icon: FolderOpen,
           },
@@ -221,20 +379,11 @@ export default function BillingPage() {
             </div>
           ) : usage ? (
             <>
-              <UsageMeter
-                label="Events"
-                used={usage.events_used ?? 0}
-                limit={usage.events_limit ?? 0}
-              />
-              <UsageMeter
-                label="Projects"
-                used={usage.projects_used ?? 0}
-                limit={usage.projects_limit ?? 0}
-              />
+              <UsageMeter label="Events" used={usage.events_used ?? 0} limit={usage.events_limit ?? 0} />
+              <UsageMeter label="Projects" used={usage.projects_used ?? 0} limit={usage.projects_limit ?? 0} />
               {usage.billing_period_start && (
                 <p className="text-xs text-muted-foreground">
-                  Billing period started{" "}
-                  {new Date(usage.billing_period_start).toLocaleDateString()}
+                  Billing period started {new Date(usage.billing_period_start).toLocaleDateString()}
                 </p>
               )}
             </>
@@ -242,7 +391,7 @@ export default function BillingPage() {
         </CardContent>
       </Card>
 
-      {/* Plan Selection */}
+      {/* Plans */}
       <Card>
         <CardHeader>
           <CardTitle>Plans</CardTitle>
@@ -257,17 +406,11 @@ export default function BillingPage() {
                 <div
                   key={tier}
                   className={`rounded-lg border p-4 transition-colors ${
-                    isCurrent
-                      ? "border-[var(--accent)] bg-[var(--accent-light)]"
-                      : "border-border"
+                    isCurrent ? "border-[var(--accent)] bg-[var(--accent-light)]" : "border-border"
                   }`}
                 >
-                  <h3 className="font-display text-lg font-semibold text-foreground">
-                    {config.label}
-                  </h3>
-                  <p className="mt-1 font-display text-2xl font-bold text-foreground">
-                    {config.price}
-                  </p>
+                  <h3 className="font-display text-lg font-semibold text-foreground">{config.label}</h3>
+                  <p className="mt-1 font-display text-2xl font-bold text-foreground">{config.price}</p>
                   <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
                     <li>{config.eventsLimit <= 0 ? "Unlimited" : config.eventsLimit.toLocaleString()} events/mo</li>
                     <li>{config.projectsLimit <= 0 ? "Unlimited" : config.projectsLimit} projects</li>
@@ -300,22 +443,44 @@ export default function BillingPage() {
           <CardHeader>
             <CardTitle>Manage Subscription</CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="mb-4 text-sm text-muted-foreground">
-              Update payment method, view invoices, or cancel your subscription
-              via the Stripe customer portal.
-            </p>
-            <button
-              onClick={handleManageSubscription}
-              disabled={portal.isPending}
-              className="inline-flex items-center gap-2 rounded-sm border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-50"
-            >
-              <CreditCard className="h-4 w-4" />
-              {portal.isPending ? "Redirecting..." : "Manage Subscription"}
-            </button>
+          <CardContent className="space-y-4">
+            <div>
+              <p className="mb-3 text-sm text-muted-foreground">
+                Update your payment method or view past invoices.
+              </p>
+              <Button variant="outline" onClick={() => portal.mutate()} disabled={portal.isPending}>
+                <CreditCard className="mr-2 h-4 w-4" />
+                {portal.isPending ? "Redirecting…" : "Billing Portal"}
+              </Button>
+            </div>
+
+            <div className="border-t border-border pt-4">
+              <p className="mb-1 text-sm font-medium text-foreground">Cancel subscription</p>
+              <p className="mb-3 text-xs text-muted-foreground">
+                You&apos;ll keep access until the end of your current billing period.
+              </p>
+              <Button
+                variant="outline"
+                className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950/30"
+                onClick={() => setCancelDialogOpen(true)}
+              >
+                Cancel Subscription
+              </Button>
+            </div>
           </CardContent>
         </Card>
       )}
+
+      {/* Churn Insights — reason breakdown */}
+      <CancelInsights stats={cancelStats} isLoading={cancelStatsLoading} />
+
+      {/* Cancel Survey Dialog */}
+      <CancelSurveyDialog
+        open={cancelDialogOpen}
+        onOpenChange={setCancelDialogOpen}
+        onConfirm={handleConfirmCancel}
+        isPending={cancelSubscription.isPending}
+      />
     </div>
   );
 }

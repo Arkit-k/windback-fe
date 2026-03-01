@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
 import { QUERY_KEYS, STALE_TIMES } from "@/lib/constants";
-import type { Project, CreateProjectRequest, UpdateProjectRequest } from "@/types/api";
+import type { Project, CreateProjectRequest, CreateProjectResponse, UpdateProjectRequest, APIKeyInfo } from "@/types/api";
 
 interface ApiResponse<T> {
   data: T;
@@ -36,9 +36,9 @@ export function useProject(slug: string) {
 export function useCreateProject() {
   const queryClient = useQueryClient();
 
-  return useMutation<Project, Error, CreateProjectRequest>({
+  return useMutation<CreateProjectResponse, Error, CreateProjectRequest>({
     mutationFn: async (body) => {
-      const res = await apiClient<ApiResponse<Project>>("projects", {
+      const res = await apiClient<ApiResponse<CreateProjectResponse>>("projects", {
         method: "POST",
         body,
       });
@@ -46,6 +46,44 @@ export function useCreateProject() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.projects });
+    },
+  });
+}
+
+export function useAPIKeys(slug: string) {
+  return useQuery<APIKeyInfo[]>({
+    queryKey: ["api-keys", slug],
+    queryFn: async () => {
+      const res = await apiClient<ApiResponse<APIKeyInfo[]>>(`projects/${slug}/api-keys`);
+      return res.data;
+    },
+    enabled: !!slug,
+  });
+}
+
+export function useAutoSend(slug: string) {
+  return useQuery<boolean>({
+    queryKey: ["auto-send", slug],
+    queryFn: async () => {
+      const res = await apiClient<ApiResponse<{ auto_send_emails: boolean }>>(`projects/${slug}/auto-send`);
+      return res.data.auto_send_emails;
+    },
+    enabled: !!slug,
+  });
+}
+
+export function useUpdateAutoSend(slug: string) {
+  const queryClient = useQueryClient();
+  return useMutation<boolean, Error, boolean>({
+    mutationFn: async (autoSend) => {
+      const res = await apiClient<ApiResponse<{ auto_send_emails: boolean }>>(`projects/${slug}/auto-send`, {
+        method: "PATCH",
+        body: { auto_send_emails: autoSend },
+      });
+      return res.data.auto_send_emails;
+    },
+    onSuccess: (value) => {
+      queryClient.setQueryData(["auto-send", slug], value);
     },
   });
 }

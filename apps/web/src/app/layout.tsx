@@ -19,7 +19,7 @@ const instrumentSerif = Instrument_Serif({
   display: "swap",
 });
 
-const SITE_URL = "https://windback.io";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -81,28 +81,30 @@ export const metadata: Metadata = {
   },
 };
 
+const SUPPORT_EMAIL = process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "";
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Windback";
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://windback.io/#organization",
-      name: "Windback",
-      url: "https://windback.io",
-      sameAs: ["https://windbackai.com"],
+      "@id": `${SITE_URL}/#organization`,
+      name: APP_NAME,
+      url: SITE_URL,
       contactPoint: {
         "@type": "ContactPoint",
-        email: "support@windbackai.com",
+        email: SUPPORT_EMAIL,
         contactType: "customer support",
       },
     },
     {
       "@type": "SoftwareApplication",
-      "@id": "https://windback.io/#software",
-      name: "Windback",
+      "@id": `${SITE_URL}/#software`,
+      name: APP_NAME,
       applicationCategory: "BusinessApplication",
       operatingSystem: "Web",
-      url: "https://windback.io",
+      url: SITE_URL,
       description:
         "AI-powered subscription churn recovery platform. Detects cancellations and failed payments from Stripe, Razorpay, Paddle, and Dodo Payments, then generates personalized recovery emails and smart dunning sequences.",
       offers: [
