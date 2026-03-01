@@ -103,6 +103,7 @@ export function HeroSection() {
               </FadeUp>
             </div>
           </div>
+
         </div>
     </section>
   );
