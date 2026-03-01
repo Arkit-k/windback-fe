@@ -88,9 +88,9 @@ export function MetricsStrip() {
         </motion.p>
       </div>
 
-      {/* Full-width image */}
+      {/* Full-width image with centered logo overlay */}
       <motion.div
-        className="w-full overflow-hidden h-[340px]"
+        className="relative w-full overflow-hidden h-[340px]"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -104,6 +104,18 @@ export function MetricsStrip() {
           className="w-full h-full object-cover object-center"
           priority={false}
         />
+        {/* Centered logo */}
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <span className="font-display text-5xl font-semibold tracking-tight text-[var(--accent)] select-none">
+            Windback<span className="text-[var(--accent)]">.</span>
+          </span>
+        </motion.div>
       </motion.div>
 
       {/* Below image — heading (left) + description (right) */}

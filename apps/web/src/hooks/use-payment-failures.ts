@@ -30,10 +30,12 @@ export function usePaymentFailures(
 
   return useQuery<PaymentFailureListResponse>({
     queryKey: QUERY_KEYS.paymentFailures(slug, params),
-    queryFn: () =>
-      apiClient<PaymentFailureListResponse>(
+    queryFn: async () => {
+      const res = await apiClient<ApiResponse<PaymentFailureListResponse>>(
         `projects/${slug}/payment-failures?${queryString}`,
-      ),
+      );
+      return res.data;
+    },
     staleTime: STALE_TIMES.paymentFailures,
     enabled: !!slug,
   });

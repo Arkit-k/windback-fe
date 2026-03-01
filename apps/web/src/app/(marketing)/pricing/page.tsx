@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ScrollReveal } from "@/components/animations/motion";
 import { FloatingParticles } from "@/components/animations/floating-particles";
 import { useState } from "react";
+import { useAuth } from "@/hooks/use-auth";
 
 const plans = [
   {
@@ -154,6 +155,13 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 
 export default function PricingPage() {
   const [annual, setAnnual] = useState(false);
+  const { isAuthenticated } = useAuth();
+
+  function getPlanHref(planName: string) {
+    if (!isAuthenticated) return "/register";
+    if (planName === "Starter") return "/dashboard/projects";
+    return "/dashboard/billing";
+  }
 
   return (
     <div className="relative py-20">
@@ -324,7 +332,7 @@ export default function PricingPage() {
                     variant={plan.popular ? "secondary" : "default"}
                     asChild
                   >
-                    <Link href="/register">{plan.cta}</Link>
+                    <Link href={getPlanHref(plan.name)}>{plan.cta}</Link>
                   </Button>
                 </CardContent>
               </Card>

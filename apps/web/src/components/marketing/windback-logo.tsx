@@ -7,7 +7,7 @@
  * with a return-arrow icon integrated into the mark —
  * communicating "winding back lost revenue".
  */
-export function WindbackLogo({ size = "default" }: { size?: "sm" | "default" | "lg" }) {
+export function WindbackLogo({ size = "default", variant = "default" }: { size?: "sm" | "default" | "lg"; variant?: "default" | "light" }) {
   const sizes = {
     sm: { text: "text-lg", icon: 16, gap: "gap-1.5", dot: "h-1 w-1" },
     default: { text: "text-xl", icon: 18, gap: "gap-2", dot: "h-1.5 w-1.5" },
@@ -46,7 +46,7 @@ export function WindbackLogo({ size = "default" }: { size?: "sm" | "default" | "
         <span className="text-[var(--accent)]" style={{ fontFamily: "var(--font-sans)" }}>
           Wind
         </span>
-        <span className="text-foreground" style={{ fontFamily: "var(--font-sans)" }}>
+        <span className={variant === "light" ? "text-white" : "text-foreground"} style={{ fontFamily: "var(--font-sans)" }}>
           back
         </span>
       </span>

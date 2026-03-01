@@ -380,6 +380,7 @@ export interface ProjectEmailConfig {
   custom_domain?: string;
   custom_from_email?: string;
   custom_from_name?: string;
+  custom_reply_to?: string;
   dns_records?: DNSRecord[];
   domain_verified: boolean;
   created_at?: string;
@@ -394,6 +395,7 @@ export interface InitDomainAuthRequest {
   domain: string;
   from_email: string;
   from_name?: string;
+  reply_to?: string;
 }
 
 export interface InitDomainAuthResponse {
@@ -467,6 +469,19 @@ export interface UpdateTemplateRequest {
   subject?: string;
   body?: string;
   is_active?: boolean;
+}
+
+export interface SystemRecoveryTemplate {
+  id: string;
+  cancel_reason: string;
+  strategy: string;
+  tier_required: "starter" | "growth" | "scale";
+  name: string;
+  subject: string;
+  body: string;
+  sort_order: number;
+  locked: boolean;
+  active_for_project: boolean;
 }
 
 // Recovery trends types

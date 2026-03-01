@@ -5,6 +5,8 @@ import { apiClient } from "@/lib/api-client";
 import { QUERY_KEYS, STALE_TIMES, ITEMS_PER_PAGE } from "@/lib/constants";
 import type { ChurnEvent, ChurnEventListResponse, RecoveryVariant, CreateChurnEventRequest } from "@/types/api";
 
+interface ApiResponse<T> { data: T; }
+
 interface UpdateVariantRequest {
   subject: string;
   body: string;
@@ -20,7 +22,10 @@ export function useChurnEvents(slug: string, params: { status?: string; page?: n
 
   return useQuery<ChurnEventListResponse>({
     queryKey: QUERY_KEYS.churnEvents(slug, params),
-    queryFn: () => apiClient<ChurnEventListResponse>(`projects/${slug}/churn-events?${queryString}`),
+    queryFn: async () => {
+      const res = await apiClient<ApiResponse<ChurnEventListResponse>>(`projects/${slug}/churn-events?${queryString}`);
+      return res.data;
+    },
     staleTime: STALE_TIMES.churnEvents,
     enabled: !!slug,
   });
@@ -29,7 +34,10 @@ export function useChurnEvents(slug: string, params: { status?: string; page?: n
 export function useChurnEvent(slug: string, id: string) {
   return useQuery<ChurnEvent>({
     queryKey: QUERY_KEYS.churnEvent(slug, id),
-    queryFn: () => apiClient<ChurnEvent>(`projects/${slug}/churn-events/${id}`),
+    queryFn: async () => {
+      const res = await apiClient<ApiResponse<ChurnEvent>>(`projects/${slug}/churn-events/${id}`);
+      return res.data;
+    },
     staleTime: STALE_TIMES.churnEvent,
     enabled: !!slug && !!id,
   });
@@ -92,8 +100,10 @@ export function useCreateChurnEvent(slug: string) {
   const queryClient = useQueryClient();
 
   return useMutation<ChurnEvent, Error, CreateChurnEventRequest>({
-    mutationFn: (body) =>
-      apiClient<ChurnEvent>(`projects/${slug}/churn-events`, { method: "POST", body }),
+    mutationFn: async (body) => {
+      const res = await apiClient<ApiResponse<ChurnEvent>>(`projects/${slug}/churn-events`, { method: "POST", body });
+      return res.data;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.churnEvents(slug) });
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.stats(slug) });

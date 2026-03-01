@@ -6,6 +6,7 @@ import { Button } from "@windback/ui";
 import { useState, useEffect, useCallback } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence, useMotionValueEvent, useScroll } from "framer-motion";
+import { useAuth } from "@/hooks/use-auth";
 const navLinks = [
   { href: "/#features", label: "Features", section: "features" },
   { href: "/#how-it-works", label: "How it Works", section: "how-it-works" },
@@ -27,6 +28,7 @@ export function Navbar() {
   const [activeSection, setActiveSection] = useState("");
   const pathname = usePathname();
   const { scrollY } = useScroll();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 20);
@@ -137,32 +139,54 @@ export function Navbar() {
           </div>
 
           <div className="hidden items-center gap-3 md:flex">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.3 }}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/login">Log in</Link>
-              </Button>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.45, duration: 0.3 }}
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
-            >
-              <Button
-                size="sm"
-                asChild
-                className="bg-gradient-to-r from-[var(--gradient-to)] to-[var(--gradient-from)] border-0 text-white shadow-[0_2px_12px_rgba(75,63,199,0.4)] hover:shadow-[0_4px_20px_rgba(75,63,199,0.55)] hover:scale-[1.03] transition-all duration-200"
-              >
-                <Link href="/register">Get Started</Link>
-              </Button>
-            </motion.div>
+            {!authLoading && (
+              isAuthenticated ? (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.4, duration: 0.3 }}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                >
+                  <Button
+                    size="sm"
+                    asChild
+                    className="bg-gradient-to-r from-[var(--gradient-to)] to-[var(--gradient-from)] border-0 text-white shadow-[0_2px_12px_rgba(75,63,199,0.4)] hover:shadow-[0_4px_20px_rgba(75,63,199,0.55)] transition-all duration-200"
+                  >
+                    <Link href="/dashboard/projects">Dashboard</Link>
+                  </Button>
+                </motion.div>
+              ) : (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.4, duration: 0.3 }}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    <Button variant="ghost" size="sm" asChild>
+                      <Link href="/login">Log in</Link>
+                    </Button>
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.45, duration: 0.3 }}
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.96 }}
+                  >
+                    <Button
+                      size="sm"
+                      asChild
+                      className="bg-gradient-to-r from-[var(--gradient-to)] to-[var(--gradient-from)] border-0 text-white shadow-[0_2px_12px_rgba(75,63,199,0.4)] hover:shadow-[0_4px_20px_rgba(75,63,199,0.55)] hover:scale-[1.03] transition-all duration-200"
+                    >
+                      <Link href="/register">Get Started</Link>
+                    </Button>
+                  </motion.div>
+                </>
+              )
+            )}
           </div>
 
           {/* Mobile toggle */}
@@ -220,12 +244,20 @@ export function Navbar() {
                   ))}
                 </div>
                 <div className="mt-3 flex flex-col gap-2">
-                  <Button variant="outline" asChild>
-                    <Link href="/login">Log in</Link>
-                  </Button>
-                  <Button asChild>
-                    <Link href="/register">Get Started</Link>
-                  </Button>
+                  {isAuthenticated ? (
+                    <Button asChild>
+                      <Link href="/dashboard/projects">Dashboard</Link>
+                    </Button>
+                  ) : (
+                    <>
+                      <Button variant="outline" asChild>
+                        <Link href="/login">Log in</Link>
+                      </Button>
+                      <Button asChild>
+                        <Link href="/register">Get Started</Link>
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </motion.div>
