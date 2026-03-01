@@ -84,10 +84,15 @@ export function Footer() {
 
   return (
     <footer className="relative border-t border-border bg-card overflow-hidden">
-      {/* Centered half-circular gradient glow at bottom */}
+      {/* Peach glow — bottom left */}
       <div
-        className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 h-[600px] w-[900px]"
-        style={{ background: "radial-gradient(ellipse at center, rgba(37,99,235,0.5) 0%, rgba(96,165,250,0.28) 30%, rgba(191,219,254,0.12) 55%, transparent 75%)" }}
+        className="pointer-events-none absolute -bottom-10 -left-10 h-[300px] w-[500px] blur-[60px]"
+        style={{ background: "radial-gradient(ellipse at bottom left, #FBAA8A 0%, rgba(251,170,138,0.6) 40%, transparent 70%)" }}
+      />
+      {/* Blue glow — bottom right */}
+      <div
+        className="pointer-events-none absolute -bottom-10 -right-10 h-[300px] w-[500px] blur-[60px]"
+        style={{ background: "radial-gradient(ellipse at bottom right, #2563EB 0%, rgba(37,99,235,0.6) 40%, transparent 70%)" }}
       />
       {/* Subtle gradient accent at top */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--accent)]/20 to-transparent" />
