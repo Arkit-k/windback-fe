@@ -14,41 +14,41 @@ import { AnimatedBadge } from "@/components/animations/animated-badge";
 import { FloatingParticles } from "@/components/animations/floating-particles";
 import { HeroWave } from "@/components/marketing/hero-wave";
 
-export function HeroSection() {
+/** Wave + gradient blobs — always rendered, even during loading animation. */
+export function HeroBackground() {
   return (
     <>
-      {/* Ribbon visual — left edge faded out so no hard seam */}
+      {/* Ribbon visual */}
       <div
-        className="pointer-events-none absolute right-0 top-0 z-0 hidden h-[140vh] w-[55%] lg:block"
-        style={{ maskImage: "linear-gradient(to right, transparent, white 18%)" }}
+        className="pointer-events-none absolute right-0 top-0 z-0 hidden h-[135vh] w-[45%] lg:block"
+        style={{ maskImage: "linear-gradient(to right, transparent, white 18%), linear-gradient(to bottom, white 65%, transparent 100%)", WebkitMaskImage: "linear-gradient(to right, transparent, white 18%), linear-gradient(to bottom, white 65%, transparent 100%)", maskComposite: "intersect", WebkitMaskComposite: "source-in" }}
       >
         <HeroWave />
       </div>
+      {/* Peach glow — top left */}
+      <motion.div
+        className="pointer-events-none absolute -left-20 -top-10 h-[520px] w-[520px] rounded-full blur-[90px]"
+        style={{ background: "radial-gradient(circle, rgba(251,170,138,0.65) 0%, rgba(251,170,138,0.25) 50%, transparent 70%)" }}
+        animate={{ x: [0, 80, 30, 0], y: [0, 60, -20, 0], scale: [1, 1.15, 0.92, 1] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      />
+      {/* Blue glow — top right */}
+      <motion.div
+        className="pointer-events-none absolute -right-20 -top-10 h-[520px] w-[520px] rounded-full blur-[90px]"
+        style={{ background: "radial-gradient(circle, rgba(37,99,235,0.65) 0%, rgba(37,99,235,0.25) 50%, transparent 70%)" }}
+        animate={{ x: [0, -80, -20, 0], y: [0, 70, 10, 0], scale: [1, 0.88, 1.18, 1] }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+      />
+    </>
+  );
+}
 
-      <section className="relative">
+export function HeroSection() {
+  return (
+    <section className="relative">
         <FloatingParticles count={24} />
-        <div className="pointer-events-none absolute left-1/4 top-16 -z-[1] h-[480px] w-[640px] -translate-x-1/2 opacity-[0.07] blur-[80px]" style={{ background: "radial-gradient(ellipse, var(--accent), transparent 70%)" }} />
 
-        <motion.div
-          className="pointer-events-none absolute -left-20 top-0 h-[500px] w-[500px] rounded-full blur-[120px]"
-          style={{ background: "radial-gradient(circle, rgba(37, 99, 235, 0.3), transparent 70%)" }}
-          animate={{ x: [0, 100, 40, 0], y: [0, 60, -30, 0], scale: [1, 1.2, 0.9, 1] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="pointer-events-none absolute -right-20 top-12 h-[420px] w-[420px] rounded-full blur-[100px]"
-          style={{ background: "radial-gradient(circle, rgba(251, 170, 138, 0.3), transparent 70%)" }}
-          animate={{ x: [0, -80, -20, 0], y: [0, 80, 10, 0], scale: [1, 0.85, 1.15, 1] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="pointer-events-none absolute left-1/3 -top-10 h-[350px] w-[350px] rounded-full blur-[100px]"
-          style={{ background: "radial-gradient(circle, rgba(96, 165, 250, 0.2), transparent 70%)" }}
-          animate={{ x: [0, 60, -40, 0], y: [0, -40, 50, 0], scale: [1, 1.25, 0.8, 1] }}
-          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        <div className="mx-auto max-w-6xl px-4 pb-8 pt-24 sm:px-6 sm:pt-32">
+        <div className="mx-auto max-w-6xl px-4 pb-8 pt-40 sm:px-6 sm:pt-48">
           <div className="relative z-10">
             <div className="mx-auto max-w-xl text-center lg:mx-0 lg:text-left">
 
@@ -104,7 +104,6 @@ export function HeroSection() {
             </div>
           </div>
         </div>
-      </section>
-    </>
+    </section>
   );
 }

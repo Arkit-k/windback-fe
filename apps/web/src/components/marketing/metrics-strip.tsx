@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -81,11 +82,12 @@ const metrics = [
 
 export function MetricsStrip() {
   return (
-    <section className="relative overflow-hidden bg-background py-20">
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-        {/* Section header */}
+    <section className="relative overflow-hidden pt-16 pb-20">
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 pb-3">
+
+        {/* Row 1 — heading */}
         <motion.p
-          className="mb-12 text-center text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground"
+          className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -94,39 +96,52 @@ export function MetricsStrip() {
           Trusted by SaaS teams worldwide
         </motion.p>
 
+      </div>
+
+      {/* Row 2 — edge-to-edge image */}
+      <motion.div
+        className="w-full overflow-hidden h-[340px]"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+      >
+        <Image
+          src="/stats.jfif"
+          alt="Payback platform"
+          width={1920}
+          height={600}
+          className="w-full h-full object-cover object-center"
+          priority={false}
+        />
+      </motion.div>
+
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+        {/* Row 3 — stats, right-aligned */}
         <motion.div
-          className="grid grid-cols-2 gap-px lg:grid-cols-4"
+          className="mt-10 flex flex-wrap justify-end gap-x-10 gap-y-8"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-40px" }}
           variants={{
-            visible: { transition: { staggerChildren: 0.12 } },
+            visible: { transition: { staggerChildren: 0.1 } },
           }}
         >
           {metrics.map((metric, i) => (
             <motion.div
               key={metric.label}
-              className="group relative px-6 py-4 text-center lg:px-8 cursor-default"
+              className="group relative cursor-default text-right"
               variants={{
-                hidden: { opacity: 0, y: 24 },
+                hidden: { opacity: 0, y: 20 },
                 visible: { opacity: 1, y: 0 },
               }}
-              transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-              whileHover={{ y: -4, transition: { type: "spring", stiffness: 300, damping: 20 } }}
+              transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+              whileHover={{ y: -3, transition: { type: "spring", stiffness: 300, damping: 20 } }}
             >
-              {/* Vertical divider */}
+              {/* Vertical divider — shown between items */}
               {i > 0 && (
-                <div className="absolute left-0 top-1/2 hidden h-16 w-px -translate-y-1/2 bg-border lg:block" />
+                <div className="absolute -left-5 top-1/2 hidden h-10 w-px -translate-y-1/2 bg-border sm:block" />
               )}
-
-              {/* Icon */}
-              <motion.div
-                className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-sm bg-[var(--accent-light)]"
-                whileHover={{ scale: 1.15, rotate: 5 }}
-                transition={{ type: "spring", stiffness: 400, damping: 15 }}
-              >
-                <metric.icon className="h-4.5 w-4.5 text-[var(--accent)]" />
-              </motion.div>
 
               {/* Number */}
               <motion.div
@@ -149,11 +164,12 @@ export function MetricsStrip() {
               </motion.div>
 
               {/* Label */}
-              <p className="mt-2 text-sm font-medium text-foreground">{metric.label}</p>
+              <p className="mt-1 text-sm font-medium text-foreground">{metric.label}</p>
               <p className="mt-0.5 text-xs text-muted-foreground transition-colors duration-200 group-hover:text-foreground">{metric.sublabel}</p>
             </motion.div>
           ))}
         </motion.div>
+
       </div>
     </section>
   );
