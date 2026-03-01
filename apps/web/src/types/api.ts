@@ -4,7 +4,8 @@ export type ChurnEventStatus =
   | "variants_generated"
   | "email_sent"
   | "recovered"
-  | "lost";
+  | "lost"
+  | "offer_accepted";
 
 export type RecoveryStrategy =
   | "value_recap"
@@ -482,6 +483,35 @@ export interface SystemRecoveryTemplate {
   sort_order: number;
   locked: boolean;
   active_for_project: boolean;
+}
+
+// Retention offer types
+
+export type OfferType = "discount" | "pause" | "downgrade" | "custom";
+
+export interface RetentionOffer {
+  id: string;
+  project_id: string;
+  cancel_reason: string;
+  offer_type: OfferType;
+  title: string;
+  description: string;
+  cta_text: string;
+  discount_percent?: number;
+  pause_days?: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UpsertRetentionOfferRequest {
+  offer_type: OfferType;
+  title: string;
+  description: string;
+  cta_text?: string;
+  discount_percent?: number;
+  pause_days?: number;
+  is_active?: boolean;
 }
 
 // Recovery trends types

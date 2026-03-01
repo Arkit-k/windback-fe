@@ -24,6 +24,7 @@ export const QUERY_KEYS = {
   stripeConnectStatus: (slug: string) => ["stripe-connect-status", slug] as const,
   recoveryTrends: (slug: string, days?: number) =>
     ["recovery-trends", slug, { days }] as const,
+  retentionOffers: (slug: string) => ["retention-offers", slug] as const,
 } as const;
 
 export const STALE_TIMES = {
@@ -42,6 +43,7 @@ export const STALE_TIMES = {
   emailConfig: 60 * 1000,
   notificationConfig: 60 * 1000,
   recoveryTrends: 60 * 1000,
+  retentionOffers: 30 * 1000,
 } as const;
 
 export const STATUS_LABELS: Record<string, string> = {
@@ -51,6 +53,7 @@ export const STATUS_LABELS: Record<string, string> = {
   email_sent: "Email Sent",
   recovered: "Recovered",
   lost: "Lost",
+  offer_accepted: "Offer Accepted",
 };
 
 export const STRATEGY_LABELS: Record<string, string> = {
