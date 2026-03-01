@@ -55,12 +55,12 @@ export default function LandingPage() {
           <HeroBackground />
         </div>
 
-        {/* Ribbon — only appears after loading completes */}
+        {/* Ribbon — appears in sync with hero buttons/text */}
         <motion.div
           className="pointer-events-none absolute inset-0 overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: loaded ? 1 : 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
+          transition={{ duration: 1.1, delay: 0.5 }}
         >
           <HeroRibbon />
         </motion.div>
