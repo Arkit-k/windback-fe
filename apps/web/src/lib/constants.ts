@@ -1,5 +1,5 @@
 export const COOKIE_NAME = "windback_token";
-export const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:3000";
+export const BACKEND_URL = process.env.BACKEND_URL ?? "";
 
 export const QUERY_KEYS = {
   auth: ["auth", "me"] as const,
@@ -19,6 +19,9 @@ export const QUERY_KEYS = {
     ["email-analytics", slug, { from, to }] as const,
   team: (slug: string) => ["team", slug] as const,
   dunningConfig: (slug: string) => ["dunning-config", slug] as const,
+  emailConfig: (slug: string) => ["email-config", slug] as const,
+  notificationConfig: (slug: string) => ["notification-config", slug] as const,
+  stripeConnectStatus: (slug: string) => ["stripe-connect-status", slug] as const,
   recoveryTrends: (slug: string, days?: number) =>
     ["recovery-trends", slug, { days }] as const,
 } as const;
@@ -36,6 +39,8 @@ export const STALE_TIMES = {
   emailAnalytics: 60 * 1000,
   team: 30 * 1000,
   dunningConfig: 60 * 1000,
+  emailConfig: 60 * 1000,
+  notificationConfig: 60 * 1000,
   recoveryTrends: 60 * 1000,
 } as const;
 
@@ -74,3 +79,27 @@ export const DUNNING_TONE_LABELS: Record<string, string> = {
 };
 
 export const ITEMS_PER_PAGE = 20;
+
+export const CANCEL_REASON_LABELS: Record<string, string> = {
+  too_expensive: "Too Expensive",
+  missing_features: "Missing Features",
+  not_using_enough: "Not Using Enough",
+  switching_competitor: "Switching to Competitor",
+  technical_issues: "Technical Issues",
+  poor_support: "Poor Support",
+  dont_need_anymore: "Don't Need Anymore",
+  other: "Other",
+};
+
+export const PROVIDER_LABELS: Record<string, string> = {
+  stripe: "Stripe",
+  razorpay: "Razorpay",
+  paypal: "PayPal",
+  wise: "Wise",
+  paddle: "Paddle",
+  polar: "Polar",
+  dodo: "Dodo",
+  chargebee: "Chargebee",
+  lemonsqueezy: "LemonSqueezy",
+  custom: "Custom",
+};

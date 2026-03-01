@@ -126,8 +126,27 @@ export default function SDKsPage() {
           ))}
         </div>
 
+        {/* MCP callout */}
+        <div className="mt-12 rounded-lg border border-violet-200 bg-violet-50 p-5">
+          <div className="flex items-start gap-3">
+            <svg className="mt-0.5 h-5 w-5 shrink-0 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+            </svg>
+            <div>
+              <p className="text-sm font-semibold text-violet-900">Prefer natural language over code?</p>
+              <p className="mt-0.5 text-sm text-violet-700">
+                The{" "}
+                <Link href="/docs/mcp" className="underline hover:text-violet-900">
+                  Payback MCP Server
+                </Link>
+                {" "}lets Claude Desktop, Cursor, and any MCP-compatible AI client query your churn data and trigger recovery actions — no SDK required.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Next Steps */}
-        <div className="mt-16 rounded-lg border border-border bg-card p-6">
+        <div className="mt-8 rounded-lg border border-border bg-card p-6">
           <h2 className="font-display text-lg font-semibold text-foreground">
             Next Steps
           </h2>
@@ -137,6 +156,12 @@ export default function SDKsPage() {
                 Quickstart Guide
               </Link>
               <span className="text-sm text-muted-foreground"> — End-to-end setup walkthrough</span>
+            </li>
+            <li>
+              <Link href="/docs/mcp" className="text-sm text-[var(--accent)] hover:underline">
+                MCP Server
+              </Link>
+              <span className="text-sm text-muted-foreground"> — Use Claude Desktop or Cursor instead of code</span>
             </li>
             <li>
               <Link href="/docs/integrations/stripe" className="text-sm text-[var(--accent)] hover:underline">

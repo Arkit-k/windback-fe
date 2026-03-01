@@ -35,6 +35,9 @@ import {
   Users,
   RefreshCw,
   UserRound,
+  Mail,
+  Bell,
+  FileText,
 } from "lucide-react";
 
 
@@ -73,6 +76,9 @@ export function Sidebar() {
         { href: `/dashboard/p/${currentSlug}/settings/allowed-origins`, label: "Allowed Origins", icon: Globe },
         { href: `/dashboard/p/${currentSlug}/settings/team`, label: "Team", icon: Users },
         { href: `/dashboard/p/${currentSlug}/settings/dunning`, label: "Dunning", icon: RefreshCw },
+        { href: `/dashboard/p/${currentSlug}/settings/email`, label: "Email Sender", icon: Mail },
+        { href: `/dashboard/p/${currentSlug}/settings/notifications`, label: "Notifications", icon: Bell },
+        { href: `/dashboard/p/${currentSlug}/settings/templates`, label: "Templates", icon: FileText },
       ]
     : [
         { href: "/dashboard/settings/profile", label: "Profile", icon: UserRound },

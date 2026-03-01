@@ -3,7 +3,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
 import { QUERY_KEYS, STALE_TIMES, ITEMS_PER_PAGE } from "@/lib/constants";
-import type { ChurnEvent, ChurnEventListResponse, RecoveryVariant } from "@/types/api";
+import type { ChurnEvent, ChurnEventListResponse, RecoveryVariant, CreateChurnEventRequest } from "@/types/api";
+
+interface UpdateVariantRequest {
+  subject: string;
+  body: string;
+}
 
 export function useChurnEvents(slug: string, params: { status?: string; page?: number }) {
   const queryParams = new URLSearchParams();
@@ -55,6 +60,21 @@ export function useSendVariant(slug: string, eventId: string) {
   });
 }
 
+export function useUpdateVariant(slug: string, eventId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation<void, Error, { variantId: string; subject: string; body: string }>({
+    mutationFn: ({ variantId, subject, body }) =>
+      apiClient(`projects/${slug}/churn-events/${eventId}/variants/${variantId}`, {
+        method: "PATCH",
+        body: { subject, body } satisfies UpdateVariantRequest,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.churnEvent(slug, eventId) });
+    },
+  });
+}
+
 export function useMarkRecovered(slug: string, eventId: string) {
   const queryClient = useQueryClient();
 
@@ -65,5 +85,28 @@ export function useMarkRecovered(slug: string, eventId: string) {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.churnEvent(slug, eventId) });
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.stats(slug) });
     },
+  });
+}
+
+export function useCreateChurnEvent(slug: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation<ChurnEvent, Error, CreateChurnEventRequest>({
+    mutationFn: (body) =>
+      apiClient<ChurnEvent>(`projects/${slug}/churn-events`, { method: "POST", body }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.churnEvents(slug) });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.stats(slug) });
+    },
+  });
+}
+
+export function useRotateAPIKey(slug: string) {
+  return useMutation<{ key: string; message: string }, Error, { key_type: "secret" | "public" }>({
+    mutationFn: (body) =>
+      apiClient<{ key: string; message: string }>(`projects/${slug}/api-keys/rotate`, {
+        method: "POST",
+        body,
+      }),
   });
 }

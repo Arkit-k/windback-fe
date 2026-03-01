@@ -3,7 +3,7 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
 import { QUERY_KEYS, STALE_TIMES } from "@/lib/constants";
-import type { UsageInfo, CheckoutResponse, PortalResponse } from "@/types/api";
+import type { UsageInfo, CheckoutResponse, PortalResponse, CancelSurveyStats } from "@/types/api";
 
 export function useUsage() {
   return useQuery<UsageInfo>({
@@ -35,5 +35,27 @@ export function usePortal() {
     onSuccess: (data) => {
       window.location.href = data.url;
     },
+  });
+}
+
+export function useCancelSurveyStats() {
+  return useQuery<CancelSurveyStats>({
+    queryKey: ["billing", "cancel-surveys"],
+    queryFn: () => apiClient<CancelSurveyStats>("billing/cancel-surveys"),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+}
+
+export function useCancelSubscription() {
+  return useMutation<
+    { status: string; message: string },
+    Error,
+    { reason: string; custom_reason?: string }
+  >({
+    mutationFn: (body) =>
+      apiClient("billing/cancel", {
+        method: "POST",
+        body,
+      }),
   });
 }

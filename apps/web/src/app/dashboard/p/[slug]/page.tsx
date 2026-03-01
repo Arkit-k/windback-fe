@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@windback/ui";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { EventsTable } from "@/components/dashboard/events-table";
+import { IntegrationGuide } from "@/components/dashboard/integration-guide";
 import { useCurrentProject } from "@/providers/project-provider";
 import { useStats } from "@/hooks/use-stats";
 import { useChurnEvents } from "@/hooks/use-churn-events";
@@ -112,19 +113,32 @@ export default function ProjectOverviewPage() {
         </div>
       </div>
 
-      {/* Recent Events */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Events</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <EventsTable
-            events={events?.data?.slice(0, 10) ?? []}
-            isLoading={eventsLoading}
-            projectSlug={slug}
-          />
-        </CardContent>
-      </Card>
+      {/* Integration guide — shown until first event arrives */}
+      {!statsLoading && (stats?.total_events ?? 0) === 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.4 }}
+        >
+          <IntegrationGuide projectSlug={slug} />
+        </motion.div>
+      )}
+
+      {/* Recent Events — shown once at least one event exists */}
+      {(stats?.total_events ?? 0) > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Events</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <EventsTable
+              events={events?.data?.slice(0, 10) ?? []}
+              isLoading={eventsLoading}
+              projectSlug={slug}
+            />
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

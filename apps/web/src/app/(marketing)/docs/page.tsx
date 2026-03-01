@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { BookOpen, Zap, Puzzle, Code2 } from "lucide-react";
+import { BookOpen, Zap, Puzzle, Code2, Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Documentation",
@@ -42,6 +42,13 @@ const sections = [
     href: "/docs/sdks",
     color: "bg-emerald-50 text-emerald-600",
   },
+  {
+    icon: Sparkles,
+    title: "MCP Server",
+    description: "Query your churn data and trigger recovery actions from Claude Desktop, Cursor, and any AI client.",
+    href: "/docs/mcp",
+    color: "bg-violet-50 text-violet-600",
+  },
 ];
 
 const quickLinks = [
@@ -49,6 +56,7 @@ const quickLinks = [
   { label: "Razorpay Integration", href: "/docs/integrations/razorpay" },
   { label: "Paddle Integration", href: "/docs/integrations/paddle" },
   { label: "Custom Webhook", href: "/docs/integrations/custom-webhook" },
+  { label: "MCP Server", href: "/docs/mcp" },
   { label: "Changelog", href: "/docs/changelog" },
 ];
 

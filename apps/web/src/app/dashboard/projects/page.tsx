@@ -11,7 +11,8 @@ import {
 import { useProjects, useCreateProject } from "@/hooks/use-projects";
 import { useUsage } from "@/hooks/use-billing";
 import { formatDate } from "@/lib/utils";
-import { Plus, FolderOpen, ArrowRight, Zap } from "lucide-react";
+import { Plus, FolderOpen, ArrowRight, Zap, Copy, Check, Shield } from "lucide-react";
+import type { CreateProjectResponse } from "@/types/api";
 
 const productTypes = [
   { value: "SaaS", label: "SaaS" },
@@ -30,24 +31,39 @@ export default function ProjectsPage() {
   const [name, setName] = useState("");
   const [productType, setProductType] = useState("SaaS");
   const [supportEmail, setSupportEmail] = useState("");
+  const [keyReveal, setKeyReveal] = useState<CreateProjectResponse | null>(null);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   const atProjectLimit =
     usage != null && usage.projects_used >= usage.projects_limit;
+
+  function copyKey(value: string, label: string) {
+    navigator.clipboard.writeText(value);
+    setCopiedKey(label);
+    setTimeout(() => setCopiedKey(null), 2000);
+  }
 
   function handleCreate() {
     if (!name.trim()) return;
     createProject.mutate(
       { name: name.trim(), product_type: productType, support_email: supportEmail.trim() },
       {
-        onSuccess: (project) => {
+        onSuccess: (result) => {
           setShowCreate(false);
           setName("");
           setProductType("SaaS");
           setSupportEmail("");
-          router.push(`/dashboard/p/${project.slug}`);
+          setKeyReveal(result);
         },
       },
     );
+  }
+
+  function handleKeyRevealDone() {
+    if (!keyReveal) return;
+    const slug = keyReveal.project.slug;
+    setKeyReveal(null);
+    router.push(`/dashboard/p/${slug}`);
   }
 
   if (isLoading) {
@@ -116,6 +132,41 @@ export default function ProjectsPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Key reveal dialog — shown once after project creation */}
+      <Dialog open={!!keyReveal} onOpenChange={() => keyReveal && handleKeyRevealDone()}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Shield className="h-5 w-5 text-amber-500" />
+              Save Your API Keys
+            </DialogTitle>
+            <DialogDescription>
+              These keys are shown <strong>once only</strong>. Copy and store them securely before continuing.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            {[
+              { label: "Public Key", value: keyReveal?.raw_public_key ?? "", hint: "Use in the cancel widget and webhook URLs." },
+              { label: "Secret Key", value: keyReveal?.raw_secret_key ?? "", hint: "Use for server-side SDK calls. Never expose in client code." },
+            ].map(({ label, value, hint }) => (
+              <div key={label} className="space-y-1">
+                <p className="text-xs font-medium text-muted-foreground">{label}</p>
+                <div className="flex items-center gap-2 rounded-sm border border-border bg-secondary p-2">
+                  <code className="flex-1 break-all text-xs font-mono">{value}</code>
+                  <Button variant="outline" size="icon" className="shrink-0 h-7 w-7" onClick={() => copyKey(value, label)}>
+                    {copiedKey === label ? <Check className="h-3 w-3 text-green-600" /> : <Copy className="h-3 w-3" />}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">{hint}</p>
+              </div>
+            ))}
+          </div>
+          <Button className="w-full" onClick={handleKeyRevealDone}>
+            Done — I&apos;ve saved both keys
+          </Button>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={showCreate} onOpenChange={setShowCreate}>
         <DialogContent>
