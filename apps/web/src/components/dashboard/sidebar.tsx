@@ -30,6 +30,7 @@ import {
   Mail,
   Bell,
   FileText,
+  Gift,
 } from "lucide-react";
 
 export function Sidebar() {
@@ -66,6 +67,7 @@ export function Sidebar() {
         { href: `/dashboard/p/${currentSlug}/settings/email`, label: "Email Sender", icon: Mail },
         { href: `/dashboard/p/${currentSlug}/settings/notifications`, label: "Notifications", icon: Bell },
         { href: `/dashboard/p/${currentSlug}/settings/templates`, label: "Templates", icon: FileText },
+        { href: `/dashboard/p/${currentSlug}/settings/retention-offers`, label: "Retention Offers", icon: Gift },
       ]
     : [
         { href: "/dashboard/settings/profile", label: "Profile", icon: UserRound },

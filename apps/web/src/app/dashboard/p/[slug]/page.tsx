@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@windback/ui";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { EventsTable } from "@/components/dashboard/events-table";
 import { IntegrationGuide } from "@/components/dashboard/integration-guide";
+import { RevenueHeroCard } from "@/components/dashboard/revenue-hero-card";
 import { useCurrentProject } from "@/providers/project-provider";
 import { useStats } from "@/hooks/use-stats";
 import { useChurnEvents } from "@/hooks/use-churn-events";
@@ -33,6 +34,13 @@ export default function ProjectOverviewPage() {
           Your churn recovery dashboard at a glance.
         </p>
       </div>
+
+      {/* Revenue Hero Card */}
+      <RevenueHeroCard
+        stats={stats}
+        dunningStats={dunningStats}
+        isLoading={statsLoading || dunningLoading}
+      />
 
       {/* Stats Grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
