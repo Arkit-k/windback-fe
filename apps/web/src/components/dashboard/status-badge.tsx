@@ -10,6 +10,7 @@ const statusVariantMap: Record<ChurnEventStatus, BadgeProps["variant"]> = {
   variants_generated: "variants_generated",
   email_sent: "email_sent",
   recovered: "recovered",
+  offer_accepted: "offer_accepted",
   lost: "lost",
 };
 

@@ -19,6 +19,7 @@ const badgeVariants = cva(
         variants_generated: "bg-indigo-50 text-indigo-700",
         email_sent: "bg-sky-50 text-sky-700",
         recovered: "bg-green-50 text-green-700",
+        offer_accepted: "bg-emerald-50 text-emerald-700",
         lost: "bg-red-50 text-red-700",
       },
     },
