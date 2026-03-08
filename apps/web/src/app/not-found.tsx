@@ -28,14 +28,14 @@ export default function NotFound() {
       {/* Header with logo */}
       <header className="absolute top-0 left-0 z-20 flex w-full items-center px-6 py-5">
         <Link href="/">
-          <span className="font-display text-xl font-semibold tracking-tight text-white select-none">
-            Windback<span className="text-white">.</span>
+          <span className="font-display text-xl font-semibold tracking-tight text-[var(--accent)] select-none">
+            Windback<span className="text-[var(--accent)]">.</span>
           </span>
         </Link>
       </header>
 
       {/* Content — 50px from top on mobile, centered on desktop, text pushed right */}
-      <div className="relative z-10 flex min-h-screen flex-col items-start gap-3 pl-[80px] pt-[50px] md:items-start md:justify-center md:pl-[120px] md:pt-0">
+      <div className="relative z-10 flex min-h-screen flex-col items-end gap-3 pr-[40px] pt-[50px] md:items-end md:justify-center md:pr-[80px] md:pt-0">
         <h1 className="font-display text-[5rem] font-semibold leading-none tracking-tight text-white drop-shadow-2xl md:text-[10rem]">
           404
         </h1>
