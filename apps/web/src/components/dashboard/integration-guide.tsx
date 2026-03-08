@@ -24,11 +24,11 @@ export function IntegrationGuide({ projectSlug }: IntegrationGuideProps) {
   }
 
   const webhookUrl = `${BACKEND_URL}/api/v1/webhooks/stripe/${publicKeyMasked ?? "YOUR_PUBLIC_KEY"}`;
-  const sdkSnippet = `npm install @payback-ai/node
+  const sdkSnippet = `npm install @windback-ai/node
 
 // In your cancel flow handler:
-import { Payback } from "@payback-ai/node";
-const pb = new Payback("YOUR_SECRET_KEY"); // cg_sk_...
+import { Windback } from "@windback-ai/node";
+const pb = new Windback("YOUR_SECRET_KEY"); // cg_sk_...
 
 pb.submitCancelFlow({
   email: customer.email,
@@ -41,12 +41,12 @@ pb.submitCancelFlow({
   const widgetSnippet = `<!-- Add before </body> in your app -->
 <script src="${BACKEND_URL}/widget.js" async></script>
 <script>
-  Payback.init({ apiKey: "YOUR_PUBLIC_KEY" });
+  Windback.init({ apiKey: "YOUR_PUBLIC_KEY" });
 </script>
 
 <!-- On your cancel button click: -->
 <script>
-  Payback.showCancelForm({
+  Windback.showCancelForm({
     customerEmail: currentUser.email,
     provider: "stripe",
     mrr: subscription.amount,
@@ -95,7 +95,7 @@ pb.submitCancelFlow({
       icon: Zap,
       title: "Capture cancel reasons (recommended)",
       description:
-        "Use the SDK or widget so Payback knows why customers leave. This lets the AI pick the best winback strategy.",
+        "Use the SDK or widget so Windback knows why customers leave. This lets the AI pick the best winback strategy.",
       action: (
         <div className="mt-3 space-y-3">
           <div>
@@ -146,7 +146,7 @@ pb.submitCancelFlow({
       icon: Code2,
       title: "Trigger a test cancellation",
       description:
-        "Cancel a test subscription in Stripe. Within seconds it should appear here as a churn event, and Payback will send the winback email automatically.",
+        "Cancel a test subscription in Stripe. Within seconds it should appear here as a churn event, and Windback will send the winback email automatically.",
       action: (
         <div className="mt-3">
           <Link href={`/dashboard/p/${projectSlug}/events`}>

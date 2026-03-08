@@ -2,9 +2,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "MCP Server — Payback Docs",
+  title: "MCP Server — Windback Docs",
   description:
-    "Connect Payback to Claude Desktop, Cursor, and any MCP-compatible AI client. Query your churn data and trigger recovery actions with natural language.",
+    "Connect Windback to Claude Desktop, Cursor, and any MCP-compatible AI client. Query your churn data and trigger recovery actions with natural language.",
 };
 
 function Breadcrumb() {
@@ -96,12 +96,12 @@ const examplePrompts = [
 export default function MCPDocsPage() {
   const claudeDesktopConfig = `{
   "mcpServers": {
-    "payback": {
+    "windback": {
       "command": "npx",
-      "args": ["-y", "@payback-ai/mcp"],
+      "args": ["-y", "@windback-ai/mcp"],
       "env": {
-        "PAYBACK_API_KEY": "pb_sk_your_secret_key",
-        "PAYBACK_PROJECT_SLUG": "your-project-slug"
+        "WINDBACK_API_KEY": "pb_sk_your_secret_key",
+        "WINDBACK_PROJECT_SLUG": "your-project-slug"
       }
     }
   }
@@ -109,12 +109,12 @@ export default function MCPDocsPage() {
 
   const cursorConfig = `{
   "mcpServers": {
-    "payback": {
+    "windback": {
       "command": "npx",
-      "args": ["-y", "@payback-ai/mcp"],
+      "args": ["-y", "@windback-ai/mcp"],
       "env": {
-        "PAYBACK_API_KEY": "pb_sk_your_secret_key",
-        "PAYBACK_PROJECT_SLUG": "your-project-slug"
+        "WINDBACK_API_KEY": "pb_sk_your_secret_key",
+        "WINDBACK_PROJECT_SLUG": "your-project-slug"
       }
     }
   }
@@ -134,7 +134,7 @@ export default function MCPDocsPage() {
           <div>
             <h1 className="font-display text-4xl font-semibold text-foreground">MCP Server</h1>
             <p className="mt-2 text-lg text-muted-foreground">
-              Connect Payback to Claude Desktop, Cursor, and any MCP-compatible AI client.
+              Connect Windback to Claude Desktop, Cursor, and any MCP-compatible AI client.
               Ask natural language questions about your churn data and trigger recovery actions — no dashboard required.
             </p>
           </div>
@@ -146,7 +146,7 @@ export default function MCPDocsPage() {
             <p className="text-muted-foreground">
               The <strong className="text-foreground">Model Context Protocol (MCP)</strong> is an open standard
               that lets AI models like Claude connect to external tools and data sources. Once you set up
-              the Payback MCP server, Claude can read your churn data and take actions — like sending
+              the Windback MCP server, Claude can read your churn data and take actions — like sending
               recovery emails — directly from a conversation.
             </p>
             <Callout>
@@ -162,14 +162,14 @@ export default function MCPDocsPage() {
               <code className="rounded bg-card px-1.5 py-0.5 font-mono text-xs">npx</code> — no global install needed.
               You can also install globally:
             </p>
-            <CodeBlock lang="bash">npm install -g @payback-ai/mcp</CodeBlock>
+            <CodeBlock lang="bash">npm install -g @windback-ai/mcp</CodeBlock>
           </Section>
 
           {/* Claude Desktop */}
           <Section title="Claude Desktop Setup">
             <p className="text-sm text-muted-foreground">
               Open your Claude Desktop config file and add the{" "}
-              <code className="rounded bg-card px-1.5 py-0.5 font-mono text-xs">payback</code> server:
+              <code className="rounded bg-card px-1.5 py-0.5 font-mono text-xs">windback</code> server:
             </p>
             <div className="space-y-1.5">
               <p className="text-xs font-medium text-muted-foreground">
@@ -189,7 +189,7 @@ export default function MCPDocsPage() {
             <CodeBlock lang="json">{claudeDesktopConfig}</CodeBlock>
             <p className="text-sm text-muted-foreground">
               Restart Claude Desktop. You'll see a{" "}
-              <strong className="text-foreground">🔨 hammer icon</strong> in the chat input — Payback tools are ready.
+              <strong className="text-foreground">🔨 hammer icon</strong> in the chat input — Windback tools are ready.
             </p>
           </Section>
 
@@ -217,17 +217,17 @@ export default function MCPDocsPage() {
                 <tbody>
                   {[
                     {
-                      name: "PAYBACK_API_KEY",
+                      name: "WINDBACK_API_KEY",
                       req: "Yes",
-                      desc: "Your Payback secret key (pb_sk_...) — find it in Settings → API Keys",
+                      desc: "Your Windback secret key (pb_sk_...) — find it in Settings → API Keys",
                     },
                     {
-                      name: "PAYBACK_PROJECT_SLUG",
+                      name: "WINDBACK_PROJECT_SLUG",
                       req: "Yes (most tools)",
                       desc: "Your project slug from the dashboard URL (e.g. my-saas)",
                     },
                     {
-                      name: "PAYBACK_BASE_URL",
+                      name: "WINDBACK_BASE_URL",
                       req: "No",
                       desc: "Override the API base URL (default: https://api.windbackai.com)",
                     },

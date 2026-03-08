@@ -232,7 +232,7 @@ function StripeConnectCard({ onConnect, isConnecting }: { onConnect: () => void;
         <div className="flex-1">
           <p className="text-sm font-medium text-foreground">One-click Stripe setup</p>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Authorize once — Payback auto-registers the webhook endpoint and configures event
+            Authorize once — Windback auto-registers the webhook endpoint and configures event
             forwarding. No copy-pasting required.
           </p>
           <Button onClick={onConnect} disabled={isConnecting} size="sm" className="mt-3">

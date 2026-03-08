@@ -5,7 +5,7 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
-  transpilePackages: ["@payback/ui"],
+  transpilePackages: ["@windback/ui"],
 };
 
 export default withMDX(config);

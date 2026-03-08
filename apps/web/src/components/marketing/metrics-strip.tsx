@@ -98,7 +98,7 @@ export function MetricsStrip() {
       >
         <Image
           src="/stats.png"
-          alt="Payback platform"
+          alt="Windback platform"
           width={1920}
           height={600}
           className="w-full h-full object-cover object-center"

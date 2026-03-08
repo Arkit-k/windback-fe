@@ -262,7 +262,7 @@ export default function NotificationsSettingsPage({ params }: PageProps) {
               type="url"
               value={webhookUrl}
               onChange={(e) => setWebhookUrl(e.target.value)}
-              placeholder="https://yoursite.com/webhooks/payback"
+              placeholder="https://yoursite.com/webhooks/windback"
             />
           </div>
 
@@ -284,7 +284,7 @@ export default function NotificationsSettingsPage({ params }: PageProps) {
               </div>
               <p className="text-xs text-muted-foreground">
                 Verify requests using{" "}
-                <code className="rounded bg-muted px-1 py-0.5 text-[11px]">X-Payback-Signature</code>
+                <code className="rounded bg-muted px-1 py-0.5 text-[11px]">X-Windback-Signature</code>
                 {" "}header — HMAC-SHA256 of the raw body.
               </p>
               <details className="mt-1">

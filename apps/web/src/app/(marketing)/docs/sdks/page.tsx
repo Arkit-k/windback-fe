@@ -137,7 +137,7 @@ export default function SDKsPage() {
               <p className="mt-0.5 text-sm text-violet-700">
                 The{" "}
                 <Link href="/docs/mcp" className="underline hover:text-violet-900">
-                  Payback MCP Server
+                  Windback MCP Server
                 </Link>
                 {" "}lets Claude Desktop, Cursor, and any MCP-compatible AI client query your churn data and trigger recovery actions — no SDK required.
               </p>
