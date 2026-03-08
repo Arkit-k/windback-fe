@@ -4,24 +4,33 @@ import Image from "next/image";
 export default function NotFound() {
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
-      {/* Full screen background image */}
+      {/* Desktop image */}
       <Image
         src="/404.jfif"
         alt="404"
         fill
-        className="object-cover object-center"
+        className="hidden object-cover object-center md:block"
+        priority
+      />
+
+      {/* Mobile image */}
+      <Image
+        src="/404-mobile.jfif"
+        alt="404"
+        fill
+        className="block object-cover object-center md:hidden"
         priority
       />
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/40" />
 
-      {/* Content */}
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-6">
-        <h1 className="text-[12rem] font-black leading-none tracking-tighter text-white drop-shadow-2xl">
+      {/* Content — centered on desktop, 50px from top on mobile */}
+      <div className="relative z-10 flex min-h-screen flex-col items-center gap-6 pt-[50px] md:justify-center md:pt-0">
+        <h1 className="text-[8rem] font-black leading-none tracking-tighter text-white drop-shadow-2xl md:text-[12rem]">
           404
         </h1>
-        <p className="text-2xl font-medium text-white/90 drop-shadow">
+        <p className="text-xl font-medium text-white/90 drop-shadow md:text-2xl">
           Looks like you&apos;re lost in space
         </p>
         <Link
