@@ -1,12 +1,13 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
+  Input,
   Select,
   SelectTrigger,
   SelectValue,
@@ -16,6 +17,7 @@ import {
   Skeleton,
 } from "@windback/ui";
 import { FailedPaymentsTable } from "@/components/failed-payments/failed-payments-table";
+import { FilterBar } from "@/components/dashboard/filter-bar";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { useCurrentProject } from "@/providers/project-provider";
 import {
@@ -56,9 +58,39 @@ function FailedPaymentsContent() {
   const status = searchParams.get("status") || "all";
   const page = parseInt(searchParams.get("page") || "1", 10);
 
+  const [search, setSearch] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+
   const { data, isLoading } = usePaymentFailures(slug, { status, page });
   const { data: stats, isLoading: statsLoading } = usePaymentFailureStats(slug);
   const { data: emailConfig } = useEmailConfig(slug);
+
+  const filteredFailures = useMemo(() => {
+    let result = data?.data ?? [];
+
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter(
+        (f) =>
+          f.customer_email.toLowerCase().includes(q) ||
+          (f.customer_name?.toLowerCase().includes(q) ?? false),
+      );
+    }
+
+    if (dateFrom) {
+      const from = new Date(dateFrom);
+      result = result.filter((f) => new Date(f.created_at) >= from);
+    }
+
+    if (dateTo) {
+      const to = new Date(dateTo);
+      to.setHours(23, 59, 59, 999);
+      result = result.filter((f) => new Date(f.created_at) <= to);
+    }
+
+    return result;
+  }, [data?.data, search, dateFrom, dateTo]);
 
   const emailReady =
     (emailConfig?.method === "gmail_oauth" && !!emailConfig?.gmail_sender_email) ||
@@ -154,29 +186,54 @@ function FailedPaymentsContent() {
 
       {/* Table */}
       <Card>
-        <CardHeader className="flex-row items-center justify-between space-y-0">
-          <CardTitle>Payment Failures</CardTitle>
-          <Select
-            value={status}
-            onValueChange={(v) =>
-              updateParams({ status: v, page: "1" })
-            }
+        <CardHeader className="space-y-3">
+          <div className="flex items-center justify-between">
+            <CardTitle>Payment Failures</CardTitle>
+            <Select
+              value={status}
+              onValueChange={(v) =>
+                updateParams({ status: v, page: "1" })
+              }
+            >
+              <SelectTrigger className="w-48">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {statusOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <FilterBar
+            searchValue={search}
+            onSearchChange={setSearch}
+            searchPlaceholder="Search by customer email..."
           >
-            <SelectTrigger className="w-48">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {statusOptions.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {opt.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <div className="flex items-center gap-2">
+              <Input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="w-36 text-xs"
+                placeholder="From"
+              />
+              <span className="text-xs text-muted-foreground">to</span>
+              <Input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="w-36 text-xs"
+                placeholder="To"
+              />
+            </div>
+          </FilterBar>
         </CardHeader>
         <CardContent>
           <FailedPaymentsTable
-            failures={data?.data ?? []}
+            failures={filteredFailures}
             isLoading={isLoading}
             projectSlug={slug}
           />

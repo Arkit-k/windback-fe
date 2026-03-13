@@ -5,10 +5,15 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { EventsTable } from "@/components/dashboard/events-table";
 import { IntegrationGuide } from "@/components/dashboard/integration-guide";
 import { RevenueHeroCard } from "@/components/dashboard/revenue-hero-card";
+import { ChurnRiskHeroCard } from "@/components/dashboard/churn-risk-hero-card";
+import { RiskScoresTable } from "@/components/dashboard/risk-scores-table";
+import { RecoveryTrendChart } from "@/components/dashboard/overview-charts";
 import { useCurrentProject } from "@/providers/project-provider";
 import { useStats } from "@/hooks/use-stats";
 import { useChurnEvents } from "@/hooks/use-churn-events";
 import { usePaymentFailureStats } from "@/hooks/use-payment-failures";
+import { useChurnRiskStats, useChurnRiskScores } from "@/hooks/use-churn-risk";
+import { useRecoveryTrends, useEmailAnalytics } from "@/hooks/use-analytics";
 import { formatCurrency, formatPercent } from "@/lib/utils";
 import {
   Activity,
@@ -18,6 +23,9 @@ import {
   ShieldAlert,
   TrendingUp,
 } from "lucide-react";
+import { PDFExportButton } from "@/components/dashboard/pdf-export";
+import { OnboardingWizard } from "@/components/dashboard/onboarding-wizard";
+import { ChangelogButton } from "@/components/dashboard/changelog";
 import { motion } from "framer-motion";
 
 export default function ProjectOverviewPage() {
@@ -25,22 +33,41 @@ export default function ProjectOverviewPage() {
   const { data: stats, isLoading: statsLoading } = useStats(slug);
   const { data: events, isLoading: eventsLoading } = useChurnEvents(slug, { page: 1 });
   const { data: dunningStats, isLoading: dunningLoading } = usePaymentFailureStats(slug);
+  const { data: churnRiskStats, isLoading: churnRiskStatsLoading } = useChurnRiskStats(slug);
+  const { data: churnRiskScores, isLoading: churnRiskScoresLoading } = useChurnRiskScores(slug);
+  const { data: trendsData, isLoading: trendsLoading } = useRecoveryTrends(slug, 30);
+  const { data: _emailAnalytics, isLoading: _emailLoading } = useEmailAnalytics(slug);
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-2xl font-semibold text-foreground">Overview</h1>
-        <p className="text-sm text-muted-foreground">
-          Your churn recovery dashboard at a glance.
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="font-display text-2xl font-semibold text-foreground">Overview</h1>
+          <p className="text-sm text-muted-foreground">
+            Your churn recovery dashboard at a glance.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <ChangelogButton />
+          <PDFExportButton title="Project Overview" />
+        </div>
       </div>
 
-      {/* Revenue Hero Card */}
-      <RevenueHeroCard
-        stats={stats}
-        dunningStats={dunningStats}
-        isLoading={statsLoading || dunningLoading}
-      />
+      {/* Onboarding wizard — shown until dismissed */}
+      <OnboardingWizard slug={slug} />
+
+      {/* Hero Cards */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <RevenueHeroCard
+          stats={stats}
+          dunningStats={dunningStats}
+          isLoading={statsLoading || dunningLoading}
+        />
+        <ChurnRiskHeroCard
+          stats={churnRiskStats}
+          isLoading={churnRiskStatsLoading}
+        />
+      </div>
 
       {/* Stats Grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -77,6 +104,18 @@ export default function ProjectOverviewPage() {
           </motion.div>
         ))}
       </div>
+
+      {/* Recovery Trends */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, delay: 0.24 }}
+      >
+        <RecoveryTrendChart
+          trends={trendsData?.data ?? []}
+          isLoading={trendsLoading}
+        />
+      </motion.div>
 
       {/* Dunning Stats */}
       <div>
@@ -120,6 +159,19 @@ export default function ProjectOverviewPage() {
           ))}
         </div>
       </div>
+
+      {/* At-Risk Customers Table */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, delay: 0.56 }}
+      >
+        <RiskScoresTable
+          scores={churnRiskScores ?? []}
+          isLoading={churnRiskScoresLoading}
+          limit={10}
+        />
+      </motion.div>
 
       {/* Integration guide — shown until first event arrives */}
       {!statsLoading && (stats?.total_events ?? 0) === 0 && (

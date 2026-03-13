@@ -31,6 +31,20 @@ import {
   Bell,
   FileText,
   Gift,
+  AlertTriangle,
+  ArrowLeftRight,
+  TrendingUp,
+  Users,
+  LineChart,
+  Filter,
+  Workflow,
+  FlaskConical,
+  Ghost,
+  Heart,
+  Gavel,
+  Network,
+  Radar,
+  Clock,
 } from "lucide-react";
 
 export function Sidebar() {
@@ -51,6 +65,20 @@ export function Sidebar() {
         { href: `/dashboard/p/${currentSlug}/events`, label: "Churn Events", icon: Activity },
         { href: `/dashboard/p/${currentSlug}/failed-payments`, label: "Failed Payments", icon: CreditCard },
         { href: `/dashboard/p/${currentSlug}/analytics`, label: "Analytics", icon: BarChart3 },
+        { href: `/dashboard/p/${currentSlug}/churn-risk`, label: "Churn Risk", icon: AlertTriangle },
+        { href: `/dashboard/p/${currentSlug}/market-pulse`, label: "Market Pulse", icon: TrendingUp },
+        { href: `/dashboard/p/${currentSlug}/cohorts`, label: "Cohorts", icon: Users },
+        { href: `/dashboard/p/${currentSlug}/forecasting`, label: "Forecasting", icon: LineChart },
+        { href: `/dashboard/p/${currentSlug}/segments`, label: "Segments", icon: Filter },
+        { href: `/dashboard/p/${currentSlug}/playbooks`, label: "Playbooks", icon: Workflow },
+        { href: `/dashboard/p/${currentSlug}/ab-tests`, label: "A/B Tests", icon: FlaskConical },
+        { href: `/dashboard/p/${currentSlug}/benchmarking`, label: "Benchmarks", icon: BarChart3 },
+        { href: `/dashboard/p/${currentSlug}/ghost-customers`, label: "Ghost Customers", icon: Ghost },
+        { href: `/dashboard/p/${currentSlug}/mood`, label: "Mood Ring", icon: Heart },
+        { href: `/dashboard/p/${currentSlug}/win-back`, label: "Win-Back", icon: Gavel },
+        { href: `/dashboard/p/${currentSlug}/contagion`, label: "Contagion Map", icon: Network },
+        { href: `/dashboard/p/${currentSlug}/competitor-radar`, label: "Competitor Radar", icon: Radar },
+        { href: `/dashboard/p/${currentSlug}/time-machine`, label: "Time Machine", icon: Clock },
       ]
     : [
         { href: "/dashboard/projects", label: "Projects", icon: FolderOpen },
@@ -68,6 +96,9 @@ export function Sidebar() {
         { href: `/dashboard/p/${currentSlug}/settings/notifications`, label: "Notifications", icon: Bell },
         { href: `/dashboard/p/${currentSlug}/settings/templates`, label: "Templates", icon: FileText },
         { href: `/dashboard/p/${currentSlug}/settings/retention-offers`, label: "Retention Offers", icon: Gift },
+        { href: `/dashboard/p/${currentSlug}/settings/churn-risk`, label: "Churn Risk", icon: AlertTriangle },
+        { href: `/dashboard/p/${currentSlug}/settings/audit-logs`, label: "Audit Log", icon: Shield },
+        { href: `/dashboard/p/${currentSlug}/settings/import-export`, label: "Import / Export", icon: ArrowLeftRight },
       ]
     : [
         { href: "/dashboard/settings/profile", label: "Profile", icon: UserRound },

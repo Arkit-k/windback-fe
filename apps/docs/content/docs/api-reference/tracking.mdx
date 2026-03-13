@@ -1,0 +1,127 @@
+---
+title: Tracking API
+description: Send customer behavioral events to power churn risk scoring.
+---
+
+# Tracking API
+
+The Tracking API ingests customer behavioral events that Windback uses to calculate churn risk scores. Events are lightweight — just a customer identifier, event type, and optional properties.
+
+## Endpoint
+
+```
+POST https://api.windbackai.com/api/v1/track
+```
+
+### Authentication
+
+Include your **public API key** in the `X-API-Key` header:
+
+```
+X-API-Key: pub_your_key_here
+```
+
+## Single Event
+
+```bash
+curl -X POST https://api.windbackai.com/api/v1/track \
+  -H "X-API-Key: pub_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customer_email": "user@example.com",
+    "customer_name": "John Doe",
+    "event": "login"
+  }'
+```
+
+### Request Fields
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `customer_email` | string | conditional | Customer's email. Required unless `customer_id` is provided. |
+| `customer_id` | string | conditional | Opaque customer identifier. Used as fallback when `customer_email` is absent. Required unless `customer_email` is provided. |
+| `customer_name` | string | optional | Customer's display name. Used in AI-generated emails. |
+| `event` | string | required | Event type (see supported types below). |
+| `properties` | object | optional | Additional event data (e.g. `{"feature": "export"}`). |
+| `occurred_at` | string | optional | ISO 8601 timestamp. Defaults to now. |
+
+<Callout type="info">
+When using [webhook delivery](/docs/churn-risk-webhook) for churn emails, you can track events with just `customer_id` instead of real email addresses. This keeps customer PII out of Windback entirely.
+</Callout>
+
+## Batch Events
+
+Send up to 100 events in a single request:
+
+```bash
+curl -X POST https://api.windbackai.com/api/v1/track \
+  -H "X-API-Key: pub_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "events": [
+      {"customer_id": "usr_abc", "event": "login"},
+      {"customer_id": "usr_abc", "event": "feature_used", "properties": {"feature": "export"}},
+      {"customer_id": "usr_xyz", "event": "login"}
+    ]
+  }'
+```
+
+Events exceeding the 100-event limit are silently truncated.
+
+## Supported Event Types
+
+| Event | Description | Churn Signal |
+|-------|-------------|--------------|
+| `login` | Customer logged in | `gone_dark`, `login_frequency_drop`, `login_streak` |
+| `feature_used` | Customer used a feature. Pass `{"feature": "name"}` in properties. | `core_feature_unused`, `new_feature_adopted`, `feature_breadth_shrink` |
+| `billing_portal_visit` | Customer viewed billing or pricing page | `billing_portal_visit` |
+| `team_member_removed` | Customer removed a team member | `team_member_removed` |
+| `plan_downgrade` | Customer downgraded their plan | `plan_downgrade` |
+| `plan_upgrade` | Customer upgraded their plan | `plan_upgrade` (positive) |
+| `support_ticket` | Customer opened a support ticket | `support_spike` |
+| `data_export` | Customer exported their data | `data_export` |
+| `cancel_button_clicked` | Customer opened the cancel flow | `cancel_button_clicked` |
+| `api_call` | Customer made an API call | `api_volume_drop`, `api_volume_growing` |
+| `invite_sent` | Customer invited a team member | `invite_sent` (positive) |
+| `payment_failed` | Payment failed for the customer | `payment_failed` |
+| `session_end` | Customer session ended. Pass `{"duration_seconds": 300}` in properties. | `session_duration_drop` |
+
+Events with unrecognized types are silently dropped.
+
+## JavaScript Snippet
+
+For client-side tracking, add the Windback script:
+
+```html
+<script src="https://api.windbackai.com/widget.js"></script>
+<script>
+  Windback.init({ publicKey: "pub_your_key_here" });
+
+  // Track events
+  Windback.track("login", { customer_email: "user@example.com" });
+  Windback.track("feature_used", {
+    customer_email: "user@example.com",
+    feature: "dashboard"
+  });
+</script>
+```
+
+## Response
+
+The tracking endpoint always returns `200 OK` with `{"status": "ok"}`, regardless of whether the event was valid or stored. This is intentional — the endpoint is designed to never block your application.
+
+| Scenario | Response |
+|----------|----------|
+| Valid event(s) | `200 OK` — stored |
+| Invalid event type | `200 OK` — silently dropped |
+| Missing customer identifier | `200 OK` — silently dropped |
+| Invalid API key | `200 OK` — silently ignored |
+| Subscription expired | `200 OK` — silently skipped |
+
+## Best Practices
+
+- **Track on the server side** for security-sensitive events (plan changes, payment failures). Use `customer_id` to avoid leaking emails.
+- **Track on the client side** for engagement events (logins, feature usage). The JavaScript snippet handles batching.
+- **Include `customer_name`** when you have it — the AI uses it to personalize retention emails.
+- **Send `occurred_at`** if you're backfilling historical events. Otherwise it defaults to the current time.
+- **Use `feature_used` with properties** — pass `{"feature": "export"}` so Windback can detect feature adoption and breadth changes.

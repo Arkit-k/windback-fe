@@ -21,8 +21,18 @@ import { useSystemTemplates, useActivateSystemTemplate } from "@/hooks/use-syste
 import { useUsage } from "@/hooks/use-billing";
 import { CANCEL_REASONS } from "@/lib/recovery";
 import { formatDate } from "@/lib/utils";
-import { Plus, Pencil, Trash2, Lock, CheckCircle2, Sparkles } from "lucide-react";
+import { Plus, Pencil, Trash2, Lock, CheckCircle2, Sparkles, Eye } from "lucide-react";
 import type { RecoveryTemplate, SystemRecoveryTemplate } from "@/types/api";
+import { sanitizeHTML } from "@/lib/sanitize";
+
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, "").replace(/&[^;]+;/g, " ").trim();
+}
+
+function bodyPreview(body: string, maxLen = 100): string {
+  const plain = stripHtml(body);
+  return plain.length > maxLen ? plain.slice(0, maxLen) + "..." : plain;
+}
 
 const TEMPLATE_VARS = "{{customer_name}}  {{customer_email}}  {{plan_name}}  {{cancel_reason}}";
 
@@ -83,6 +93,7 @@ export default function TemplatesPage() {
   const [showCreate, setShowCreate] = useState(false);
   const [editTarget, setEditTarget] = useState<RecoveryTemplate | null>(null);
   const [previewTemplate, setPreviewTemplate] = useState<SystemRecoveryTemplate | null>(null);
+  const [previewCustomTemplate, setPreviewCustomTemplate] = useState<RecoveryTemplate | null>(null);
 
   // Form state
   const [form, setForm] = useState({
@@ -281,7 +292,7 @@ export default function TemplatesPage() {
           ) : (
             <div className="space-y-3">
               {templates.map((tmpl) => (
-                <Card key={tmpl.id}>
+                <Card key={tmpl.id} className="group">
                   <CardHeader className="pb-2">
                     <div className="flex items-start justify-between gap-4">
                       <div className="space-y-1">
@@ -297,6 +308,15 @@ export default function TemplatesPage() {
                         <CardDescription className="text-xs">{tmpl.subject}</CardDescription>
                       </div>
                       <div className="flex gap-1.5 shrink-0">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7"
+                          title="Preview template"
+                          onClick={() => setPreviewCustomTemplate(tmpl)}
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                        </Button>
                         <Button
                           variant="ghost"
                           size="sm"
@@ -322,7 +342,14 @@ export default function TemplatesPage() {
                     </div>
                   </CardHeader>
                   <CardContent className="pt-0">
-                    <p className="text-xs text-muted-foreground line-clamp-2">{tmpl.body}</p>
+                    <p className="text-xs text-muted-foreground line-clamp-2" title={bodyPreview(tmpl.body, 200)}>
+                      {bodyPreview(tmpl.body)}
+                    </p>
+                    {/* Hover preview: shows subject + body snippet on hover */}
+                    <div className="hidden group-hover:block mt-2 p-2 rounded bg-secondary/60 border border-border/50 text-xs space-y-1">
+                      <p className="font-medium text-foreground">Subject: {tmpl.subject}</p>
+                      <p className="text-muted-foreground">{bodyPreview(tmpl.body)}</p>
+                    </div>
                     <p className="text-xs text-muted-foreground/60 mt-2">Updated {formatDate(tmpl.updated_at)}</p>
                   </CardContent>
                 </Card>
@@ -386,6 +413,48 @@ export default function TemplatesPage() {
                   </Button>
                 </div>
               )}
+            </div>
+          </DialogContent>
+        )}
+      </Dialog>
+
+      {/* ─────────── Custom Template Preview Dialog ─────────── */}
+      <Dialog open={!!previewCustomTemplate} onOpenChange={(open) => { if (!open) setPreviewCustomTemplate(null); }}>
+        {previewCustomTemplate && (
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>
+                <span className="flex items-center gap-2">
+                  {previewCustomTemplate.name}
+                  {previewCustomTemplate.is_active ? (
+                    <Badge className="text-xs bg-green-600 text-white ml-1">Active</Badge>
+                  ) : (
+                    <Badge variant="outline" className="text-xs text-muted-foreground ml-1">Inactive</Badge>
+                  )}
+                </span>
+              </DialogTitle>
+              <div className="flex items-center gap-2 flex-wrap mt-1">
+                <Badge variant="secondary" className="text-xs">{cancelReasonLabel(previewCustomTemplate.cancel_reason)}</Badge>
+              </div>
+            </DialogHeader>
+            <div className="space-y-3 mt-2">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground mb-1">Subject</p>
+                <p className="text-sm bg-secondary px-3 py-2 rounded">{previewCustomTemplate.subject}</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-muted-foreground mb-1">Body</p>
+                <div
+                  className="text-sm bg-secondary px-3 py-2 rounded max-h-64 overflow-y-auto prose prose-sm dark:prose-invert"
+                  dangerouslySetInnerHTML={{ __html: sanitizeHTML(previewCustomTemplate.body) }}
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setPreviewCustomTemplate(null)}>Close</Button>
+                <Button onClick={() => { openEdit(previewCustomTemplate); setPreviewCustomTemplate(null); }}>
+                  <Pencil className="h-4 w-4 mr-1" /> Edit Template
+                </Button>
+              </div>
             </div>
           </DialogContent>
         )}

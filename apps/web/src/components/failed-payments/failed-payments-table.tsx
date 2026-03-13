@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import { RefreshCw } from "lucide-react";
 import {
   Table,
   TableHeader,
@@ -9,10 +11,12 @@ import {
   TableRow,
   TableCell,
   Badge,
+  Button,
   Skeleton,
 } from "@windback/ui";
 import { formatCurrency, formatRelativeDate } from "@/lib/utils";
 import { PAYMENT_FAILURE_STATUS_LABELS } from "@/lib/constants";
+import { useRetryPaymentFailure } from "@/hooks/use-payment-failures";
 import type { PaymentFailure, PaymentFailureStatus } from "@/types/api";
 
 const statusVariantMap: Record<
@@ -62,6 +66,16 @@ export function FailedPaymentsTable({
     ? `/dashboard/p/${projectSlug}/failed-payments`
     : "/dashboard/failed-payments";
 
+  const retryMutation = useRetryPaymentFailure(projectSlug ?? "");
+  const [retryingId, setRetryingId] = useState<string | null>(null);
+
+  const handleRetry = (failureId: string) => {
+    setRetryingId(failureId);
+    retryMutation.mutate(failureId, {
+      onSettled: () => setRetryingId(null),
+    });
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -73,50 +87,73 @@ export function FailedPaymentsTable({
           <TableHead>Retries</TableHead>
           <TableHead>Next Retry</TableHead>
           <TableHead>Created</TableHead>
+          <TableHead className="w-[80px]" />
         </TableRow>
       </TableHeader>
       <TableBody>
-        {failures.map((failure) => (
-          <TableRow key={failure.id} className="cursor-pointer">
-            <TableCell>
-              <Link href={`${basePath}/${failure.id}`} className="block">
-                <p className="font-medium text-foreground">
-                  {failure.customer_name || "Unknown"}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {failure.customer_email}
-                </p>
-              </Link>
-            </TableCell>
-            <TableCell className="text-right font-mono text-sm">
-              {formatCurrency(failure.amount_cents, failure.currency)}
-            </TableCell>
-            <TableCell>
-              <span className="text-sm text-muted-foreground">
-                {failure.failure_reason ?? "Unknown"}
-              </span>
-            </TableCell>
-            <TableCell>
-              <Badge variant={statusVariantMap[failure.status]}>
-                {PAYMENT_FAILURE_STATUS_LABELS[failure.status] ||
-                  failure.status}
-              </Badge>
-            </TableCell>
-            <TableCell>
-              <span className="text-sm">
-                {failure.retry_count}/{failure.max_retries}
-              </span>
-            </TableCell>
-            <TableCell className="text-sm text-muted-foreground">
-              {failure.next_retry_at
-                ? formatRelativeDate(failure.next_retry_at)
-                : "-"}
-            </TableCell>
-            <TableCell className="text-sm text-muted-foreground">
-              {formatRelativeDate(failure.created_at)}
-            </TableCell>
-          </TableRow>
-        ))}
+        {failures.map((failure) => {
+          const isRetrying = retryingId === failure.id;
+          return (
+            <TableRow key={failure.id} className="cursor-pointer">
+              <TableCell>
+                <Link href={`${basePath}/${failure.id}`} className="block">
+                  <p className="font-medium text-foreground">
+                    {failure.customer_name || "Unknown"}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {failure.customer_email}
+                  </p>
+                </Link>
+              </TableCell>
+              <TableCell className="text-right font-mono text-sm">
+                {formatCurrency(failure.amount_cents, failure.currency)}
+              </TableCell>
+              <TableCell>
+                <span className="text-sm text-muted-foreground">
+                  {failure.failure_reason ?? "Unknown"}
+                </span>
+              </TableCell>
+              <TableCell>
+                <Badge variant={statusVariantMap[failure.status]}>
+                  {PAYMENT_FAILURE_STATUS_LABELS[failure.status] ||
+                    failure.status}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <span className="text-sm">
+                  {failure.retry_count}/{failure.max_retries}
+                </span>
+              </TableCell>
+              <TableCell className="text-sm text-muted-foreground">
+                {failure.next_retry_at
+                  ? formatRelativeDate(failure.next_retry_at)
+                  : "-"}
+              </TableCell>
+              <TableCell className="text-sm text-muted-foreground">
+                {formatRelativeDate(failure.created_at)}
+              </TableCell>
+              <TableCell>
+                {failure.status === "failing" && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={isRetrying}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleRetry(failure.id);
+                    }}
+                  >
+                    <RefreshCw
+                      className={`h-3.5 w-3.5 ${isRetrying ? "animate-spin" : ""}`}
+                    />
+                    <span className="ml-1.5">Retry</span>
+                  </Button>
+                )}
+              </TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   );

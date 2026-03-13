@@ -1,0 +1,247 @@
+---
+title: Churn Risk Webhook Delivery
+description: Receive AI-generated retention emails via webhook so Windback never needs your customers' real email addresses.
+---
+
+# Churn Risk Webhook Delivery
+
+By default, when a customer's churn score crosses your threshold, Windback sends the AI-generated retention email directly. With webhook delivery, Windback instead **POSTs the email content to your endpoint** — your system looks up the real email address and sends it.
+
+## Why Use Webhook Delivery?
+
+- **Privacy** — Windback never sees real customer emails. You track events using opaque IDs like `usr_abc123`.
+- **Control** — Emails come from your domain, your sender, your infrastructure. Customers see *your* brand, not Windback's.
+- **No extra SMTP setup** — You already send transactional emails (welcome, password reset, invoices). This plugs into that same system.
+- **Flexibility** — Route to Slack, a CRM, or a queue instead of (or in addition to) email.
+
+## Setup
+
+### 1. Configure the Webhook URL
+
+In the dashboard, go to **Settings > Churn Risk** and enter your webhook URL in the **Webhook Delivery** card. Or use the API:
+
+```bash
+curl -X PUT https://api.windbackai.com/api/v1/projects/:slug/churn-risk/config \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"webhook_url": "https://your-app.com/api/windback-webhook"}'
+```
+
+### 2. Copy the Webhook Secret
+
+A 32-byte hex secret is auto-generated when you set a webhook URL. You'll find it in the API response or in the dashboard settings page. Store it as an environment variable (e.g. `WINDBACK_WEBHOOK_SECRET`).
+
+### 3. Implement Your Endpoint
+
+Your endpoint receives a JSON POST, verifies the HMAC signature, looks up the customer's email, and sends it.
+
+## Webhook Payload
+
+When a customer's churn score crosses the auto-email threshold, Windback POSTs:
+
+```json
+{
+  "customer_id": "usr_abc123",
+  "customer_name": "John Doe",
+  "subject": "We noticed you've been away...",
+  "body_html": "<p>Hi John, we noticed you haven't logged in recently...</p>",
+  "risk_score": 82,
+  "risk_level": "high",
+  "signals": [
+    {"name": "gone_dark", "weight": 35, "description": "No login in 14+ days"},
+    {"name": "billing_portal_visit", "weight": 15, "description": "Visited billing/pricing page"}
+  ],
+  "timestamp": "2026-03-12T10:00:00Z"
+}
+```
+
+### Headers
+
+| Header | Value |
+|--------|-------|
+| `Content-Type` | `application/json` |
+| `X-Windback-Signature` | HMAC-SHA256 hex digest of the raw JSON body, using your `webhook_secret` as the key |
+
+### Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `customer_id` | string | The identifier you used when tracking events (could be an email or an opaque ID) |
+| `customer_name` | string | Customer name from tracked events (may be empty) |
+| `subject` | string | AI-generated email subject line |
+| `body_html` | string | AI-generated email body (HTML) |
+| `risk_score` | number | Current churn risk score (0–100) |
+| `risk_level` | string | `"high"`, `"medium"`, or `"low"` |
+| `signals` | array | Detected churn signals with weights and descriptions |
+| `timestamp` | string | ISO 8601 timestamp of when the webhook was sent |
+
+## Signature Verification
+
+Every webhook request includes an `X-Windback-Signature` header. To verify:
+
+1. Read the raw request body (before JSON parsing)
+2. Compute HMAC-SHA256 of the body using your webhook secret
+3. Compare the hex digest to the header value
+
+<Callout type="warn">
+Always verify the signature before processing the webhook. This prevents forged requests.
+</Callout>
+
+### Node.js
+
+```javascript
+const crypto = require('crypto');
+const express = require('express');
+const app = express();
+
+app.post('/api/windback-webhook', express.json(), (req, res) => {
+  const signature = req.headers['x-windback-signature'];
+  const expected = crypto
+    .createHmac('sha256', process.env.WINDBACK_WEBHOOK_SECRET)
+    .update(JSON.stringify(req.body))
+    .digest('hex');
+
+  if (signature !== expected) {
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+
+  const { customer_id, customer_name, subject, body_html, risk_score, risk_level } = req.body;
+
+  // Look up the real email from your database
+  const customer = await db.customers.findById(customer_id);
+
+  // Send using your existing email infrastructure
+  await sendEmail({
+    to: customer.email,
+    from: 'team@yourapp.com',
+    subject,
+    html: body_html,
+  });
+
+  res.json({ ok: true });
+});
+```
+
+### Python (Flask)
+
+```python
+import hmac
+import hashlib
+from flask import Flask, request, abort
+
+app = Flask(__name__)
+
+@app.route('/api/windback-webhook', methods=['POST'])
+def webhook():
+    signature = request.headers.get('X-Windback-Signature', '')
+    expected = hmac.new(
+        WEBHOOK_SECRET.encode(),
+        request.data,
+        hashlib.sha256
+    ).hexdigest()
+
+    if not hmac.compare_digest(signature, expected):
+        abort(401)
+
+    data = request.json
+
+    # Look up real email from your database
+    customer = db.customers.find_by_id(data['customer_id'])
+
+    # Send using your existing email infra (SendGrid, SES, etc.)
+    send_email(
+        to=customer.email,
+        subject=data['subject'],
+        html=data['body_html']
+    )
+
+    return {'ok': True}
+```
+
+### Go
+
+```go
+package main
+
+import (
+    "crypto/hmac"
+    "crypto/sha256"
+    "encoding/hex"
+    "encoding/json"
+    "io"
+    "net/http"
+    "os"
+)
+
+func webhookHandler(w http.ResponseWriter, r *http.Request) {
+    body, _ := io.ReadAll(r.Body)
+
+    mac := hmac.New(sha256.New, []byte(os.Getenv("WINDBACK_WEBHOOK_SECRET")))
+    mac.Write(body)
+    expected := hex.EncodeToString(mac.Sum(nil))
+
+    if r.Header.Get("X-Windback-Signature") != expected {
+        http.Error(w, "invalid signature", http.StatusUnauthorized)
+        return
+    }
+
+    var payload struct {
+        CustomerID   string `json:"customer_id"`
+        CustomerName string `json:"customer_name"`
+        Subject      string `json:"subject"`
+        BodyHTML     string `json:"body_html"`
+        RiskScore    int    `json:"risk_score"`
+        RiskLevel    string `json:"risk_level"`
+    }
+    json.Unmarshal(body, &payload)
+
+    // Look up real email from your database
+    customer := db.FindCustomer(payload.CustomerID)
+
+    // Send using your existing email infra
+    sendEmail(customer.Email, payload.Subject, payload.BodyHTML)
+
+    json.NewEncoder(w).Encode(map[string]bool{"ok": true})
+}
+```
+
+## Delivery Behavior
+
+- **Fire-and-forget** — Windback does not retry failed webhook deliveries. If your endpoint is down, the email content is lost for that cycle.
+- **Always marked as sent** — Regardless of webhook success or failure, Windback marks the score as `email_sent = true` to prevent infinite retries on dead webhooks.
+- **5-second timeout** — Webhook requests time out after 5 seconds. Keep your handler fast.
+- **One email per score cycle** — Each customer only receives one email per scoring cycle (every 24 hours or per manual recalculation).
+
+<Callout type="info">
+If the webhook fails, the customer won't receive an email for that cycle. If you need guaranteed delivery, consider having your webhook handler enqueue the email job into a message queue (SQS, Redis, etc.) and return 200 immediately.
+</Callout>
+
+## Tracking with Opaque IDs
+
+When using webhook delivery, you don't need to send real email addresses in tracking events. Use any stable customer identifier:
+
+```bash
+curl -X POST https://api.windbackai.com/api/v1/track \
+  -H "X-API-Key: YOUR_PUBLIC_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customer_id": "usr_abc123",
+    "customer_name": "John Doe",
+    "event": "login"
+  }'
+```
+
+The `customer_id` field is used as the identifier when `customer_email` is not provided. This same ID is included in the webhook payload so your system can resolve it.
+
+## Disabling Webhook Delivery
+
+Clear the webhook URL in the dashboard or via API:
+
+```bash
+curl -X PUT https://api.windbackai.com/api/v1/projects/:slug/churn-risk/config \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"webhook_url": ""}'
+```
+
+This clears both the URL and the secret. Auto-emails will fall back to direct delivery (which requires real customer email addresses in tracking events).

@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
 import { QUERY_KEYS, STALE_TIMES, ITEMS_PER_PAGE } from "@/lib/constants";
 import type {
@@ -52,6 +52,21 @@ export function usePaymentFailure(slug: string, id: string) {
     },
     staleTime: STALE_TIMES.paymentFailure,
     enabled: !!slug && !!id,
+  });
+}
+
+export function useRetryPaymentFailure(slug: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (failureId: string) => {
+      await apiClient(`projects/${slug}/payment-failures/${failureId}/retry`, {
+        method: "POST",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.paymentFailures(slug) });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.paymentFailureStats(slug) });
+    },
   });
 }
 

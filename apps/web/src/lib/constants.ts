@@ -25,6 +25,28 @@ export const QUERY_KEYS = {
   recoveryTrends: (slug: string, days?: number) =>
     ["recovery-trends", slug, { days }] as const,
   retentionOffers: (slug: string) => ["retention-offers", slug] as const,
+  churnRiskScores: (slug: string) => ["churn-risk-scores", slug] as const,
+  churnRiskStats: (slug: string) => ["churn-risk-stats", slug] as const,
+  churnRiskConfig: (slug: string) => ["churn-risk-config", slug] as const,
+  auditLogs: (slug: string, offset?: number, action?: string) => ["audit-logs", slug, offset, action] as const,
+  marketPulseLatest: (slug: string) => ["market-pulse-latest", slug] as const,
+  marketPulseSnapshots: (slug: string, hours?: number) => ["market-pulse-snapshots", slug, { hours }] as const,
+  marketPulseHeatmap: (slug: string, days?: number) => ["market-pulse-heatmap", slug, { days }] as const,
+  cohorts: (slug: string, months?: number) => ["cohorts", slug, { months }] as const,
+  forecast: (slug: string) => ["forecast", slug] as const,
+  segments: (slug: string) => ["segments", slug] as const,
+  segment: (slug: string, id: string) => ["segments", slug, id] as const,
+  abTests: (slug: string) => ["ab-tests", slug] as const,
+  abTest: (slug: string, testId: string) => ["ab-tests", slug, testId] as const,
+  benchmark: (slug: string) => ["benchmark", slug] as const,
+  moodSnapshot: (slug: string) => ["mood-snapshot", slug] as const,
+  ghostCustomers: (slug: string) => ["ghost-customers", slug] as const,
+  ghostStats: (slug: string) => ["ghost-stats", slug] as const,
+  playbooks: (slug: string) => ["playbooks", slug] as const,
+  playbook: (slug: string, id: string) => ["playbooks", slug, id] as const,
+  playbookRuns: (slug: string, id: string) => ["playbook-runs", slug, id] as const,
+  auctionOffers: (slug: string, config?: unknown) => ["auction-offers", slug, config] as const,
+  auctionSummary: (slug: string, config?: unknown) => ["auction-summary", slug, config] as const,
 } as const;
 
 export const STALE_TIMES = {
@@ -37,13 +59,39 @@ export const STALE_TIMES = {
   paymentFailure: 60 * 1000,
   paymentFailureStats: 30 * 1000,
   usage: 60 * 1000,
-  emailAnalytics: 60 * 1000,
+  // Analytics data doesn't change second-to-second; 2 minutes avoids hammering
+  // the backend on every tab switch.
+  emailAnalytics: 2 * 60 * 1000,
   team: 30 * 1000,
   dunningConfig: 60 * 1000,
   emailConfig: 60 * 1000,
   notificationConfig: 60 * 1000,
-  recoveryTrends: 60 * 1000,
+  recoveryTrends: 2 * 60 * 1000,
   retentionOffers: 30 * 1000,
+  // Churn risk scores are recalculated by the scheduler every few minutes;
+  // 60 s staleTime avoids redundant refetches on every component mount.
+  churnRiskScores: 60 * 1000,
+  churnRiskStats: 60 * 1000,
+  churnRiskConfig: 60 * 1000,
+  auditLogs: 30 * 1000,
+  marketPulseLatest: 10 * 1000,
+  marketPulseSnapshots: 60 * 1000,
+  marketPulseHeatmap: 5 * 60 * 1000,
+  cohorts: 2 * 60 * 1000,
+  // Forecast data is computed on demand; 2 minutes avoids repeated heavy queries.
+  forecast: 2 * 60 * 1000,
+  segments: 30 * 1000,
+  playbooks: 30 * 1000,
+  abTests: 30 * 1000,
+  benchmark: 2 * 60 * 1000,
+  // Mood snapshot is recomputed every 30s on the client; 15s staleTime keeps it fresh.
+  moodSnapshot: 15 * 1000,
+  // Ghost detection is computed on-demand; 60s avoids redundant recalculations.
+  ghostCustomers: 60 * 1000,
+  ghostStats: 60 * 1000,
+  // Auction offers are computed on demand; 60s avoids repeated heavy queries.
+  auctionOffers: 60 * 1000,
+  auctionSummary: 60 * 1000,
 } as const;
 
 export const STATUS_LABELS: Record<string, string> = {

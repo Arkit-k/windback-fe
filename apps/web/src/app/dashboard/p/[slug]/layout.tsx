@@ -3,6 +3,7 @@
 import { use } from "react";
 import { useProject } from "@/hooks/use-projects";
 import { ProjectProvider } from "@/providers/project-provider";
+import { useNotificationStream } from "@/hooks/use-notification-stream";
 import { Skeleton } from "@windback/ui";
 
 export default function ProjectLayout({
@@ -32,5 +33,16 @@ export default function ProjectLayout({
     );
   }
 
-  return <ProjectProvider project={project}>{children}</ProjectProvider>;
+  return (
+    <ProjectProvider project={project}>
+      <ProjectStreamMount slug={slug} />
+      {children}
+    </ProjectProvider>
+  );
+}
+
+// Isolated component so the hook mounts after ProjectProvider is ready.
+function ProjectStreamMount({ slug }: { slug: string }) {
+  useNotificationStream(slug);
+  return null;
 }

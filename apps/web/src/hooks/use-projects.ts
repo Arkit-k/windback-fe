@@ -74,7 +74,9 @@ export function useAutoSend(slug: string) {
 
 export function useUpdateAutoSend(slug: string) {
   const queryClient = useQueryClient();
-  return useMutation<boolean, Error, boolean>({
+  const autoSendKey = ["auto-send", slug];
+
+  return useMutation<boolean, Error, boolean, { previous: boolean | undefined }>({
     mutationFn: async (autoSend) => {
       const res = await apiClient<ApiResponse<{ auto_send_emails: boolean }>>(`projects/${slug}/auto-send`, {
         method: "PATCH",
@@ -82,8 +84,21 @@ export function useUpdateAutoSend(slug: string) {
       });
       return res.data.auto_send_emails;
     },
-    onSuccess: (value) => {
-      queryClient.setQueryData(["auto-send", slug], value);
+    onMutate: async (newValue) => {
+      await queryClient.cancelQueries({ queryKey: autoSendKey });
+      const previous = queryClient.getQueryData<boolean>(autoSendKey);
+      queryClient.setQueryData(autoSendKey, newValue);
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous !== undefined) {
+        queryClient.setQueryData(autoSendKey, context.previous);
+      }
+    },
+    onSettled: (value) => {
+      if (value !== undefined) {
+        queryClient.setQueryData(autoSendKey, value);
+      }
     },
   });
 }

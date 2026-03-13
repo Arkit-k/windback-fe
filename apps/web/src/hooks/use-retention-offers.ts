@@ -25,24 +25,40 @@ export function useRetentionOffers(slug: string) {
 
 export function useUpsertRetentionOffer(slug: string) {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async ({
-      reason,
-      input,
-    }: {
-      reason: string;
-      input: UpsertRetentionOfferRequest;
-    }) => {
+  const listKey = QUERY_KEYS.retentionOffers(slug);
+
+  return useMutation<
+    RetentionOffer,
+    Error,
+    { reason: string; input: UpsertRetentionOfferRequest },
+    { previous: RetentionOffer[] | undefined }
+  >({
+    mutationFn: async ({ reason, input }) => {
       const res = await apiClient<ApiResponse<RetentionOffer>>(
         `projects/${slug}/retention-offers/${reason}`,
         { method: "PUT", body: input },
       );
       return res.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.retentionOffers(slug),
+    onMutate: async ({ reason, input }) => {
+      await queryClient.cancelQueries({ queryKey: listKey });
+      const previous = queryClient.getQueryData<RetentionOffer[]>(listKey);
+      queryClient.setQueryData<RetentionOffer[]>(listKey, (old = []) => {
+        const idx = old.findIndex((o) => o.cancel_reason === reason);
+        if (idx >= 0) {
+          return old.map((o, i) => (i === idx ? { ...o, ...input } : o));
+        }
+        return [...old, { cancel_reason: reason, ...input } as RetentionOffer];
       });
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous !== undefined) {
+        queryClient.setQueryData(listKey, context.previous);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: listKey });
     },
   });
 }

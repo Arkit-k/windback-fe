@@ -10,10 +10,29 @@ import {
   Button,
   Input,
   Label,
+  Badge,
   toast,
 } from "@windback/ui";
-import { Bell, Slack, Webhook, Eye, EyeOff, ExternalLink, Loader2 } from "lucide-react";
+import {
+  Bell,
+  Slack,
+  Webhook,
+  Eye,
+  EyeOff,
+  ExternalLink,
+  Loader2,
+  Clock,
+  Mail,
+  History,
+  ChevronDown,
+  ChevronRight,
+  CheckCircle2,
+  XCircle,
+  Code2,
+  ArrowRight,
+} from "lucide-react";
 import { cn } from "@windback/ui";
+import Link from "next/link";
 
 function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
   return (
@@ -68,6 +87,128 @@ function CheckboxItem({
     </div>
   );
 }
+
+function StatusDot({ status }: { status: "success" | "error" | "idle" }) {
+  if (status === "idle") return null;
+  return (
+    <span className="flex items-center gap-1.5">
+      <span
+        className={cn(
+          "inline-block h-2 w-2 rounded-full",
+          status === "success" ? "bg-green-500" : "bg-red-500"
+        )}
+      />
+      <span
+        className={cn(
+          "text-xs",
+          status === "success" ? "text-green-600" : "text-red-600"
+        )}
+      >
+        {status === "success" ? "Connected" : "Test failed"}
+      </span>
+    </span>
+  );
+}
+
+function ComingSoonBadge() {
+  return (
+    <Badge variant="secondary" className="ml-2 text-[10px] uppercase tracking-wider">
+      Coming Soon
+    </Badge>
+  );
+}
+
+const WEBHOOK_PAYLOADS: Record<string, { event: string; description: string; payload: string }> = {
+  churn_created: {
+    event: "churn.created",
+    description: "Fired when a new churn event is detected for a customer.",
+    payload: JSON.stringify(
+      {
+        event: "churn.created",
+        timestamp: "2026-03-12T14:30:00Z",
+        project_id: "proj_abc123",
+        data: {
+          customer_id: "cus_xyz789",
+          email: "jane@example.com",
+          subscription_id: "sub_456",
+          mrr_lost: 4900,
+          currency: "usd",
+          reason: "cancelled",
+          churn_risk_score: 0.87,
+        },
+      },
+      null,
+      2
+    ),
+  },
+  churn_recovered: {
+    event: "churn.recovered",
+    description: "Fired when a previously churned customer resubscribes.",
+    payload: JSON.stringify(
+      {
+        event: "churn.recovered",
+        timestamp: "2026-03-12T16:45:00Z",
+        project_id: "proj_abc123",
+        data: {
+          customer_id: "cus_xyz789",
+          email: "jane@example.com",
+          subscription_id: "sub_789",
+          mrr_recovered: 4900,
+          currency: "usd",
+          recovery_method: "cancel_flow_offer",
+        },
+      },
+      null,
+      2
+    ),
+  },
+  payment_failed: {
+    event: "payment.failed",
+    description: "Fired when a payment attempt fails.",
+    payload: JSON.stringify(
+      {
+        event: "payment.failed",
+        timestamp: "2026-03-12T09:15:00Z",
+        project_id: "proj_abc123",
+        data: {
+          customer_id: "cus_xyz789",
+          email: "jane@example.com",
+          invoice_id: "inv_321",
+          amount: 4900,
+          currency: "usd",
+          failure_code: "card_declined",
+          attempt_count: 1,
+          next_retry_at: "2026-03-15T09:15:00Z",
+        },
+      },
+      null,
+      2
+    ),
+  },
+  payment_recovered: {
+    event: "payment.recovered",
+    description: "Fired when a previously failed payment is successfully charged.",
+    payload: JSON.stringify(
+      {
+        event: "payment.recovered",
+        timestamp: "2026-03-12T11:00:00Z",
+        project_id: "proj_abc123",
+        data: {
+          customer_id: "cus_xyz789",
+          email: "jane@example.com",
+          invoice_id: "inv_321",
+          amount: 4900,
+          currency: "usd",
+          recovery_method: "dunning_email",
+          attempts_before_recovery: 2,
+        },
+      },
+      null,
+      2
+    ),
+  },
+};
+
 import {
   useNotificationConfig,
   useUpdateNotificationConfig,
@@ -95,6 +236,14 @@ export default function NotificationsSettingsPage({ params }: PageProps) {
   const [notifyPaymentFailed, setNotifyPaymentFailed] = useState(true);
   const [notifyPaymentRecovered, setNotifyPaymentRecovered] = useState(true);
   const [showSecret, setShowSecret] = useState(false);
+
+  // Connection status state
+  const [slackTestStatus, setSlackTestStatus] = useState<"idle" | "success" | "error">("idle");
+  const [webhookTestStatus, setWebhookTestStatus] = useState<"idle" | "success" | "error">("idle");
+
+  // Webhook payload examples collapsible
+  const [payloadExamplesOpen, setPayloadExamplesOpen] = useState(false);
+  const [activePayloadTab, setActivePayloadTab] = useState<string>("churn_created");
 
   useEffect(() => {
     if (config) {
@@ -131,18 +280,27 @@ export default function NotificationsSettingsPage({ params }: PageProps) {
 
   function handleTestSlack() {
     testSlack.mutate(undefined, {
-      onSuccess: () => toast({ title: "Test message sent", description: "Check your Slack channel." }),
-      onError: (err) =>
-        toast({ title: "Test failed", description: err.message, variant: "destructive" }),
+      onSuccess: () => {
+        setSlackTestStatus("success");
+        toast({ title: "Test message sent", description: "Check your Slack channel." });
+      },
+      onError: (err) => {
+        setSlackTestStatus("error");
+        toast({ title: "Test failed", description: err.message, variant: "destructive" });
+      },
     });
   }
 
   function handleTestWebhook() {
     testWebhook.mutate(undefined, {
-      onSuccess: () =>
-        toast({ title: "Test webhook sent", description: "Check your endpoint for the test.ping event." }),
-      onError: (err) =>
-        toast({ title: "Test failed", description: err.message, variant: "destructive" }),
+      onSuccess: () => {
+        setWebhookTestStatus("success");
+        toast({ title: "Test webhook sent", description: "Check your endpoint for the test.ping event." });
+      },
+      onError: (err) => {
+        setWebhookTestStatus("error");
+        toast({ title: "Test failed", description: err.message, variant: "destructive" });
+      },
     });
   }
 
@@ -182,9 +340,12 @@ export default function NotificationsSettingsPage({ params }: PageProps) {
       {/* Slack Card */}
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-2">
-            <Slack className="h-4 w-4 text-muted-foreground" />
-            <CardTitle className="text-base">Slack</CardTitle>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Slack className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-base">Slack</CardTitle>
+            </div>
+            <StatusDot status={slackTestStatus} />
           </div>
           <CardDescription>
             Post a message to your Slack workspace when key events occur.
@@ -222,24 +383,41 @@ export default function NotificationsSettingsPage({ params }: PageProps) {
               </a>
             </p>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleTestSlack}
-            disabled={!slackUrl || testSlack.isPending}
-          >
-            {testSlack.isPending && <Loader2 className="mr-2 h-3 w-3 animate-spin" />}
-            Send Test Message
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleTestSlack}
+              disabled={!slackUrl || testSlack.isPending}
+            >
+              {testSlack.isPending && <Loader2 className="mr-2 h-3 w-3 animate-spin" />}
+              Send Test Message
+            </Button>
+            {slackTestStatus === "success" && (
+              <span className="flex items-center gap-1 text-xs text-green-600">
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                Last test succeeded
+              </span>
+            )}
+            {slackTestStatus === "error" && (
+              <span className="flex items-center gap-1 text-xs text-red-600">
+                <XCircle className="h-3.5 w-3.5" />
+                Last test failed
+              </span>
+            )}
+          </div>
         </CardContent>
       </Card>
 
       {/* Custom Webhook Card */}
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-2">
-            <Webhook className="h-4 w-4 text-muted-foreground" />
-            <CardTitle className="text-base">Custom Webhook</CardTitle>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Webhook className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-base">Custom Webhook</CardTitle>
+            </div>
+            <StatusDot status={webhookTestStatus} />
           </div>
           <CardDescription>
             POST a signed JSON payload to your own endpoint. Works with Zapier, Make, n8n, or
@@ -309,15 +487,29 @@ function verifySignature(rawBody, secret, sigHeader) {
             </div>
           )}
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleTestWebhook}
-            disabled={!webhookUrl || testWebhook.isPending}
-          >
-            {testWebhook.isPending && <Loader2 className="mr-2 h-3 w-3 animate-spin" />}
-            Send Test Event
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleTestWebhook}
+              disabled={!webhookUrl || testWebhook.isPending}
+            >
+              {testWebhook.isPending && <Loader2 className="mr-2 h-3 w-3 animate-spin" />}
+              Send Test Event
+            </Button>
+            {webhookTestStatus === "success" && (
+              <span className="flex items-center gap-1 text-xs text-green-600">
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                Last test succeeded
+              </span>
+            )}
+            {webhookTestStatus === "error" && (
+              <span className="flex items-center gap-1 text-xs text-red-600">
+                <XCircle className="h-3.5 w-3.5" />
+                Last test failed
+              </span>
+            )}
+          </div>
         </CardContent>
       </Card>
 
@@ -359,6 +551,135 @@ function verifySignature(rawBody, secret, sigHeader) {
             checked={notifyPaymentRecovered}
             onChange={setNotifyPaymentRecovered}
           />
+        </CardContent>
+      </Card>
+
+      {/* Webhook Payload Examples Card */}
+      <Card>
+        <CardHeader>
+          <button
+            type="button"
+            onClick={() => setPayloadExamplesOpen((v) => !v)}
+            className="flex w-full items-center justify-between text-left"
+          >
+            <div className="flex items-center gap-2">
+              <Code2 className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-base">Webhook Payload Examples</CardTitle>
+            </div>
+            {payloadExamplesOpen ? (
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            ) : (
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            )}
+          </button>
+          <CardDescription>
+            Example JSON payloads sent to your custom webhook for each event type.
+          </CardDescription>
+        </CardHeader>
+        {payloadExamplesOpen && (
+          <CardContent className="space-y-4">
+            <div className="flex flex-wrap gap-1.5">
+              {Object.entries(WEBHOOK_PAYLOADS).map(([key, val]) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setActivePayloadTab(key)}
+                  className={cn(
+                    "rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
+                    activePayloadTab === key
+                      ? "bg-[var(--accent)] text-white"
+                      : "bg-muted text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {val.event}
+                </button>
+              ))}
+            </div>
+            <div>
+              <p className="mb-2 text-xs text-muted-foreground">
+                {WEBHOOK_PAYLOADS[activePayloadTab]?.description}
+              </p>
+              <pre className="overflow-x-auto rounded border border-border bg-muted p-3 text-[11px] leading-relaxed text-foreground">
+                {WEBHOOK_PAYLOADS[activePayloadTab]?.payload}
+              </pre>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              All payloads include an{" "}
+              <code className="rounded bg-muted px-1 py-0.5 text-[11px]">X-Windback-Signature</code>{" "}
+              header for verification. Timestamps are in ISO 8601 / UTC format. Monetary amounts are
+              in cents.
+            </p>
+          </CardContent>
+        )}
+      </Card>
+
+      {/* Notification Preferences Card */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-base">Notification Preferences</CardTitle>
+          </div>
+          <CardDescription>
+            Control when and how notifications are delivered.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-5">
+          <div className="rounded-lg border border-border p-4">
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-muted-foreground" />
+              <h3 className="text-sm font-medium text-foreground">Quiet Hours</h3>
+              <ComingSoonBadge />
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+              Notifications are currently sent in real-time as events occur. Quiet hours support
+              (suppressing notifications during specified time windows) is not yet available but is
+              on our roadmap.
+            </p>
+          </div>
+          <div className="rounded-lg border border-border p-4">
+            <div className="flex items-center gap-2">
+              <Mail className="h-4 w-4 text-muted-foreground" />
+              <h3 className="text-sm font-medium text-foreground">Digest Mode</h3>
+              <ComingSoonBadge />
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+              Daily digest emails will bundle all notification events from the past 24 hours into
+              a single summary email, delivered at a time you choose. This feature is coming soon.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Recent Notification Activity Card */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <History className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-base">Recent Notification Activity</CardTitle>
+          </div>
+          <CardDescription>
+            A log of recently delivered notifications for this project.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="rounded-lg border border-dashed border-border p-6 text-center">
+            <History className="mx-auto h-8 w-8 text-muted-foreground/50" />
+            <p className="mt-3 text-sm text-muted-foreground">
+              Notification delivery history is recorded in the audit log.
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              View the full log of notification events, including delivery status and timestamps,
+              in the audit logs section.
+            </p>
+            <Link
+              href={`/dashboard/p/${slug}/settings/audit-logs`}
+              className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent)] hover:underline"
+            >
+              View Audit Logs
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
         </CardContent>
       </Card>
 

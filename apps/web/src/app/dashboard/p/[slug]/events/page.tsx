@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Card, CardContent, CardHeader, CardTitle,
@@ -11,6 +11,7 @@ import {
 } from "@windback/ui";
 import { toast } from "@windback/ui";
 import { EventsTable } from "@/components/dashboard/events-table";
+import { FilterBar } from "@/components/dashboard/filter-bar";
 import { useCurrentProject } from "@/providers/project-provider";
 import { useChurnEvents, useCreateChurnEvent } from "@/hooks/use-churn-events";
 import { STATUS_LABELS, ITEMS_PER_PAGE, CANCEL_REASON_LABELS, PROVIDER_LABELS } from "@/lib/constants";
@@ -241,11 +242,40 @@ function EventsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [showCreate, setShowCreate] = useState(false);
+  const [search, setSearch] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
 
   const status = searchParams.get("status") || "all";
   const page = parseInt(searchParams.get("page") || "1", 10);
 
   const { data, isLoading } = useChurnEvents(slug, { status, page });
+
+  const filteredEvents = useMemo(() => {
+    let result = data?.data ?? [];
+
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter(
+        (e) =>
+          e.customer_email.toLowerCase().includes(q) ||
+          (e.customer_name?.toLowerCase().includes(q) ?? false),
+      );
+    }
+
+    if (dateFrom) {
+      const from = new Date(dateFrom);
+      result = result.filter((e) => new Date(e.created_at) >= from);
+    }
+
+    if (dateTo) {
+      const to = new Date(dateTo);
+      to.setHours(23, 59, 59, 999);
+      result = result.filter((e) => new Date(e.created_at) <= to);
+    }
+
+    return result;
+  }, [data?.data, search, dateFrom, dateTo]);
 
   function updateParams(updates: Record<string, string>) {
     const params = new URLSearchParams(searchParams.toString());
@@ -275,23 +305,48 @@ function EventsContent() {
       </div>
 
       <Card>
-        <CardHeader className="flex-row items-center justify-between space-y-0">
-          <CardTitle>Events</CardTitle>
-          <Select value={status} onValueChange={(v) => updateParams({ status: v, page: "1" })}>
-            <SelectTrigger className="w-48">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {statusOptions.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {opt.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <CardHeader className="space-y-3">
+          <div className="flex items-center justify-between">
+            <CardTitle>Events</CardTitle>
+            <Select value={status} onValueChange={(v) => updateParams({ status: v, page: "1" })}>
+              <SelectTrigger className="w-48">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {statusOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <FilterBar
+            searchValue={search}
+            onSearchChange={setSearch}
+            searchPlaceholder="Search by customer email..."
+          >
+            <div className="flex items-center gap-2">
+              <Input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="w-36 text-xs"
+                placeholder="From"
+              />
+              <span className="text-xs text-muted-foreground">to</span>
+              <Input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="w-36 text-xs"
+                placeholder="To"
+              />
+            </div>
+          </FilterBar>
         </CardHeader>
         <CardContent>
-          <EventsTable events={data?.data ?? []} isLoading={isLoading} projectSlug={slug} />
+          <EventsTable events={filteredEvents} isLoading={isLoading} projectSlug={slug} />
 
           {totalPages > 1 && (
             <div className="mt-4 flex items-center justify-between">

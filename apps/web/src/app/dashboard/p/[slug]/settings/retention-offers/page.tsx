@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
+  Badge,
   Button,
   Input,
   Label,
@@ -27,7 +28,7 @@ import {
 } from "@/hooks/use-retention-offers";
 import { CANCEL_REASON_LABELS } from "@/lib/constants";
 import type { OfferType, RetentionOffer } from "@/types/api";
-import { Gift, Pause, ArrowDown, Sparkles } from "lucide-react";
+import { Gift, Pause, ArrowDown, Sparkles, BarChart3, ShieldCheck } from "lucide-react";
 
 const OFFER_TYPES: { value: OfferType; label: string }[] = [
   { value: "discount", label: "Discount" },
@@ -83,8 +84,13 @@ export default function RetentionOffersPage() {
   const deleteMutation = useDeleteRetentionOffer(slug);
 
   const reasons = Object.entries(CANCEL_REASON_LABELS);
+  const totalReasons = reasons.length;
   const offerMap = new Map<string, RetentionOffer>();
   offers?.forEach((o) => offerMap.set(o.cancel_reason, o));
+
+  const activeOffers = offers?.filter((o) => o.is_active) ?? [];
+  const configuredReasons = new Set(offers?.map((o) => o.cancel_reason) ?? []);
+  const configuredCount = configuredReasons.size;
 
   return (
     <div className="space-y-6">
@@ -97,6 +103,45 @@ export default function RetentionOffersPage() {
           reason can have its own targeted offer to win them back.
         </p>
       </div>
+
+      {/* ─────────── Stats Summary ─────────── */}
+      {!isLoading && (
+        <div className="grid gap-3 grid-cols-3">
+          <Card>
+            <CardContent className="flex items-center gap-3 p-4">
+              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-green-100 dark:bg-green-900/30">
+                <ShieldCheck className="h-4 w-4 text-green-600 dark:text-green-400" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Active Offers</p>
+                <p className="text-lg font-semibold">{activeOffers.length}</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="flex items-center gap-3 p-4">
+              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-blue-100 dark:bg-blue-900/30">
+                <Gift className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Configured Reasons</p>
+                <p className="text-lg font-semibold">{configuredCount}</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="flex items-center gap-3 p-4">
+              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-purple-100 dark:bg-purple-900/30">
+                <BarChart3 className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Coverage</p>
+                <p className="text-lg font-semibold">{configuredCount}/{totalReasons} reasons covered</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {isLoading ? (
         <div className="grid gap-4 sm:grid-cols-2">
@@ -223,6 +268,9 @@ function OfferCard({
         <CardDescription className="text-xs">
           Cancel reason: <code className="text-xs">{reason}</code>
         </CardDescription>
+        <Badge variant="outline" className="text-[10px] text-muted-foreground/60 w-fit mt-1 font-normal">
+          <BarChart3 className="h-3 w-3 mr-1" /> Analytics coming soon
+        </Badge>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="space-y-1.5">

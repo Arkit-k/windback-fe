@@ -1,4 +1,4 @@
 {
   "title": "API Reference",
-  "pages": ["index", "churn-events", "recovery", "stats"]
+  "pages": ["index", "churn-events", "recovery", "stats", "tracking"]
 }

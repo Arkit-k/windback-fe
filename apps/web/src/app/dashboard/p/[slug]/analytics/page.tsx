@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { Button, Card, CardContent, CardHeader, CardTitle, Skeleton } from "@windback/ui";
 import { StatCard } from "@/components/dashboard/stat-card";
+import { BarChart, LineChart, AreaChart } from "@/components/dashboard/mini-chart";
 import { useCurrentProject } from "@/providers/project-provider";
 import { useEmailAnalytics, useRecoveryTrends } from "@/hooks/use-analytics";
 import { formatPercent } from "@/lib/utils";
@@ -97,6 +98,20 @@ export default function AnalyticsPage() {
         <CardHeader>
           <CardTitle>Daily Breakdown</CardTitle>
         </CardHeader>
+        {analytics?.daily && analytics.daily.length > 0 && (
+          <CardContent className="pb-0">
+            <BarChart
+              data={analytics.daily.slice(-14).map((day) => ({
+                label: day.date,
+                values: [
+                  { value: day.sent, color: "#3b82f6", name: "Sent" },
+                  { value: day.opened, color: "#22c55e", name: "Opened" },
+                  { value: day.clicked, color: "#f59e0b", name: "Clicked" },
+                ],
+              }))}
+            />
+          </CardContent>
+        )}
         <CardContent>
           {isLoading ? (
             <div className="space-y-3">
@@ -179,6 +194,18 @@ export default function AnalyticsPage() {
         <CardHeader>
           <CardTitle>Recovery Trends</CardTitle>
         </CardHeader>
+        {trends && trends.length > 0 && (
+          <CardContent className="pb-0">
+            <LineChart
+              data={trends.map((t) => ({
+                label: t.date,
+                value: t.recovery_rate,
+              }))}
+              color="#6366f1"
+              fillColor="rgba(99,102,241,0.2)"
+            />
+          </CardContent>
+        )}
         <CardContent>
           {trendsLoading ? (
             <div className="space-y-3">
@@ -251,6 +278,42 @@ export default function AnalyticsPage() {
               No recovery trend data yet. Trends will appear as churn events are
               processed.
             </p>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* MRR Impact */}
+      <Card>
+        <CardHeader>
+          <CardTitle>MRR Impact</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {trendsLoading ? (
+            <div className="space-y-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} className="h-10 w-full" />
+              ))}
+            </div>
+          ) : (
+            <AreaChart
+              data={(trends ?? []).map((t) => ({
+                label: t.date,
+                series: [
+                  {
+                    value: t.mrr_at_risk_cents / 100,
+                    color: "#ef4444",
+                    fillColor: "rgba(239,68,68,0.25)",
+                    name: "MRR at Risk",
+                  },
+                  {
+                    value: t.mrr_recovered_cents / 100,
+                    color: "#22c55e",
+                    fillColor: "rgba(34,197,94,0.25)",
+                    name: "MRR Recovered",
+                  },
+                ],
+              }))}
+            />
           )}
         </CardContent>
       </Card>
