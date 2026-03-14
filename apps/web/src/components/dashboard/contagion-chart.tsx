@@ -59,7 +59,7 @@ export function ContagionGraph({ nodes, edges, clusters }: ContagionGraphProps) 
     if (nodes.length === 0) return [] as PositionedNode[];
 
     // Group nodes by segment for circular cluster layout
-    const segmentOrder = ["starter", "growth", "scale"];
+    const segmentOrder = ["starter", "growth", "enterprise", "scale"];
     const groups: Record<string, ContagionNode[]> = {};
     for (const n of nodes) {
       (groups[n.segment] ??= []).push(n);
@@ -104,7 +104,7 @@ export function ContagionGraph({ nodes, edges, clusters }: ContagionGraphProps) 
 
   // Cluster label positions
   const clusterLabels = useMemo(() => {
-    const segmentOrder = ["starter", "growth", "scale"];
+    const segmentOrder = ["starter", "growth", "enterprise", "scale"];
     const segmentKeys = segmentOrder.filter((s) =>
       nodes.some((n) => n.segment === s),
     );

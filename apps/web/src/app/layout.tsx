@@ -162,7 +162,7 @@ const jsonLd = {
           name: "How much does Windback cost?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Windback offers three plans: Starter (free), Growth ($29/month or $24/month annually), and Scale ($99/month or $79/month annually). All paid plans come with a 14-day free trial.",
+            text: "Windback offers four plans: Starter (free), Growth ($39/month), Enterprise ($89/month), and Scale ($129/month). Annual billing saves ~15%. All paid plans come with a 14-day free trial.",
           },
         },
       ],

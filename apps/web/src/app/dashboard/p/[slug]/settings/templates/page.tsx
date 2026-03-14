@@ -228,11 +228,11 @@ export default function TemplatesPage() {
             <span>
               {planTier === "starter" && "Starter: 10 templates unlocked"}
               {planTier === "growth" && "Growth: 30 templates unlocked"}
-              {planTier === "scale" && "Scale: all 50 templates unlocked"}
+              {(planTier === "enterprise" || planTier === "scale") && "All templates unlocked"}
             </span>
-            {planTier !== "scale" && (
+            {(planTier === "starter" || planTier === "growth") && (
               <Badge variant="outline" className="text-xs">
-                {planTier === "starter" ? "Upgrade to Growth for 30" : "Upgrade to Scale for 50"}
+                {planTier === "starter" ? "Upgrade to Growth for 30" : "Upgrade to Enterprise for all"}
               </Badge>
             )}
           </div>

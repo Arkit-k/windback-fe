@@ -28,9 +28,10 @@ const PLAN_CONFIG: Record<
   string,
   { label: string; price: string; priceCents: number; eventsLimit: number; projectsLimit: number }
 > = {
-  starter: { label: "Starter", price: "Free",   priceCents: 0,    eventsLimit: 50,  projectsLimit: 1  },
-  growth:  { label: "Growth",  price: "$29/mo", priceCents: 2900, eventsLimit: 500, projectsLimit: 5  },
-  scale:   { label: "Scale",   price: "$99/mo", priceCents: 9900, eventsLimit: -1,  projectsLimit: -1 },
+  starter:  { label: "Starter",  price: "Free",    priceCents: 0,     eventsLimit: 50,   projectsLimit: 1   },
+  growth:   { label: "Growth",   price: "$39/mo",  priceCents: 3900,  eventsLimit: 500,  projectsLimit: 5   },
+  enterprise: { label: "Enterprise", price: "$89/mo",  priceCents: 8900,  eventsLimit: 2000, projectsLimit: 15  },
+  scale:    { label: "Scale",    price: "$129/mo", priceCents: 12900, eventsLimit: -1,   projectsLimit: -1  },
 };
 
 const CANCEL_REASONS = [
@@ -397,8 +398,8 @@ export default function BillingPage() {
           <CardTitle>Plans</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 sm:grid-cols-3">
-            {(["starter", "growth", "scale"] as const).map((tier) => {
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {(["starter", "growth", "enterprise", "scale"] as const).map((tier) => {
               const config = PLAN_CONFIG[tier];
               const isCurrent = currentPlan === tier;
 

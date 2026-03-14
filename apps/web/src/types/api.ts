@@ -259,7 +259,7 @@ export interface PaymentFailureStats {
 // Billing types
 
 export interface UsageInfo {
-  plan_tier: 'starter' | 'growth' | 'scale';
+  plan_tier: 'starter' | 'growth' | 'enterprise' | 'scale';
   events_used: number;
   events_limit: number;
   projects_used: number;
@@ -476,7 +476,7 @@ export interface SystemRecoveryTemplate {
   id: string;
   cancel_reason: string;
   strategy: string;
-  tier_required: "starter" | "growth" | "scale";
+  tier_required: "starter" | "growth" | "business" | "scale";
   name: string;
   subject: string;
   body: string;
