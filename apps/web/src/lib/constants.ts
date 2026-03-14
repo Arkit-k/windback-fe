@@ -47,6 +47,30 @@ export const QUERY_KEYS = {
   playbookRuns: (slug: string, id: string) => ["playbook-runs", slug, id] as const,
   auctionOffers: (slug: string, config?: unknown) => ["auction-offers", slug, config] as const,
   auctionSummary: (slug: string, config?: unknown) => ["auction-summary", slug, config] as const,
+  campaigns: (slug: string, params?: unknown) => ["campaigns", slug, params] as const,
+  campaign: (slug: string, id: string) => ["campaigns", slug, id] as const,
+  healthScores: (slug: string, params?: unknown) => ["health-scores", slug, params] as const,
+  healthScoreStats: (slug: string) => ["health-score-stats", slug] as const,
+  surveys: (slug: string) => ["surveys", slug] as const,
+  survey: (slug: string, id: string) => ["surveys", slug, id] as const,
+  surveyStats: (slug: string, id: string) => ["survey-stats", slug, id] as const,
+  csmAssignments: (slug: string) => ["csm-assignments", slug] as const,
+  csmStats: (slug: string) => ["csm-stats", slug] as const,
+  csmTouchpoints: (slug: string, assignmentId: string) => ["csm-touchpoints", slug, assignmentId] as const,
+  ltv: (slug: string, params?: unknown) => ["ltv", slug, params] as const,
+  ltvStats: (slug: string) => ["ltv-stats", slug] as const,
+  alertRules: (slug: string) => ["alert-rules", slug] as const,
+  alertHistory: (slug: string, params?: unknown) => ["alert-history", slug, params] as const,
+  onboardingMilestones: (slug: string) => ["onboarding-milestones", slug] as const,
+  onboardingProgress: (slug: string, email: string) => ["onboarding-progress", slug, email] as const,
+  onboardingStats: (slug: string) => ["onboarding-stats", slug] as const,
+  integrations: (slug: string) => ["integrations", slug] as const,
+  integrationProviders: (slug: string) => ["integration-providers", slug] as const,
+  statusIncidents: (slug: string) => ["status-incidents", slug] as const,
+  statusPageConfig: (slug: string) => ["status-page-config", slug] as const,
+  customDashboards: (slug: string) => ["custom-dashboards", slug] as const,
+  customDashboard: (slug: string, id: string) => ["custom-dashboards", slug, id] as const,
+  exchangeRates: (slug: string) => ["exchange-rates", slug] as const,
 } as const;
 
 export const STALE_TIMES = {
@@ -92,6 +116,27 @@ export const STALE_TIMES = {
   // Auction offers are computed on demand; 60s avoids repeated heavy queries.
   auctionOffers: 60 * 1000,
   auctionSummary: 60 * 1000,
+  campaigns: 30 * 1000,
+  healthScores: 60 * 1000,
+  healthScoreStats: 60 * 1000,
+  surveys: 30 * 1000,
+  surveyStats: 30 * 1000,
+  csmAssignments: 30 * 1000,
+  csmStats: 60 * 1000,
+  csmTouchpoints: 30 * 1000,
+  ltv: 60 * 1000,
+  ltvStats: 60 * 1000,
+  alertRules: 30 * 1000,
+  alertHistory: 30 * 1000,
+  onboardingMilestones: 30 * 1000,
+  onboardingProgress: 30 * 1000,
+  onboardingStats: 60 * 1000,
+  integrations: 30 * 1000,
+  integrationProviders: 5 * 60 * 1000,
+  statusIncidents: 30 * 1000,
+  statusPageConfig: 60 * 1000,
+  customDashboards: 30 * 1000,
+  exchangeRates: 5 * 60 * 1000,
 } as const;
 
 export const STATUS_LABELS: Record<string, string> = {
@@ -140,6 +185,22 @@ export const CANCEL_REASON_LABELS: Record<string, string> = {
   poor_support: "Poor Support",
   dont_need_anymore: "Don't Need Anymore",
   other: "Other",
+};
+
+export const CAMPAIGN_TYPE_LABELS: Record<string, string> = {
+  paid_ads: "Paid Ads",
+  email: "Email",
+  social: "Social",
+  referral: "Referral",
+  content: "Content",
+  other: "Other",
+};
+
+export const CAMPAIGN_STATUS_LABELS: Record<string, string> = {
+  draft: "Draft",
+  active: "Active",
+  paused: "Paused",
+  completed: "Completed",
 };
 
 export const PROVIDER_LABELS: Record<string, string> = {

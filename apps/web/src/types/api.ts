@@ -946,6 +946,78 @@ export interface CreateABTestRequest {
   variants: ABTestVariant[];
 }
 
+// Campaign Tracking types
+
+export type CampaignStatus = "draft" | "active" | "paused" | "completed";
+export type CampaignType = "paid_ads" | "email" | "social" | "referral" | "content" | "other";
+
+export interface CampaignGoal {
+  metric: string;
+  target: number;
+}
+
+export interface Campaign {
+  id: string;
+  project_id: string;
+  name: string;
+  description: string;
+  campaign_type: CampaignType;
+  status: CampaignStatus;
+  budget_cents?: number;
+  currency: string;
+  goals: CampaignGoal[];
+  starts_at: string;
+  ends_at: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CampaignMetrics {
+  revenue_cents_during: number;
+  revenue_cents_baseline: number;
+  revenue_lift_percent: number;
+  new_customers_during: number;
+  new_customers_baseline: number;
+  churn_events_during: number;
+  churn_events_baseline: number;
+  recoveries_during: number;
+  recoveries_baseline: number;
+  payment_failures_during: number;
+  payment_failures_baseline: number;
+  payment_recoveries_during: number;
+  payment_recoveries_baseline: number;
+  payment_amount_recovered_during: number;
+  payment_amount_recovered_baseline: number;
+  roi_percent?: number;
+}
+
+export interface CampaignWithMetrics extends Campaign {
+  metrics: CampaignMetrics;
+}
+
+export interface CreateCampaignRequest {
+  name: string;
+  description?: string;
+  campaign_type: CampaignType;
+  budget_cents?: number;
+  currency?: string;
+  goals: CampaignGoal[];
+  starts_at: string;
+  ends_at: string;
+}
+
+export interface UpdateCampaignRequest {
+  name?: string;
+  description?: string;
+  campaign_type?: CampaignType;
+  status?: CampaignStatus;
+  budget_cents?: number;
+  currency?: string;
+  goals?: CampaignGoal[];
+  starts_at?: string;
+  ends_at?: string;
+}
+
 // Mood Ring types
 
 export interface MoodHistoryPoint {
@@ -1063,4 +1135,381 @@ export interface AuctionConfig {
   max_pause_days: number;
   min_roi: number;
   preferred_strategy: "aggressive" | "balanced" | "conservative";
+}
+
+// Customer Health Score types
+
+export interface RiskFactor {
+  factor: string;
+  impact: number;
+  description: string;
+}
+
+export interface CustomerHealthScore {
+  id: string;
+  project_id: string;
+  customer_email: string;
+  score: number;
+  risk_level: string;
+  risk_factors: RiskFactor[];
+  last_computed_at: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ScoreBucket {
+  range: string;
+  count: number;
+}
+
+export interface HealthScoreStats {
+  total_customers: number;
+  avg_score: number;
+  high_risk: number;
+  medium_risk: number;
+  low_risk: number;
+  distribution: ScoreBucket[];
+}
+
+// NPS/CSAT Survey types
+
+export type SurveyType = "nps" | "csat";
+export type SurveyStatus = "draft" | "active" | "closed";
+
+export interface Survey {
+  id: string;
+  project_id: string;
+  name: string;
+  survey_type: SurveyType;
+  status: SurveyStatus;
+  question: string;
+  response_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SurveyResponse {
+  id: string;
+  survey_id: string;
+  project_id: string;
+  customer_email: string;
+  score: number;
+  comment: string;
+  responded_at: string;
+}
+
+export interface SurveyStats {
+  total_responses: number;
+  avg_score: number;
+  nps_score: number;
+  promoters: number;
+  passives: number;
+  detractors: number;
+  recent_responses: SurveyResponse[];
+}
+
+export interface CreateSurveyRequest {
+  name: string;
+  survey_type: SurveyType;
+  question: string;
+}
+
+export interface UpdateSurveyRequest {
+  name?: string;
+  question?: string;
+  status?: SurveyStatus;
+}
+
+export interface SubmitSurveyResponseRequest {
+  customer_email: string;
+  score: number;
+  comment?: string;
+}
+
+// CSM Assignment types
+
+export interface CSMAssignment {
+  id: string;
+  project_id: string;
+  customer_email: string;
+  csm_user_id: string;
+  csm_name: string;
+  priority: string;
+  notes: string;
+  assigned_at: string;
+}
+
+export interface CSMTouchpoint {
+  id: string;
+  assignment_id: string;
+  project_id: string;
+  touchpoint_type: string;
+  summary: string;
+  outcome: string;
+  contacted_at: string;
+}
+
+export interface CSMStats {
+  total_assignments: number;
+  recent_touchpoints: number;
+  by_priority: Record<string, number>;
+}
+
+export interface CreateCSMAssignmentRequest {
+  customer_email: string;
+  csm_user_id: string;
+  priority?: string;
+  notes?: string;
+}
+
+export interface CreateTouchpointRequest {
+  touchpoint_type: string;
+  summary: string;
+  outcome?: string;
+}
+
+// Customer LTV types
+
+export interface CustomerLTV {
+  id: string;
+  project_id: string;
+  customer_email: string;
+  total_revenue_cents: number;
+  avg_monthly_cents: number;
+  tenure_months: number;
+  predicted_ltv_cents: number;
+  segment: string;
+  last_computed_at: string;
+}
+
+export interface LTVSegment {
+  segment: string;
+  count: number;
+  avg_ltv_cents: number;
+}
+
+export interface LTVStats {
+  total_customers: number;
+  avg_ltv_cents: number;
+  total_revenue_cents: number;
+  segments: LTVSegment[];
+}
+
+// Alert Rule types
+
+export type AlertChannel = "email" | "slack" | "webhook";
+
+export interface AlertRule {
+  id: string;
+  project_id: string;
+  name: string;
+  metric: string;
+  condition: string;
+  threshold: number;
+  channel: AlertChannel;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AlertHistory {
+  id: string;
+  rule_id: string;
+  rule_name: string;
+  project_id: string;
+  metric_value: number;
+  message: string;
+  acknowledged: boolean;
+  triggered_at: string;
+}
+
+export interface CreateAlertRuleRequest {
+  name: string;
+  metric: string;
+  condition: string;
+  threshold: number;
+  channel: AlertChannel;
+}
+
+export interface UpdateAlertRuleRequest {
+  name?: string;
+  metric?: string;
+  condition?: string;
+  threshold?: number;
+  channel?: AlertChannel;
+  is_active?: boolean;
+}
+
+// Onboarding Tracking types
+
+export interface OnboardingMilestone {
+  id: string;
+  project_id: string;
+  name: string;
+  description: string;
+  sort_order: number;
+  created_at: string;
+}
+
+export interface MilestoneProgress {
+  milestone_id: string;
+  milestone_name: string;
+  completed: boolean;
+  completed_at?: string;
+}
+
+export interface OnboardingProgress {
+  customer_email: string;
+  total_milestones: number;
+  completed_milestones: number;
+  completion_percent: number;
+  milestones: MilestoneProgress[];
+}
+
+export interface MilestoneDropoff {
+  milestone_name: string;
+  completions: number;
+  dropoff_rate: number;
+}
+
+export interface OnboardingStats {
+  total_customers: number;
+  fully_onboarded: number;
+  avg_completion_percent: number;
+  dropoff: MilestoneDropoff[];
+}
+
+export interface CreateMilestoneRequest {
+  name: string;
+  description?: string;
+  sort_order?: number;
+}
+
+export interface CompleteMilestoneRequest {
+  customer_email: string;
+}
+
+// Integration types
+
+export interface Integration {
+  id: string;
+  project_id: string;
+  provider: string;
+  status: string;
+  config: Record<string, unknown>;
+  last_synced_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface IntegrationProvider {
+  name: string;
+  slug: string;
+  description: string;
+  category: string;
+  features: string[];
+  is_available: boolean;
+}
+
+export interface ConnectIntegrationRequest {
+  provider: string;
+  config?: Record<string, unknown>;
+  credentials?: Record<string, unknown>;
+}
+
+// Status Page types
+
+export type IncidentStatus = "investigating" | "identified" | "monitoring" | "resolved";
+export type IncidentSeverity = "minor" | "major" | "critical";
+
+export interface StatusIncident {
+  id: string;
+  project_id: string;
+  title: string;
+  description: string;
+  status: IncidentStatus;
+  severity: IncidentSeverity;
+  affected_components: string[];
+  started_at: string;
+  resolved_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface StatusPageConfig {
+  id: string;
+  project_id: string;
+  is_public: boolean;
+  custom_domain: string;
+  branding: Record<string, unknown>;
+  components: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateIncidentRequest {
+  title: string;
+  description?: string;
+  severity?: IncidentSeverity;
+  affected_components?: string[];
+}
+
+export interface UpdateIncidentRequest {
+  title?: string;
+  description?: string;
+  status?: IncidentStatus;
+  severity?: IncidentSeverity;
+}
+
+// Custom Dashboard types
+
+export interface DashboardWidget {
+  id: string;
+  type: string;
+  title: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  config: Record<string, unknown>;
+}
+
+export interface CustomDashboard {
+  id: string;
+  project_id: string;
+  user_id: string;
+  name: string;
+  is_default: boolean;
+  layout: DashboardWidget[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateDashboardRequest {
+  name: string;
+  layout?: DashboardWidget[];
+}
+
+export interface UpdateDashboardRequest {
+  name?: string;
+  is_default?: boolean;
+  layout?: DashboardWidget[];
+}
+
+// Exchange Rate types
+
+export interface ExchangeRate {
+  id: string;
+  from_currency: string;
+  to_currency: string;
+  rate: number;
+  updated_at: string;
+}
+
+export interface ConvertedAmount {
+  from_currency: string;
+  to_currency: string;
+  original_amount: number;
+  converted_amount: number;
+  rate: number;
 }

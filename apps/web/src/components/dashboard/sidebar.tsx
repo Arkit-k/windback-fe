@@ -11,7 +11,8 @@ import {
   SelectItem,
 } from "@windback/ui";
 import { useProjects } from "@/hooks/use-projects";
-import { useMemo } from "react";
+import { useSidebarCampaigns } from "@/hooks/use-campaigns";
+import { useMemo, useState } from "react";
 import {
   LayoutDashboard,
   Activity,
@@ -45,6 +46,19 @@ import {
   Network,
   Radar,
   Clock,
+  ChevronDown,
+  Megaphone,
+  Plus,
+  HeartPulse,
+  MessageSquare,
+  Headphones,
+  DollarSign,
+  BellRing,
+  ListChecks,
+  Store,
+  Radio,
+  LayoutGrid,
+  ArrowRightLeft,
 } from "lucide-react";
 
 export function Sidebar() {
@@ -60,50 +74,101 @@ export function Sidebar() {
   const isProjectRoute = !!currentSlug;
 
   const mainNav = isProjectRoute
-    ? [
-        { href: `/dashboard/p/${currentSlug}`, label: "Overview", icon: LayoutDashboard, exact: true },
-        { href: `/dashboard/p/${currentSlug}/events`, label: "Churn Events", icon: Activity },
-        { href: `/dashboard/p/${currentSlug}/failed-payments`, label: "Failed Payments", icon: CreditCard },
-        { href: `/dashboard/p/${currentSlug}/analytics`, label: "Analytics", icon: BarChart3 },
-        { href: `/dashboard/p/${currentSlug}/churn-risk`, label: "Churn Risk", icon: AlertTriangle },
-        { href: `/dashboard/p/${currentSlug}/market-pulse`, label: "Market Pulse", icon: TrendingUp },
-        { href: `/dashboard/p/${currentSlug}/cohorts`, label: "Cohorts", icon: Users },
-        { href: `/dashboard/p/${currentSlug}/forecasting`, label: "Forecasting", icon: LineChart },
-        { href: `/dashboard/p/${currentSlug}/segments`, label: "Segments", icon: Filter },
-        { href: `/dashboard/p/${currentSlug}/playbooks`, label: "Playbooks", icon: Workflow },
-        { href: `/dashboard/p/${currentSlug}/ab-tests`, label: "A/B Tests", icon: FlaskConical },
-        { href: `/dashboard/p/${currentSlug}/benchmarking`, label: "Benchmarks", icon: BarChart3 },
-        { href: `/dashboard/p/${currentSlug}/ghost-customers`, label: "Ghost Customers", icon: Ghost },
-        { href: `/dashboard/p/${currentSlug}/mood`, label: "Mood Ring", icon: Heart },
-        { href: `/dashboard/p/${currentSlug}/win-back`, label: "Win-Back", icon: Gavel },
-        { href: `/dashboard/p/${currentSlug}/contagion`, label: "Contagion Map", icon: Network },
-        { href: `/dashboard/p/${currentSlug}/competitor-radar`, label: "Competitor Radar", icon: Radar },
-        { href: `/dashboard/p/${currentSlug}/time-machine`, label: "Time Machine", icon: Clock },
-      ]
+    ? []
     : [
         { href: "/dashboard/projects", label: "Projects", icon: FolderOpen },
         { href: "/dashboard/billing", label: "Billing", icon: Receipt },
       ];
 
   const settingsNav = isProjectRoute
-    ? [
-        { href: `/dashboard/p/${currentSlug}/settings`, label: "General", icon: Settings, exact: true },
-        { href: `/dashboard/p/${currentSlug}/settings/api-keys`, label: "API Keys", icon: Key },
-        { href: `/dashboard/p/${currentSlug}/settings/integrations`, label: "Integrations", icon: Plug },
-        { href: `/dashboard/p/${currentSlug}/settings/allowed-origins`, label: "Allowed Origins", icon: Globe },
-        { href: `/dashboard/p/${currentSlug}/settings/dunning`, label: "Dunning", icon: RefreshCw },
-        { href: `/dashboard/p/${currentSlug}/settings/email`, label: "Email Sender", icon: Mail },
-        { href: `/dashboard/p/${currentSlug}/settings/notifications`, label: "Notifications", icon: Bell },
-        { href: `/dashboard/p/${currentSlug}/settings/templates`, label: "Templates", icon: FileText },
-        { href: `/dashboard/p/${currentSlug}/settings/retention-offers`, label: "Retention Offers", icon: Gift },
-        { href: `/dashboard/p/${currentSlug}/settings/churn-risk`, label: "Churn Risk", icon: AlertTriangle },
-        { href: `/dashboard/p/${currentSlug}/settings/audit-logs`, label: "Audit Log", icon: Shield },
-        { href: `/dashboard/p/${currentSlug}/settings/import-export`, label: "Import / Export", icon: ArrowLeftRight },
-      ]
+    ? []
     : [
         { href: "/dashboard/settings/profile", label: "Profile", icon: UserRound },
         { href: "/dashboard/settings/security", label: "Security", icon: Shield },
       ];
+
+  const p = `/dashboard/p/${currentSlug}`;
+
+  type SidebarEntry =
+    | { type: "link"; href: string; label: string; icon: React.ComponentType<{ className?: string }>; exact?: boolean }
+    | { type: "group"; label: string; icon: React.ComponentType<{ className?: string }>; items: { href: string; label: string; icon: React.ComponentType<{ className?: string }>; exact?: boolean }[] }
+    | { type: "dynamic-group"; href: string; label: string; icon: React.ComponentType<{ className?: string }> };
+
+  const projectNav: SidebarEntry[] = isProjectRoute
+    ? [
+        { type: "link", href: p, label: "Overview", icon: LayoutDashboard, exact: true },
+        {
+          type: "group", label: "Churn & Retention", icon: Activity,
+          items: [
+            { href: `${p}/events`, label: "Churn Events", icon: Activity },
+            { href: `${p}/churn-risk`, label: "Churn Risk", icon: AlertTriangle },
+            { href: `${p}/ghost-customers`, label: "Ghost Customers", icon: Ghost },
+            { href: `${p}/win-back`, label: "Win-Back", icon: Gavel },
+            { href: `${p}/contagion`, label: "Contagion Map", icon: Network },
+          ],
+        },
+        { type: "link", href: `${p}/failed-payments`, label: "Failed Payments", icon: CreditCard },
+        {
+          type: "group", label: "Analytics", icon: BarChart3,
+          items: [
+            { href: `${p}/analytics`, label: "Analytics", icon: BarChart3 },
+            { href: `${p}/market-pulse`, label: "Market Pulse", icon: TrendingUp },
+            { href: `${p}/cohorts`, label: "Cohorts", icon: Users },
+            { href: `${p}/forecasting`, label: "Forecasting", icon: LineChart },
+            { href: `${p}/segments`, label: "Segments", icon: Filter },
+            { href: `${p}/benchmarking`, label: "Benchmarks", icon: BarChart3 },
+            { href: `${p}/mood`, label: "Mood Ring", icon: Heart },
+            { href: `${p}/competitor-radar`, label: "Competitor Radar", icon: Radar },
+            { href: `${p}/time-machine`, label: "Time Machine", icon: Clock },
+            { href: `${p}/ltv`, label: "LTV Tracking", icon: DollarSign },
+            { href: `${p}/exchange-rates`, label: "Exchange Rates", icon: ArrowRightLeft },
+          ],
+        },
+        {
+          type: "group", label: "Customer Success", icon: HeartPulse,
+          items: [
+            { href: `${p}/health-scores`, label: "Health Scores", icon: HeartPulse },
+            { href: `${p}/surveys`, label: "NPS/CSAT Surveys", icon: MessageSquare },
+            { href: `${p}/csm`, label: "CSM Assignments", icon: Headphones },
+            { href: `${p}/onboarding`, label: "Onboarding", icon: ListChecks },
+          ],
+        },
+        {
+          type: "group", label: "Automation", icon: Workflow,
+          items: [
+            { href: `${p}/playbooks`, label: "Playbooks", icon: Workflow },
+            { href: `${p}/ab-tests`, label: "A/B Tests", icon: FlaskConical },
+            { href: `${p}/alerts`, label: "Alerts", icon: BellRing },
+          ],
+        },
+        { type: "dynamic-group", href: `${p}/campaigns`, label: "Campaigns", icon: Megaphone },
+        {
+          type: "group", label: "Operations", icon: Radio,
+          items: [
+            { href: `${p}/integrations`, label: "Integrations", icon: Store },
+            { href: `${p}/status-page`, label: "Status Page", icon: Radio },
+            { href: `${p}/dashboards`, label: "Custom Dashboards", icon: LayoutGrid },
+          ],
+        },
+        {
+          type: "group", label: "Settings", icon: Settings,
+          items: [
+            { href: `${p}/settings`, label: "General", icon: Settings, exact: true },
+            { href: `${p}/settings/api-keys`, label: "API Keys", icon: Key },
+            { href: `${p}/settings/integrations`, label: "Integrations", icon: Plug },
+            { href: `${p}/settings/allowed-origins`, label: "Allowed Origins", icon: Globe },
+            { href: `${p}/settings/dunning`, label: "Dunning", icon: RefreshCw },
+            { href: `${p}/settings/email`, label: "Email Sender", icon: Mail },
+            { href: `${p}/settings/notifications`, label: "Notifications", icon: Bell },
+            { href: `${p}/settings/templates`, label: "Templates", icon: FileText },
+            { href: `${p}/settings/retention-offers`, label: "Retention Offers", icon: Gift },
+            { href: `${p}/settings/churn-risk`, label: "Churn Risk", icon: AlertTriangle },
+            { href: `${p}/settings/audit-logs`, label: "Audit Log", icon: Shield },
+            { href: `${p}/settings/import-export`, label: "Import / Export", icon: ArrowLeftRight },
+          ],
+        },
+      ]
+    : [];
 
   const bottomNav = [
     { href: "/dashboard/support", label: "Support", icon: HelpCircle },
@@ -133,9 +198,9 @@ export function Sidebar() {
               <SelectValue placeholder="Select project" />
             </SelectTrigger>
             <SelectContent position="popper" className="min-w-[var(--radix-select-trigger-width)]">
-              {projects.map((p) => (
-                <SelectItem key={p.slug} value={p.slug}>
-                  {p.name}
+              {projects.map((proj) => (
+                <SelectItem key={proj.slug} value={proj.slug}>
+                  {proj.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -145,11 +210,14 @@ export function Sidebar() {
 
       {/* Main nav */}
       <nav className="flex-1 space-y-1 overflow-y-auto p-3">
-        <div className="space-y-1">
-          {mainNav.map((item) => (
-            <NavItem key={item.href} {...item} pathname={pathname} />
-          ))}
-        </div>
+        {/* Non-project routes: flat lists */}
+        {mainNav.length > 0 && (
+          <div className="space-y-1">
+            {mainNav.map((item) => (
+              <NavItem key={item.href} {...item} pathname={pathname} />
+            ))}
+          </div>
+        )}
 
         {settingsNav.length > 0 && (
           <>
@@ -163,6 +231,21 @@ export function Sidebar() {
               ))}
             </div>
           </>
+        )}
+
+        {/* Project routes: grouped nav */}
+        {projectNav.length > 0 && (
+          <div className="space-y-1">
+            {projectNav.map((entry) =>
+              entry.type === "link" ? (
+                <NavItem key={entry.href} href={entry.href} label={entry.label} icon={entry.icon} exact={entry.exact} pathname={pathname} />
+              ) : entry.type === "dynamic-group" ? (
+                <DynamicNavGroup key={entry.label} href={entry.href} label={entry.label} icon={entry.icon} slug={currentSlug!} pathname={pathname} />
+              ) : (
+                <NavGroup key={entry.label} label={entry.label} icon={entry.icon} items={entry.items} pathname={pathname} />
+              )
+            )}
+          </div>
         )}
       </nav>
 
@@ -180,19 +263,20 @@ export function Sidebar() {
   );
 }
 
+type NavItemProps = {
+  href: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  exact?: boolean;
+};
+
 function NavItem({
   href,
   label,
   icon: Icon,
   pathname,
   exact,
-}: {
-  href: string;
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-  pathname: string;
-  exact?: boolean;
-}) {
+}: NavItemProps & { pathname: string }) {
   const isActive = exact
     ? pathname === href
     : pathname === href || pathname.startsWith(href + "/");
@@ -213,5 +297,123 @@ function NavItem({
       <Icon className="h-4 w-4 shrink-0" />
       <span className="overflow-hidden whitespace-nowrap">{label}</span>
     </Link>
+  );
+}
+
+function DynamicNavGroup({
+  href,
+  label,
+  icon: Icon,
+  slug,
+  pathname,
+}: {
+  href: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  slug: string;
+  pathname: string;
+}) {
+  const isActive = pathname === href || pathname.startsWith(href + "/");
+  const [open, setOpen] = useState(isActive);
+  const { data: campaignData } = useSidebarCampaigns(slug, open || isActive);
+  const campaigns = campaignData?.data;
+
+  return (
+    <div>
+      <button
+        onClick={() => setOpen(!open)}
+        className={cn(
+          "flex w-full items-center gap-3 rounded-sm px-3 py-2 text-sm transition-all duration-150",
+          isActive
+            ? "text-[var(--accent)] font-medium"
+            : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+        )}
+      >
+        <Icon className="h-4 w-4 shrink-0" />
+        <span className="flex-1 overflow-hidden whitespace-nowrap text-left">{label}</span>
+        <ChevronDown
+          className={cn(
+            "h-3.5 w-3.5 shrink-0 transition-transform duration-200",
+            open && "rotate-180",
+          )}
+        />
+      </button>
+      <div
+        className={cn(
+          "overflow-hidden transition-all duration-200",
+          open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0",
+        )}
+      >
+        <div className="ml-2 space-y-0.5 border-l border-border pl-1 pt-0.5">
+          {campaigns?.map((c) => (
+            <NavItem
+              key={c.id}
+              href={`${href}/${c.id}`}
+              label={c.name}
+              icon={Megaphone}
+              pathname={pathname}
+            />
+          ))}
+          <Link
+            href={href}
+            className="flex items-center gap-2 rounded-sm px-3 py-1.5 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground transition-all duration-150"
+          >
+            <Plus className="h-3 w-3" /> New
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function NavGroup({
+  label,
+  icon: Icon,
+  items,
+  pathname,
+}: {
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  items: NavItemProps[];
+  pathname: string;
+}) {
+  const hasActiveChild = items.some((item) =>
+    item.exact ? pathname === item.href : pathname === item.href || pathname.startsWith(item.href + "/")
+  );
+  const [open, setOpen] = useState(hasActiveChild);
+
+  return (
+    <div>
+      <button
+        onClick={() => setOpen(!open)}
+        className={cn(
+          "flex w-full items-center gap-3 rounded-sm px-3 py-2 text-sm transition-all duration-150",
+          hasActiveChild
+            ? "text-[var(--accent)] font-medium"
+            : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+        )}
+      >
+        <Icon className="h-4 w-4 shrink-0" />
+        <span className="flex-1 overflow-hidden whitespace-nowrap text-left">{label}</span>
+        <ChevronDown
+          className={cn(
+            "h-3.5 w-3.5 shrink-0 transition-transform duration-200",
+            open && "rotate-180",
+          )}
+        />
+      </button>
+      <div
+        className={cn(
+          "overflow-hidden transition-all duration-200",
+          open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0",
+        )}
+      >
+        <div className="ml-2 space-y-0.5 border-l border-border pl-1 pt-0.5">
+          {items.map((item) => (
+            <NavItem key={item.href} {...item} pathname={pathname} />
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
