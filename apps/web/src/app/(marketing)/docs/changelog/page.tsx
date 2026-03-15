@@ -18,6 +18,28 @@ function Breadcrumb() {
 
 const entries = [
   {
+    version: "2.0.0",
+    date: "March 15, 2026",
+    title: "Customer Success Suite, 4-Tier Plans & Billing Overhaul",
+    changes: [
+      "New 4-tier pricing: Starter (free), Growth ($39/mo), Enterprise ($89/mo), Scale ($129/mo) with annual billing option (~15% savings)",
+      "Customer Health Score Dashboard — compute risk scores, track risk factors, and monitor customer health across your entire base",
+      "In-App NPS/CSAT Surveys — create surveys, collect responses, and track Net Promoter Score with promoter/passive/detractor breakdown",
+      "CSM Assignments & Touchpoints — assign customer success managers, log touchpoints, and track engagement per customer",
+      "Revenue Attribution & LTV Tracking — compute customer lifetime value, segment by revenue tier, and forecast future revenue",
+      "Alerts & Smart Notifications — create rules for churn rate, MRR changes, and payment failures with email, Slack, or webhook delivery",
+      "Onboarding Progress Tracking — define milestones, track completion rates, and identify dropoff points in your onboarding funnel",
+      "Integrations Marketplace — connect Slack, HubSpot, Intercom, Salesforce, Zendesk, Segment, Mixpanel, and Zapier",
+      "Public Status Page — manage incidents, track resolution, and show customers your uptime transparency",
+      "Custom Dashboards — build personalized dashboard views with drag-and-drop widgets",
+      "Multi-Currency Revenue Normalization — manage exchange rates and convert revenue across currencies",
+      "Campaign Tracking with ROI — track marketing campaigns, measure revenue lift, and calculate ROI with search, pagination, and duplicate support",
+      "Mobile-responsive dashboard with slide-out sidebar navigation",
+      "Anti-abuse: free trial only available once per account",
+      "Dodo Payments billing integration with webhook lifecycle management",
+    ],
+  },
+  {
     version: "1.5.0",
     date: "March 1, 2026",
     title: "Email Review, Approval Flow & Custom Templates",

@@ -8,6 +8,7 @@ import { ScrollReveal } from "@/components/animations/motion";
 import { FloatingParticles } from "@/components/animations/floating-particles";
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { useUsage } from "@/hooks/use-billing";
 
 const plans = [
   {
@@ -66,9 +67,10 @@ const plans = [
       "Everything in Growth, plus:",
       "Advanced dunning sequences",
       "LTV tracking & forecasting",
-      "Customer success workflows",
+      "CSM & customer success workflows",
       "Onboarding tracking",
       "Alerts & smart notifications",
+      "Campaign tracking & ROI",
       "Custom dashboards",
       "Unlimited team members",
       "API key rotation",
@@ -88,7 +90,7 @@ const plans = [
     features: [
       "Unlimited churn events",
       "Unlimited projects",
-      "Everything in Business, plus:",
+      "Everything in Enterprise, plus:",
       "Integrations marketplace",
       "Public status page",
       "Multi-currency normalization",
@@ -178,14 +180,31 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
   );
 }
 
+const PLAN_NAME_TO_TIER: Record<string, string> = {
+  Starter: "starter",
+  Growth: "growth",
+  Enterprise: "enterprise",
+  Scale: "scale",
+};
+
 export default function PricingPage() {
   const [annual, setAnnual] = useState(false);
   const { isAuthenticated } = useAuth();
+  const { data: usage } = useUsage();
+  const currentTier = usage?.plan_tier ?? "starter";
 
   function getPlanHref(planName: string) {
     if (!isAuthenticated) return "/register";
     if (planName === "Starter") return "/dashboard/projects";
     return "/dashboard/billing";
+  }
+
+  function getPlanCta(planName: string) {
+    if (!isAuthenticated) return planName === "Starter" ? "Get Started" : "Start Free Trial";
+    const tier = PLAN_NAME_TO_TIER[planName] ?? "starter";
+    if (tier === currentTier) return "Current Plan";
+    if (tier === "starter") return "Free Plan";
+    return "Upgrade";
   }
 
   return (
@@ -350,15 +369,28 @@ export default function PricingPage() {
                       );
                     })}
                   </ul>
-                  <Button
-                    className={plan.popular
-                      ? "w-full bg-white text-[var(--accent)] hover:bg-white/90"
-                      : "w-full bg-[var(--accent)] text-white hover:bg-[var(--accent)]/90"}
-                    variant={plan.popular ? "secondary" : "default"}
-                    asChild
-                  >
-                    <Link href={getPlanHref(plan.name)}>{plan.cta}</Link>
-                  </Button>
+                  {(() => {
+                    const tier = PLAN_NAME_TO_TIER[plan.name] ?? "starter";
+                    const isCurrent = isAuthenticated && tier === currentTier;
+                    const ctaText = getPlanCta(plan.name);
+                    return isCurrent ? (
+                      <div className={`w-full rounded-md py-2 text-center text-sm font-medium ${
+                        plan.popular ? "bg-white/20 text-white" : "bg-[var(--accent-light)] text-[var(--accent)]"
+                      }`}>
+                        Current Plan
+                      </div>
+                    ) : (
+                      <Button
+                        className={plan.popular
+                          ? "w-full bg-white text-[var(--accent)] hover:bg-white/90"
+                          : "w-full bg-[var(--accent)] text-white hover:bg-[var(--accent)]/90"}
+                        variant={plan.popular ? "secondary" : "default"}
+                        asChild
+                      >
+                        <Link href={getPlanHref(plan.name)}>{ctaText}</Link>
+                      </Button>
+                    );
+                  })()}
                 </CardContent>
               </Card>
             </motion.div>

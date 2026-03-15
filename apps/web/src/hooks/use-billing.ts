@@ -21,11 +21,11 @@ export function useUsage() {
 }
 
 export function useCheckout() {
-  return useMutation<CheckoutResponse, Error, string>({
-    mutationFn: async (planTier) => {
+  return useMutation<CheckoutResponse, Error, { plan_tier: string; billing_period?: string }>({
+    mutationFn: async (params) => {
       const res = await apiClient<ApiResponse<CheckoutResponse>>("billing/checkout", {
         method: "POST",
-        body: { plan_tier: planTier },
+        body: params,
       });
       return res.data;
     },

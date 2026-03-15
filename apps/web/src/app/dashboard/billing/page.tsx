@@ -28,12 +28,12 @@ import { motion } from "framer-motion";
 
 const PLAN_CONFIG: Record<
   string,
-  { label: string; price: string; priceCents: number; eventsLimit: number; projectsLimit: number }
+  { label: string; monthlyPrice: string; yearlyPrice: string; yearlyNote: string; eventsLimit: number; projectsLimit: number }
 > = {
-  starter:  { label: "Starter",  price: "Free",    priceCents: 0,     eventsLimit: 50,   projectsLimit: 1   },
-  growth:   { label: "Growth",   price: "$39/mo",  priceCents: 3900,  eventsLimit: 500,  projectsLimit: 5   },
-  enterprise: { label: "Enterprise", price: "$89/mo",  priceCents: 8900,  eventsLimit: 2000, projectsLimit: 15  },
-  scale:    { label: "Scale",    price: "$129/mo", priceCents: 12900, eventsLimit: -1,   projectsLimit: -1  },
+  starter:    { label: "Starter",    monthlyPrice: "Free",    yearlyPrice: "Free",    yearlyNote: "",                    eventsLimit: 50,   projectsLimit: 1   },
+  growth:     { label: "Growth",     monthlyPrice: "$39/mo",  yearlyPrice: "$33/mo",  yearlyNote: "billed $396/yr",     eventsLimit: 500,  projectsLimit: 5   },
+  enterprise: { label: "Enterprise", monthlyPrice: "$89/mo",  yearlyPrice: "$74/mo",  yearlyNote: "billed $888/yr",     eventsLimit: 2000, projectsLimit: 15  },
+  scale:      { label: "Scale",      monthlyPrice: "$129/mo", yearlyPrice: "$108/mo", yearlyNote: "billed $1,296/yr",   eventsLimit: -1,   projectsLimit: -1  },
 };
 
 const CANCEL_REASONS = [
@@ -289,6 +289,7 @@ export default function BillingPage() {
   const queryClient = useQueryClient();
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [checkoutTier, setCheckoutTier] = useState<string | null>(null);
+  const [annual, setAnnual] = useState(false);
 
   const successParam = searchParams.get("success");
   const cancelParam = searchParams.get("cancel");
@@ -345,7 +346,7 @@ export default function BillingPage() {
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {[
-          { title: "Current Plan", value: planConfig.label, subtitle: planConfig.price, icon: Package },
+          { title: "Current Plan", value: planConfig.label, subtitle: planConfig.monthlyPrice, icon: Package },
           {
             title: "Events Used",
             value: usage
@@ -400,13 +401,37 @@ export default function BillingPage() {
       {/* Plans */}
       <Card>
         <CardHeader>
-          <CardTitle>Plans</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>Plans</CardTitle>
+            <div className="flex items-center gap-3">
+              <span className={`text-sm ${!annual ? "font-medium text-foreground" : "text-muted-foreground"}`}>
+                Monthly
+              </span>
+              <button
+                onClick={() => setAnnual(!annual)}
+                className={`relative inline-flex h-7 w-12 items-center rounded-md transition-colors ${annual ? "bg-[var(--accent)]" : "bg-border"}`}
+              >
+                <span
+                  className={`inline-block h-5 w-5 rounded-sm bg-white shadow-sm transition-transform ${annual ? "translate-x-6" : "translate-x-1"}`}
+                />
+              </button>
+              <span className={`text-sm ${annual ? "font-medium text-foreground" : "text-muted-foreground"}`}>
+                Annual
+              </span>
+              {annual && (
+                <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                  Save ~15%
+                </span>
+              )}
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {(["starter", "growth", "enterprise", "scale"] as const).map((tier) => {
               const config = PLAN_CONFIG[tier];
               const isCurrent = currentPlan === tier;
+              const displayPrice = annual ? config.yearlyPrice : config.monthlyPrice;
 
               return (
                 <div
@@ -416,7 +441,10 @@ export default function BillingPage() {
                   }`}
                 >
                   <h3 className="font-display text-lg font-semibold text-foreground">{config.label}</h3>
-                  <p className="mt-1 font-display text-2xl font-bold text-foreground">{config.price}</p>
+                  <p className="mt-1 font-display text-2xl font-bold text-foreground">{displayPrice}</p>
+                  {annual && config.yearlyNote && (
+                    <p className="mt-0.5 text-xs text-muted-foreground">{config.yearlyNote}</p>
+                  )}
                   <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
                     <li>{config.eventsLimit <= 0 ? "Unlimited" : config.eventsLimit.toLocaleString()} events/mo</li>
                     <li>{config.projectsLimit <= 0 ? "Unlimited" : config.projectsLimit} projects</li>
@@ -430,7 +458,10 @@ export default function BillingPage() {
                       <button
                         onClick={() => {
                           setCheckoutTier(tier);
-                          checkout.mutate(tier);
+                          checkout.mutate({
+                            plan_tier: tier,
+                            billing_period: annual ? "yearly" : "monthly",
+                          });
                         }}
                         disabled={checkout.isPending}
                         className="inline-flex items-center rounded-sm bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"

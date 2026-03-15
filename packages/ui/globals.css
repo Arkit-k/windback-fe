@@ -113,18 +113,27 @@ body {
 }
 
 /* ── Scrollbar ── */
-::-webkit-scrollbar {
+main::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
-::-webkit-scrollbar-track {
+main::-webkit-scrollbar-track {
   background: transparent;
 }
 
-::-webkit-scrollbar-thumb {
+main::-webkit-scrollbar-thumb {
   background: #2563EB;
   border-radius: 3px;
+}
+
+/* Hide sidebar scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* ── tailwindcss-animate for Tailwind v4 ── */

@@ -143,7 +143,7 @@ export function Sidebar() {
         },
         { type: "dynamic-group", href: `${p}/campaigns`, label: "Campaigns", icon: Megaphone },
         {
-          type: "group", label: "Operations", icon: Radio,
+          type: "group", label: "Tools", icon: Radio,
           items: [
             { href: `${p}/integrations`, label: "Integrations", icon: Store },
             { href: `${p}/status-page`, label: "Status Page", icon: Radio },
@@ -175,7 +175,7 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="flex h-screen w-60 flex-col border-r border-border bg-card">
+    <aside className="flex h-full w-60 flex-col border-r border-border bg-card md:w-60">
 
       {/* Logo */}
       <div className="flex h-14 items-center border-b border-border px-4">
@@ -209,7 +209,7 @@ export function Sidebar() {
       )}
 
       {/* Main nav */}
-      <nav className="flex-1 space-y-1 overflow-y-auto p-3">
+      <nav className="flex-1 space-y-1 overflow-y-auto no-scrollbar p-3">
         {/* Non-project routes: flat lists */}
         {mainNav.length > 0 && (
           <div className="space-y-1">
