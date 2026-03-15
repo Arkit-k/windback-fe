@@ -265,6 +265,7 @@ export interface UsageInfo {
   projects_used: number;
   projects_limit: number;
   billing_period_start: string;
+  cancel_pending: boolean;
 }
 
 export interface CheckoutResponse {

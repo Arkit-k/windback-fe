@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Card,
   CardContent,
@@ -19,6 +20,7 @@ import {
 } from "@windback/ui";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { useUsage, useCheckout, usePortal, useCancelSubscription, useCancelSurveyStats } from "@/hooks/use-billing";
+import { QUERY_KEYS } from "@/lib/constants";
 import { useAuth } from "@/hooks/use-auth";
 import { CreditCard, Package, FolderOpen, Zap, TrendingDown } from "lucide-react";
 import type { CancelSurveyStats } from "@/types/api";
@@ -284,7 +286,9 @@ export default function BillingPage() {
   const checkout = useCheckout();
   const portal = usePortal();
   const cancelSubscription = useCancelSubscription();
+  const queryClient = useQueryClient();
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [checkoutTier, setCheckoutTier] = useState<string | null>(null);
 
   const successParam = searchParams.get("success");
   const cancelParam = searchParams.get("cancel");
@@ -298,9 +302,10 @@ export default function BillingPage() {
       {
         onSuccess: () => {
           setCancelDialogOpen(false);
+          queryClient.invalidateQueries({ queryKey: QUERY_KEYS.usage });
           toast({
             title: "Subscription cancelled",
-            description: "You'll keep access until the end of your billing period.",
+            description: "You won't be charged. Enjoy your plan until the billing period ends.",
           });
         },
         onError: (e) => {
@@ -423,11 +428,16 @@ export default function BillingPage() {
                       </span>
                     ) : tier === "starter" ? null : (
                       <button
-                        onClick={() => checkout.mutate(tier)}
+                        onClick={() => {
+                          setCheckoutTier(tier);
+                          checkout.mutate(tier);
+                        }}
                         disabled={checkout.isPending}
                         className="inline-flex items-center rounded-sm bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
                       >
-                        {checkout.isPending ? "Redirecting..." : `Upgrade to ${config.label}`}
+                        {checkout.isPending && checkoutTier === tier
+                          ? "Taking you to checkout..."
+                          : `Upgrade to ${config.label}`}
                       </button>
                     )}
                   </div>
@@ -445,6 +455,16 @@ export default function BillingPage() {
             <CardTitle>Manage Subscription</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            {usage?.cancel_pending && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-300"
+              >
+                Your subscription has been cancelled. You won&apos;t be charged, but you can continue enjoying your current plan until the end of your billing period.
+              </motion.div>
+            )}
+
             <div>
               <p className="mb-3 text-sm text-muted-foreground">
                 Update your payment method or view past invoices.
@@ -455,19 +475,21 @@ export default function BillingPage() {
               </Button>
             </div>
 
-            <div className="border-t border-border pt-4">
-              <p className="mb-1 text-sm font-medium text-foreground">Cancel subscription</p>
-              <p className="mb-3 text-xs text-muted-foreground">
-                You&apos;ll keep access until the end of your current billing period.
-              </p>
-              <Button
-                variant="outline"
-                className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950/30"
-                onClick={() => setCancelDialogOpen(true)}
-              >
-                Cancel Subscription
-              </Button>
-            </div>
+            {!usage?.cancel_pending && (
+              <div className="border-t border-border pt-4">
+                <p className="mb-1 text-sm font-medium text-foreground">Cancel subscription</p>
+                <p className="mb-3 text-xs text-muted-foreground">
+                  You&apos;ll keep access until the end of your current billing period.
+                </p>
+                <Button
+                  variant="outline"
+                  className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950/30"
+                  onClick={() => setCancelDialogOpen(true)}
+                >
+                  Cancel Subscription
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
