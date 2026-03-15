@@ -231,7 +231,7 @@ export function OnboardingWizard({ slug }: OnboardingWizardProps) {
           >
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[var(--accent)]/15">
-                <Icon className="h-5 w-5 text-[var(--accent)]" />
+                <Icon className="h-5 w-5 text-accent-readable" />
               </div>
               <h3 className="font-display text-lg font-semibold text-foreground">
                 {current.title}

@@ -155,7 +155,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ slug: st
       {canGenerate && (
         <Card className="border-dashed">
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <Sparkles className="h-8 w-8 text-[var(--accent)] mb-3" />
+            <Sparkles className="h-8 w-8 text-accent-readable mb-3" />
             <h3 className="font-display text-lg font-semibold">Generate Recovery Emails</h3>
             <p className="mt-1 text-sm text-muted-foreground text-center max-w-md">
               AI will create 9 personalized email variants using different recovery strategies.

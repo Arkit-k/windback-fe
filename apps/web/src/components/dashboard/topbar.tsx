@@ -2,16 +2,17 @@
 
 import { Button, DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@windback/ui";
 import { useAuth } from "@/hooks/use-auth";
-import { User, LogOut, BookOpen, Menu } from "lucide-react";
+import { User, LogOut, BookOpen, Menu, Sun, Moon } from "lucide-react";
 import Link from "next/link";
-import { useMobileSidebar } from "@/app/dashboard/layout";
+import { useMobileSidebar, useDashboardTheme } from "@/app/dashboard/layout";
 
 export function Topbar() {
   const { user, logout } = useAuth();
   const { setOpen } = useMobileSidebar();
+  const { isDark, toggle } = useDashboardTheme();
 
   return (
-    <header className="flex h-14 items-center justify-between border-b border-border bg-card px-4 md:px-6">
+    <header className="flex h-14 items-center justify-between border-b border-border bg-card text-foreground px-4 md:px-6">
       <button
         onClick={() => setOpen(true)}
         className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground md:hidden"
@@ -22,6 +23,13 @@ export function Topbar() {
       <div className="hidden md:block" />
 
       <div className="flex items-center gap-2 md:gap-3">
+        <button
+          onClick={() => toggle()}
+          className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+        >
+          {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        </button>
+
         <Button variant="ghost" size="sm" asChild>
           <Link href="/docs" target="_blank">
             <BookOpen className="h-4 w-4" />

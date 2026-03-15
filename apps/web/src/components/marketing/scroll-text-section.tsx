@@ -72,7 +72,7 @@ export function ScrollTextSection() {
                 className="absolute inset-0"
                 style={{
                   opacity: 0,
-                  background: "linear-gradient(to right, #2563EB, #FBAA8A)",
+                  background: "linear-gradient(to right, #0004E0, #FBAA8A)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",

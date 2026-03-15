@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Card, CardContent, CardHeader, CardTitle, CardDescription,
   Button,
@@ -19,6 +20,7 @@ export default function ProjectApiKeysPage() {
   const [newKey, setNewKey] = useState<string | null>(null);
   const [newKeyCopied, setNewKeyCopied] = useState(false);
 
+  const queryClient = useQueryClient();
   const rotateMutation = useRotateAPIKey(slug);
   const { data: apiKeys } = useAPIKeys(slug);
 
@@ -46,6 +48,7 @@ export default function ProjectApiKeysPage() {
         onSuccess: (data) => {
           setConfirmType(null);
           setNewKey(data.key);
+          queryClient.invalidateQueries({ queryKey: ["api-keys", slug] });
           toast({ title: "Key rotated", description: "Your old key will expire in 24 hours." });
         },
         onError: (err) => {
@@ -83,10 +86,13 @@ export default function ProjectApiKeysPage() {
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex items-center gap-2">
-            <code className="flex-1 rounded-sm border border-border bg-secondary px-3 py-2 text-sm font-mono text-muted-foreground">
+            <code className="flex-1 rounded-sm border border-border bg-secondary px-3 py-2 text-sm font-mono text-muted-foreground select-all">
               {publicKeyMasked ?? "Loading…"}
             </code>
           </div>
+          <p className="text-xs text-muted-foreground">
+            Full key is shown only at creation or after rotation. Click &quot;Rotate Public Key&quot; to get a new one.
+          </p>
           <p className="text-xs text-muted-foreground">
             Your public key is embedded in the webhook URL shown in{" "}
             <a href={`/dashboard/p/${slug}/settings/integrations`} className="underline">
@@ -116,12 +122,12 @@ export default function ProjectApiKeysPage() {
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex items-center gap-2">
-            <code className="flex-1 rounded-sm border border-border bg-secondary px-3 py-2 text-sm font-mono text-muted-foreground">
+            <code className="flex-1 rounded-sm border border-border bg-secondary px-3 py-2 text-sm font-mono text-muted-foreground select-all">
               {secretKeyMasked ?? "Loading…"}
             </code>
           </div>
           <p className="text-xs text-muted-foreground">
-            Your secret key was shown once when the project was created. Rotate to get a new one.
+            Your secret key was shown only once at creation. Click &quot;Rotate Secret Key&quot; to generate a new one and copy it.
           </p>
           <Button
             variant="outline"

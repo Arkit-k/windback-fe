@@ -69,7 +69,7 @@ export function RevenueHeroCard({
           <div className="flex items-start justify-between">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <DollarSign className="h-5 w-5 text-[var(--accent)]" />
+                <DollarSign className="h-5 w-5 text-accent-readable" />
                 <p className="text-sm font-medium text-muted-foreground">
                   Total Revenue Saved
                 </p>
@@ -93,7 +93,7 @@ export function RevenueHeroCard({
               </div>
 
               {roiMultiplier > 0 && (
-                <p className="text-sm font-medium text-[var(--accent)]">
+                <p className="text-sm font-medium text-accent-readable">
                   Your ROI: {roiMultiplier}x
                   <span className="ml-1 text-xs font-normal text-muted-foreground">
                     (Windback costs $50/mo)

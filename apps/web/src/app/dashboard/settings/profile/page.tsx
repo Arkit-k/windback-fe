@@ -91,7 +91,7 @@ export default function ProfileSettingsPage() {
         <CardContent>
           <form onSubmit={handleSaveProfile} className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[var(--accent-light)] text-lg font-semibold text-[var(--accent)]">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[var(--accent-light)] text-lg font-semibold text-accent-readable">
                 {initials}
               </div>
               <div className="min-w-0">

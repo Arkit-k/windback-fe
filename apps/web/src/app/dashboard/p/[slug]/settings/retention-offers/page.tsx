@@ -246,7 +246,7 @@ function OfferCard({
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Icon className="h-4 w-4 text-[var(--accent)]" />
+            <Icon className="h-4 w-4 text-accent-readable" />
             <CardTitle className="text-sm">{label}</CardTitle>
           </div>
           <button

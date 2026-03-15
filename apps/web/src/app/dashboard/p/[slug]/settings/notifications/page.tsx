@@ -376,7 +376,7 @@ export default function NotificationsSettingsPage({ params }: PageProps) {
                 href="https://api.slack.com/messaging/webhooks"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-0.5 text-[var(--accent)] hover:underline"
+                className="inline-flex items-center gap-0.5 text-accent-readable hover:underline"
               >
                 api.slack.com/messaging/webhooks
                 <ExternalLink className="h-3 w-3" />
@@ -466,7 +466,7 @@ export default function NotificationsSettingsPage({ params }: PageProps) {
                 {" "}header — HMAC-SHA256 of the raw body.
               </p>
               <details className="mt-1">
-                <summary className="cursor-pointer text-xs text-[var(--accent)] hover:underline">
+                <summary className="cursor-pointer text-xs text-accent-readable hover:underline">
                   Show verification example (Node.js)
                 </summary>
                 <pre className="mt-2 overflow-x-auto rounded border border-border bg-muted p-3 text-[11px] leading-relaxed text-foreground">
@@ -674,7 +674,7 @@ function verifySignature(rawBody, secret, sigHeader) {
             </p>
             <Link
               href={`/dashboard/p/${slug}/settings/audit-logs`}
-              className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent)] hover:underline"
+              className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent-readable hover:underline"
             >
               View Audit Logs
               <ArrowRight className="h-3.5 w-3.5" />

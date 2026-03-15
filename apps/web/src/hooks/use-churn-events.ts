@@ -113,10 +113,12 @@ export function useCreateChurnEvent(slug: string) {
 
 export function useRotateAPIKey(slug: string) {
   return useMutation<{ key: string; message: string }, Error, { key_type: "secret" | "public" }>({
-    mutationFn: (body) =>
-      apiClient<{ key: string; message: string }>(`projects/${slug}/api-keys/rotate`, {
+    mutationFn: async (body) => {
+      const res = await apiClient<{ data: { key: string; message: string } }>(`projects/${slug}/api-keys/rotate`, {
         method: "POST",
         body,
-      }),
+      });
+      return res.data;
+    },
   });
 }

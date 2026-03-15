@@ -37,11 +37,11 @@ export function CTASection() {
           <ScrollReveal delay={0.15}>
             <div>
               <h3 className="text-2xl font-semibold text-white">
-                Recover Smarter, Automatically
+                Retain More, Recover Smarter
               </h3>
               <p className="mt-3 text-white/70">
-                Join SaaS teams using Windback to recover voluntary cancellations and failed payments —
-                with AI-powered emails, smart dunning, and real-time analytics.
+                Join SaaS teams using Windback to reduce churn, recover revenue, and understand their customers —
+                with AI recovery emails, health scores, smart dunning, NPS surveys, and real-time analytics.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <MagneticHover strength={0.12}>

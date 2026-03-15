@@ -181,7 +181,7 @@ export function Sidebar() {
       <div className="flex h-14 items-center border-b border-border px-4">
         <Link
           href="/dashboard/projects"
-          className="flex items-center font-display text-lg font-semibold text-[var(--accent)]"
+          className="flex items-center font-display text-lg font-semibold text-accent-readable"
         >
           <span>Windback<span>.</span></span>
         </Link>
@@ -287,7 +287,7 @@ function NavItem({
       className={cn(
         "relative flex items-center gap-3 rounded-sm px-3 py-2 text-sm transition-all duration-150",
         isActive
-          ? "bg-[var(--accent-light)] text-[var(--accent)] font-medium"
+          ? "bg-[var(--accent-light)] text-accent-readable font-medium"
           : "text-muted-foreground hover:bg-secondary hover:text-foreground hover:translate-x-0.5",
       )}
     >
@@ -325,7 +325,7 @@ function DynamicNavGroup({
         className={cn(
           "flex w-full items-center gap-3 rounded-sm px-3 py-2 text-sm transition-all duration-150",
           isActive
-            ? "text-[var(--accent)] font-medium"
+            ? "text-accent-readable font-medium"
             : "text-muted-foreground hover:bg-secondary hover:text-foreground",
         )}
       >
@@ -389,7 +389,7 @@ function NavGroup({
         className={cn(
           "flex w-full items-center gap-3 rounded-sm px-3 py-2 text-sm transition-all duration-150",
           hasActiveChild
-            ? "text-[var(--accent)] font-medium"
+            ? "text-accent-readable font-medium"
             : "text-muted-foreground hover:bg-secondary hover:text-foreground",
         )}
       >

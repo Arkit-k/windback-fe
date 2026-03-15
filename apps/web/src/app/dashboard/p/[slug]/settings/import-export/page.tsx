@@ -582,7 +582,7 @@ export default function ImportExportPage() {
                         <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/30" />
                       )}
                       {item.status === "importing" && (
-                        <Loader2 className="h-4 w-4 animate-spin text-[var(--accent)]" />
+                        <Loader2 className="h-4 w-4 animate-spin text-accent-readable" />
                       )}
                       {item.status === "success" && (
                         <CheckCircle2 className="h-4 w-4 text-green-500" />

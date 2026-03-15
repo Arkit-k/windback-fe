@@ -16,7 +16,7 @@ export default function SupportPage() {
         <Card>
           <CardHeader>
             <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-[var(--accent-light)]">
-              <BookOpen className="h-5 w-5 text-[var(--accent)]" />
+              <BookOpen className="h-5 w-5 text-accent-readable" />
             </div>
             <CardTitle className="mt-3">Documentation</CardTitle>
             <CardDescription>

@@ -36,7 +36,7 @@ export default function InviteAcceptPage() {
           <CardContent className="flex flex-col items-center gap-4 py-8">
             {acceptMutation.isPending && (
               <>
-                <Loader2 className="h-10 w-10 animate-spin text-[var(--accent)]" />
+                <Loader2 className="h-10 w-10 animate-spin text-accent-readable" />
                 <p className="text-sm text-muted-foreground">
                   Accepting your invitation...
                 </p>
@@ -76,7 +76,7 @@ export default function InviteAcceptPage() {
                 </div>
                 <Link
                   href="/login"
-                  className="mt-2 text-sm text-[var(--accent)] underline underline-offset-4 hover:text-[var(--accent)]/80"
+                  className="mt-2 text-sm text-accent-readable underline underline-offset-4 hover:text-accent-readable/80"
                 >
                   Back to Login
                 </Link>

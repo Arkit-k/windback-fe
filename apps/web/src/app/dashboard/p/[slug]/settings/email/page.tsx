@@ -160,7 +160,7 @@ export default function EmailSenderPage() {
               <Mail className="h-4 w-4" />
               Windback Default
               {currentMethod === "windback_default" && (
-                <Badge variant="outline" className="text-[var(--accent)] border-[var(--accent)] text-xs ml-1">Active</Badge>
+                <Badge variant="outline" className="text-accent-readable border-[var(--accent)] text-xs ml-1">Active</Badge>
               )}
             </CardTitle>
             <CardDescription>
@@ -193,7 +193,7 @@ export default function EmailSenderPage() {
               <ExternalLink className="h-4 w-4" />
               Gmail / Google Workspace
               {currentMethod === "gmail_oauth" && (
-                <Badge variant="outline" className="text-[var(--accent)] border-[var(--accent)] text-xs ml-1">Active</Badge>
+                <Badge variant="outline" className="text-accent-readable border-[var(--accent)] text-xs ml-1">Active</Badge>
               )}
             </CardTitle>
             <CardDescription>
@@ -233,7 +233,7 @@ export default function EmailSenderPage() {
               <Globe className="h-4 w-4" />
               Custom Domain
               {currentMethod === "custom_domain" && config?.domain_verified && (
-                <Badge variant="outline" className="text-[var(--accent)] border-[var(--accent)] text-xs ml-1">Verified</Badge>
+                <Badge variant="outline" className="text-accent-readable border-[var(--accent)] text-xs ml-1">Verified</Badge>
               )}
               {currentMethod === "custom_domain" && !config?.domain_verified && (
                 <Badge variant="outline" className="text-yellow-600 border-yellow-600 text-xs ml-1">Pending DNS</Badge>

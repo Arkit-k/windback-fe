@@ -11,7 +11,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground hover:bg-[var(--accent-hover)] shadow-[inset_0_1px_0_rgba(255,255,255,0.22),inset_0_-2px_6px_rgba(0,0,0,0.18)]",
+          "bg-primary text-primary-foreground hover:bg-[var(--accent-hover)] shadow-[inset_0_1px_0_rgba(255,255,255,0.22),inset_0_-2px_6px_rgba(0,0,0,0.18)] relative overflow-hidden after:pointer-events-none after:absolute after:inset-0 after:-skew-x-12 after:bg-[linear-gradient(90deg,transparent_35%,rgba(255,255,255,0.5)_50%,transparent_65%)] after:animate-[btn-shimmer_3s_ease-in-out_infinite]",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:

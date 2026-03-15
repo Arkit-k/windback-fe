@@ -28,8 +28,8 @@ export default function NotFound() {
       {/* Header with logo */}
       <header className="absolute top-0 left-0 z-20 flex w-full items-center px-6 py-5">
         <Link href="/">
-          <span className="font-display text-xl font-semibold tracking-tight text-[var(--accent)] select-none">
-            Windback<span className="text-[var(--accent)]">.</span>
+          <span className="font-display text-xl font-semibold tracking-tight text-accent-readable select-none">
+            Windback<span className="text-accent-readable">.</span>
           </span>
         </Link>
       </header>

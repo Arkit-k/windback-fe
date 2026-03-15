@@ -112,7 +112,7 @@ export default function WinBackPage() {
       >
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--accent-light)]">
-            <Gavel className="h-5 w-5 text-[var(--accent)]" />
+            <Gavel className="h-5 w-5 text-accent-readable" />
           </div>
           <div>
             <h1 className="font-display text-2xl font-semibold text-foreground">
@@ -170,7 +170,7 @@ export default function WinBackPage() {
       {/* Loading State */}
       {isLoading && (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="h-8 w-8 animate-spin text-[var(--accent)]" />
+          <Loader2 className="h-8 w-8 animate-spin text-accent-readable" />
         </div>
       )}
 

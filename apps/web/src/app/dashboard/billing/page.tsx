@@ -210,7 +210,7 @@ function CancelSurveyDialog({
               key={reason}
               className={`flex cursor-pointer items-center gap-3 rounded-md border px-4 py-3 text-sm transition-colors ${
                 selected === reason
-                  ? "border-[var(--accent)] bg-[var(--accent-light)] text-[var(--accent)]"
+                  ? "border-[var(--accent)] bg-[var(--accent-light)] text-accent-readable"
                   : "border-border text-foreground hover:bg-secondary"
               }`}
             >
@@ -230,7 +230,7 @@ function CancelSurveyDialog({
           <label
             className={`flex cursor-pointer items-center gap-3 rounded-md border px-4 py-3 text-sm transition-colors ${
               selected === "other"
-                ? "border-[var(--accent)] bg-[var(--accent-light)] text-[var(--accent)]"
+                ? "border-[var(--accent)] bg-[var(--accent-light)] text-accent-readable"
                 : "border-border text-foreground hover:bg-secondary"
             }`}
           >
@@ -328,7 +328,7 @@ export default function BillingPage() {
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-md border border-[var(--accent-light)] bg-[var(--accent-light)] px-4 py-3 text-sm text-[var(--accent)]"
+          className="rounded-md border border-[var(--accent-light)] bg-[var(--accent-light)] px-4 py-3 text-sm text-accent-readable"
         >
           Your subscription has been updated successfully.
         </motion.div>

@@ -84,8 +84,8 @@ export function HeroSection() {
 
               <FadeUp delay={0.35}>
                 <p className="mt-6 max-w-lg text-[1.075rem] leading-relaxed text-muted-foreground lg:max-w-none">
-                  Whatever your payment stack, Windback detects cancellations and failed payments,
-                  then generates personalized AI recovery emails and smart dunning sequences to bring customers back.
+                  The complete customer retention platform for SaaS. Detect cancellations, recover failed payments,
+                  track customer health, run NPS surveys, forecast LTV, and automate win-back campaigns — all powered by AI.
                 </p>
               </FadeUp>
 

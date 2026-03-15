@@ -42,7 +42,7 @@ export function StatCard({ title, value, subtitle, icon: Icon, isLoading }: Stat
             )}
           </div>
           <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-[var(--accent-light)]">
-            <Icon className="h-5 w-5 text-[var(--accent)]" />
+            <Icon className="h-5 w-5 text-accent-readable" />
           </div>
         </div>
       </CardContent>

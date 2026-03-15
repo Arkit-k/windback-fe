@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Learn about Windback's mission to help SaaS founders recover churned revenue with AI-powered recovery emails and smart dunning sequences.",
+  description: "Learn about Windback's mission to help SaaS founders retain customers and recover revenue with AI-powered retention tools, health scores, surveys, and smart dunning.",
   alternates: { canonical: "https://windback.io/about" },
   openGraph: {
     title: "About Windback",
-    description: "Learn about Windback's mission to help SaaS founders recover churned revenue with AI.",
+    description: "Learn about Windback's mission to help SaaS founders retain customers and recover revenue with AI.",
     url: "https://windback.io/about",
   },
 };
@@ -29,15 +29,14 @@ export default function AboutPage() {
               Our Mission
             </h2>
             <p className="mt-3 leading-relaxed text-muted-foreground">
-              Windback exists to help subscription businesses recover lost revenue
-              automatically. When a customer cancels, most teams either do nothing or
-              send a generic &quot;we&apos;re sorry to see you go&quot; email.
-              We think there&apos;s a better way.
+              Windback is the complete customer retention platform for SaaS.
+              We help subscription businesses understand why customers leave, recover them
+              before it&apos;s too late, and build lasting relationships that reduce churn.
             </p>
             <p className="mt-3 leading-relaxed text-muted-foreground">
-              Using AI, Windback analyzes every cancellation event — the customer&apos;s
-              history, plan details, and cancellation reason — then generates
-              personalized winback emails designed to bring them back.
+              Using AI, Windback analyzes cancellations and payment failures, generates
+              personalized recovery emails, tracks customer health scores, runs NPS surveys,
+              monitors LTV, and gives you the tools to proactively retain every customer.
             </p>
           </section>
 
@@ -48,15 +47,19 @@ export default function AboutPage() {
             <ul className="mt-3 space-y-2 text-muted-foreground">
               <li className="flex items-start gap-2">
                 <span className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
-                <span>Detect subscription cancellations in real-time via webhooks from Stripe, Razorpay, Paddle, and custom providers.</span>
+                <span>Detect cancellations and failed payments in real-time via Stripe, Razorpay, Paddle, Dodo, and custom webhooks.</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
-                <span>Generate 9 AI-powered email variants tailored to each churned customer using GPT-4o.</span>
+                <span>Generate AI-powered recovery emails and smart dunning sequences to win customers back automatically.</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
-                <span>Provide a clean dashboard to review, send, and track recovery outcomes.</span>
+                <span>Track customer health scores, run NPS/CSAT surveys, and monitor lifetime value to prevent churn before it happens.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
+                <span>Automate onboarding tracking, CSM workflows, alert rules, and campaign ROI analytics from one dashboard.</span>
               </li>
             </ul>
           </section>

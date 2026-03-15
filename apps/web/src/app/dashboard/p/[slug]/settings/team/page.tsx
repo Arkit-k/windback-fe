@@ -166,7 +166,7 @@ export default function TeamSettingsPage() {
                 >
                   <div className="flex items-center gap-3">
                     {/* Avatar placeholder */}
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--accent-light)] text-sm font-medium text-[var(--accent)]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--accent-light)] text-sm font-medium text-accent-readable">
                       {getInitials(member.user_name || member.user_email)}
                     </div>
                     <div>

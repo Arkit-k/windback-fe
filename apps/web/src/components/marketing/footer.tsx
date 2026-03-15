@@ -92,7 +92,7 @@ export function Footer() {
       {/* Blue glow — bottom right */}
       <div
         className="pointer-events-none absolute -bottom-10 -right-10 h-[300px] w-[500px] blur-[60px]"
-        style={{ background: "radial-gradient(ellipse at bottom right, #2563EB 0%, rgba(37,99,235,0.6) 40%, transparent 70%)" }}
+        style={{ background: "radial-gradient(ellipse at bottom right, #0004E0 0%, rgba(37,99,235,0.6) 40%, transparent 70%)" }}
       />
       {/* Subtle gradient accent at top */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--accent)]/20 to-transparent" />

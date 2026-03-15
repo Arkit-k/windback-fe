@@ -103,7 +103,7 @@ export function HowItWorksSection() {
         </ScrollReveal>
         <div className="relative mt-12 grid grid-cols-1 gap-5 sm:grid-cols-3">
           {steps.map((item, i) => (
-            <motion.div key={item.title} className={`group relative flex min-h-[230px] flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br from-[#0F1733] via-[#2563EB] to-[#FBAA8A] p-7 cursor-default ${i === 1 ? "sm:mt-16" : ""}`} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.15, ease: [0.25, 0.1, 0.25, 1] }} whileHover={{ y: i === 1 ? 59 : -5, transition: { type: "spring", stiffness: 300, damping: 20 } }}>
+            <motion.div key={item.title} className={`group relative flex min-h-[230px] flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br from-[#0F1733] via-[#0004E0] to-[#FBAA8A] p-7 cursor-default ${i === 1 ? "sm:mt-16" : ""}`} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.15, ease: [0.25, 0.1, 0.25, 1] }} whileHover={{ y: i === 1 ? 59 : -5, transition: { type: "spring", stiffness: 300, damping: 20 } }}>
               <div>
                 <span className="text-sm text-white/50">{item.step}</span>
                 <h3 className="mt-3 font-serif text-lg leading-snug text-white italic sm:text-xl">{item.title}</h3>

@@ -121,7 +121,7 @@ export default function OnboardingPage() {
           transition={{ duration: 0.4 }}
           className="mb-8 text-center"
         >
-          <h1 className="font-display text-2xl font-semibold text-[var(--accent)]">
+          <h1 className="font-display text-2xl font-semibold text-accent-readable">
             Windback<span>.</span>
           </h1>
         </motion.div>

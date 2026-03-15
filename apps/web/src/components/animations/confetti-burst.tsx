@@ -14,7 +14,7 @@ interface ConfettiBurstProps {
 }
 
 const COLORS = [
-  "#2563EB", // blue
+  "#0004E0", // blue
   "#60A5FA", // light blue
   "#FBAA8A", // peach
   "#38BDF8", // sky
