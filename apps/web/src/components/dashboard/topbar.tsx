@@ -4,6 +4,7 @@ import { Button, DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, Dropdow
 import { useAuth } from "@/hooks/use-auth";
 import { User, LogOut, BookOpen, Menu, Sun, Moon } from "lucide-react";
 import Link from "next/link";
+import { DOCS_URL } from "@/lib/constants";
 import { useMobileSidebar, useDashboardTheme } from "@/app/dashboard/layout";
 
 export function Topbar() {
@@ -31,7 +32,7 @@ export function Topbar() {
         </button>
 
         <Button variant="ghost" size="sm" asChild>
-          <Link href="/docs" target="_blank">
+          <Link href={DOCS_URL} target="_blank">
             <BookOpen className="h-4 w-4" />
             <span className="hidden sm:inline">Docs</span>
           </Link>

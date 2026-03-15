@@ -14,6 +14,7 @@ import { AnimatedBadge } from "@/components/animations/animated-badge";
 import { FloatingParticles } from "@/components/animations/floating-particles";
 import { HeroWave } from "@/components/marketing/hero-wave";
 import { useAuth } from "@/hooks/use-auth";
+import { DOCS_URL } from "@/lib/constants";
 
 /** Ribbon only — rendered after loading completes. */
 export function HeroRibbon() {
@@ -104,7 +105,7 @@ export function HeroSection() {
                   <MagneticHover strength={0.12}>
                     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
                       <Button variant="outline" size="lg" asChild>
-                        <Link href="/docs">Read the Docs</Link>
+                        <Link href={DOCS_URL}>Read the Docs</Link>
                       </Button>
                     </motion.div>
                   </MagneticHover>

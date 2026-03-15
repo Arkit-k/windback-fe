@@ -7,11 +7,12 @@ import { useState, useEffect, useCallback } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence, useMotionValueEvent, useScroll } from "framer-motion";
 import { useAuth } from "@/hooks/use-auth";
+import { DOCS_URL } from "@/lib/constants";
 const navLinks = [
   { href: "/#features", label: "Features", section: "features" },
   { href: "/#how-it-works", label: "How it Works", section: "how-it-works" },
   { href: "/pricing", label: "Pricing", section: "" },
-  { href: "/docs", label: "Docs", section: "" },
+  { href: DOCS_URL, label: "Docs", section: "" },
 ];
 
 function WindbackLogo() {

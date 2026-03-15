@@ -6,6 +6,7 @@ import { Button } from "@windback/ui";
 import { ArrowRight } from "lucide-react";
 import { ScrollReveal, MagneticHover, motion } from "@/components/animations/motion";
 import { useAuth } from "@/hooks/use-auth";
+import { DOCS_URL } from "@/lib/constants";
 
 export function CTASection() {
   const { isAuthenticated } = useAuth();
@@ -64,7 +65,7 @@ export function CTASection() {
                 <MagneticHover strength={0.12}>
                   <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
                     <Button size="lg" variant="outline" asChild className="border-white/30 text-white hover:bg-white/10">
-                      <Link href="/docs">Documentation</Link>
+                      <Link href={DOCS_URL}>Documentation</Link>
                     </Button>
                   </motion.div>
                 </MagneticHover>

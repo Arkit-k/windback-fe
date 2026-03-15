@@ -197,7 +197,7 @@ pb.submitCancelFlow({
             </Link>{" "}
             or check the{" "}
             <a
-              href="/docs/quickstart"
+              href={`${process.env.NEXT_PUBLIC_DOCS_URL || "/docs"}/quickstart`}
               className="font-medium text-primary underline underline-offset-2"
             >
               quickstart docs

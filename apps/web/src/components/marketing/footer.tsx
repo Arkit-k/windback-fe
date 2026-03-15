@@ -4,31 +4,32 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { DOCS_URL } from "@/lib/constants";
 const footerLinks = [
   {
     title: "Product",
     links: [
       { href: "/#features", label: "Features" },
       { href: "/pricing", label: "Pricing" },
-      { href: "/docs", label: "Documentation" },
-      { href: "/docs/changelog", label: "Changelog" },
+      { href: DOCS_URL, label: "Documentation" },
+      { href: `${DOCS_URL}/changelog`, label: "Changelog" },
     ],
   },
   {
     title: "Integrations",
     links: [
-      { href: "/docs/integrations/stripe", label: "Stripe" },
-      { href: "/docs/integrations/razorpay", label: "Razorpay" },
-      { href: "/docs/integrations/paddle", label: "Paddle" },
-      { href: "/docs/integrations/custom-webhook", label: "Custom Webhook" },
+      { href: `${DOCS_URL}/integrations/stripe`, label: "Stripe" },
+      { href: `${DOCS_URL}/integrations/razorpay`, label: "Razorpay" },
+      { href: `${DOCS_URL}/integrations/paddle`, label: "Paddle" },
+      { href: `${DOCS_URL}/integrations/custom-webhook`, label: "Custom Webhook" },
     ],
   },
   {
     title: "Developers",
     links: [
-      { href: "/docs", label: "API Reference" },
-      { href: "/docs/sdks", label: "SDKs" },
-      { href: "/docs/quickstart", label: "Quickstart" },
+      { href: DOCS_URL, label: "API Reference" },
+      { href: `${DOCS_URL}/sdks`, label: "SDKs" },
+      { href: `${DOCS_URL}/quickstart`, label: "Quickstart" },
       { href: "https://github.com/windback-dev", label: "GitHub", external: true },
     ],
   },

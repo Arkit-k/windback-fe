@@ -1,5 +1,6 @@
 export const COOKIE_NAME = "windback_token";
 export const BACKEND_URL = process.env.BACKEND_URL ?? "";
+export const DOCS_URL = process.env.NEXT_PUBLIC_DOCS_URL || "/docs";
 
 export const QUERY_KEYS = {
   auth: ["auth", "me"] as const,
