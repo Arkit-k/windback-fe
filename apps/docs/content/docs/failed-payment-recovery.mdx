@@ -11,23 +11,13 @@ Windback automatically detects failed payments and sends a series of smart, AI-g
 
 When a payment fails, Windback:
 
-1. **Detects the failure** via your Stripe webhook (`invoice.payment_failed`)
-2. **Creates a payment failure record** with status `failing`
-3. **Generates an AI dunning email** with the appropriate tone
-4. **Sends the email** to the customer
-5. **Retries on a schedule** — up to 4 attempts over 7 days
-6. **Auto-recovers** when payment succeeds (`invoice.payment_succeeded`)
+1. **Detects the failure** via your payment provider webhook
+2. **Generates an AI dunning email** with the appropriate tone
+3. **Sends the email** to the customer
+4. **Follows up automatically** — multiple attempts with escalating urgency
+5. **Auto-recovers** when payment succeeds
 
-## Retry Schedule
-
-| Retry | Day | Tone | Style |
-|-------|-----|------|-------|
-| 1 | Day 1 | Gentle Reminder | "Heads up, your payment didn't go through" |
-| 2 | Day 3 | Urgency | "Your subscription is at risk" |
-| 3 | Day 5 | Help Offer | "Need help updating payment? We're here" |
-| 4 | Day 7 | Final Warning | "Last chance before access is paused" |
-
-After the 4th attempt, the failure is marked as `abandoned`.
+The tone escalates from a gentle reminder to a final warning across the retry sequence.
 
 ## Webhook Events
 
@@ -36,14 +26,14 @@ Windback handles these Stripe webhook events for dunning:
 ### `invoice.payment_failed`
 
 Triggered when a subscription payment fails. Windback will:
-- Create or update a payment failure record
+- Create a payment failure record
 - Schedule the first dunning email
 - Begin the retry sequence
 
 ### `invoice.payment_succeeded`
 
 Triggered when a previously failed payment succeeds. Windback will:
-- Mark the payment failure as `recovered`
+- Mark the payment failure as recovered
 - Cancel any pending retries
 - Log the recovery for your dashboard stats
 

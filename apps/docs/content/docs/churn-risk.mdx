@@ -10,51 +10,51 @@ Windback tracks customer behavioral events (logins, feature usage, billing porta
 ## How It Works
 
 1. **You send behavioral events** — Use the [Tracking API](/docs/api-reference/tracking) or the JavaScript snippet to send events like `login`, `feature_used`, `plan_downgrade`, etc.
-2. **Windback calculates risk scores** — Every 24 hours (or on-demand), Windback analyzes the last 14 days of events per customer and scores them 0–100.
+2. **Windback calculates risk scores** — Scores are recalculated periodically for each customer based on recent activity.
 3. **AI generates retention emails** — When a customer crosses the auto-email threshold, an AI writes a personalized retention email based on the detected signals.
 4. **Email is delivered** — Either Windback sends it directly, or it POSTs the content to [your webhook](/docs/churn-risk-webhook) for you to send.
 
 ## Churn Signals
 
-Windback detects both negative (risk-increasing) and positive (risk-decreasing) signals:
+Windback detects both negative (risk-increasing) and positive (risk-decreasing) behavioral patterns:
 
 ### Negative Signals
 
-| Signal | Default Weight | Trigger |
-|--------|---------------|---------|
-| `gone_dark` | 35 | No login in 14+ days |
-| `login_frequency_drop` | 25 | Login frequency dropped 50%+ week-over-week |
-| `core_feature_unused` | 20 | Core feature not used in 7 days |
-| `payment_failed` | 20 | Active payment failure |
-| `billing_portal_visit` | 15 | Visited billing/pricing page |
-| `team_member_removed` | 15 | Removed a team member |
-| `plan_downgrade` | 15 | Downgraded plan |
-| `support_spike` | 10 | 3+ support tickets in 7 days |
-| `data_export` | 10 | Exported data |
-| `cancel_button_clicked` | 10 | Opened cancel widget |
-| `session_duration_drop` | 10 | Session duration dropped 60%+ |
-| `api_volume_drop` | 8 | API call volume dropped 60%+ |
-| `feature_breadth_shrink` | 8 | Using fewer distinct features |
+| Signal | What it means |
+|--------|---------------|
+| Gone dark | No login in 14+ days |
+| Login frequency drop | Login frequency dropped significantly week-over-week |
+| Core feature unused | Core feature not used recently |
+| Payment failed | Active payment failure |
+| Billing portal visit | Visited billing or pricing page |
+| Team member removed | Removed a team member |
+| Plan downgrade | Downgraded plan |
+| Support spike | Multiple support tickets in a short window |
+| Data export | Exported data |
+| Cancel button clicked | Opened cancel widget |
+| Session duration drop | Session duration dropped significantly |
+| API volume drop | API call volume dropped significantly |
+| Feature breadth shrink | Using fewer distinct features |
 
 ### Positive Signals
 
-| Signal | Default Weight | Trigger |
-|--------|---------------|---------|
-| `plan_upgrade` | -20 | Upgraded plan |
-| `invite_sent` | -15 | Invited new team member |
-| `new_feature_adopted` | -10 | Used a new feature |
-| `api_volume_growing` | -10 | API usage increasing |
-| `login_streak` | -8 | Logged in every day this week |
+| Signal | What it means |
+|--------|---------------|
+| Plan upgrade | Upgraded plan |
+| Invite sent | Invited new team member |
+| New feature adopted | Used a feature for the first time |
+| API volume growing | API usage increasing |
+| Login streak | Consistent daily logins |
 
-Scores are clamped to 0–100. Per-project weight overrides are supported via the config API.
+Signal weights can be customized per project via the configuration API.
 
 ## Risk Levels
 
-| Level | Default Threshold |
-|-------|------------------|
-| High | Score >= 70 |
-| Medium | Score >= 40 |
-| Low | Score < 40 |
+| Level | Description |
+|-------|-------------|
+| High | Customer is very likely to churn |
+| Medium | Customer is showing some warning signs |
+| Low | Customer appears healthy |
 
 Thresholds are configurable per project in **Settings > Churn Risk**.
 
@@ -64,7 +64,7 @@ When auto-email is enabled and a customer's score crosses the threshold, Windbac
 
 ### Direct Email (Default)
 
-Windback sends the email directly to the customer using your configured email method (Windback default, Gmail OAuth, or custom domain).
+Windback sends the email directly to the customer using your configured email method (Gmail OAuth or custom domain).
 
 ### Webhook Delivery (Recommended for Privacy)
 
@@ -99,7 +99,7 @@ PUT /api/v1/projects/:slug/churn-risk/config
 }
 ```
 
-When you set `webhook_url`, a `webhook_secret` is auto-generated and returned in the response. Use this secret to verify payloads.
+When you set `webhook_url`, a webhook secret is auto-generated and returned in the response. Use this secret to verify payloads.
 
 ### Recalculate Scores
 

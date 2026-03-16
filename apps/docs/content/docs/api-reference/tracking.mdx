@@ -66,27 +66,23 @@ curl -X POST https://api.windbackai.com/api/v1/track \
   }'
 ```
 
-Events exceeding the 100-event limit are silently truncated.
-
 ## Supported Event Types
 
-| Event | Description | Churn Signal |
-|-------|-------------|--------------|
-| `login` | Customer logged in | `gone_dark`, `login_frequency_drop`, `login_streak` |
-| `feature_used` | Customer used a feature. Pass `{"feature": "name"}` in properties. | `core_feature_unused`, `new_feature_adopted`, `feature_breadth_shrink` |
-| `billing_portal_visit` | Customer viewed billing or pricing page | `billing_portal_visit` |
-| `team_member_removed` | Customer removed a team member | `team_member_removed` |
-| `plan_downgrade` | Customer downgraded their plan | `plan_downgrade` |
-| `plan_upgrade` | Customer upgraded their plan | `plan_upgrade` (positive) |
-| `support_ticket` | Customer opened a support ticket | `support_spike` |
-| `data_export` | Customer exported their data | `data_export` |
-| `cancel_button_clicked` | Customer opened the cancel flow | `cancel_button_clicked` |
-| `api_call` | Customer made an API call | `api_volume_drop`, `api_volume_growing` |
-| `invite_sent` | Customer invited a team member | `invite_sent` (positive) |
-| `payment_failed` | Payment failed for the customer | `payment_failed` |
-| `session_end` | Customer session ended. Pass `{"duration_seconds": 300}` in properties. | `session_duration_drop` |
-
-Events with unrecognized types are silently dropped.
+| Event | Description |
+|-------|-------------|
+| `login` | Customer logged in |
+| `feature_used` | Customer used a feature. Pass `{"feature": "name"}` in properties. |
+| `billing_portal_visit` | Customer viewed billing or pricing page |
+| `team_member_removed` | Customer removed a team member |
+| `plan_downgrade` | Customer downgraded their plan |
+| `plan_upgrade` | Customer upgraded their plan |
+| `support_ticket` | Customer opened a support ticket |
+| `data_export` | Customer exported their data |
+| `cancel_button_clicked` | Customer opened the cancel flow |
+| `api_call` | Customer made an API call |
+| `invite_sent` | Customer invited a team member |
+| `payment_failed` | Payment failed for the customer |
+| `session_end` | Customer session ended. Pass `{"duration_seconds": 300}` in properties. |
 
 ## JavaScript Snippet
 
@@ -108,20 +104,12 @@ For client-side tracking, add the Windback script:
 
 ## Response
 
-The tracking endpoint always returns `200 OK` with `{"status": "ok"}`, regardless of whether the event was valid or stored. This is intentional — the endpoint is designed to never block your application.
-
-| Scenario | Response |
-|----------|----------|
-| Valid event(s) | `200 OK` — stored |
-| Invalid event type | `200 OK` — silently dropped |
-| Missing customer identifier | `200 OK` — silently dropped |
-| Invalid API key | `200 OK` — silently ignored |
-| Subscription expired | `200 OK` — silently skipped |
+The tracking endpoint returns `200 OK` for all valid requests. Invalid events are ignored gracefully — the endpoint is designed to never block your application.
 
 ## Best Practices
 
-- **Track on the server side** for security-sensitive events (plan changes, payment failures). Use `customer_id` to avoid leaking emails.
+- **Track on the server side** for security-sensitive events (plan changes, payment failures). Use `customer_id` to avoid exposing emails.
 - **Track on the client side** for engagement events (logins, feature usage). The JavaScript snippet handles batching.
 - **Include `customer_name`** when you have it — the AI uses it to personalize retention emails.
 - **Send `occurred_at`** if you're backfilling historical events. Otherwise it defaults to the current time.
-- **Use `feature_used` with properties** — pass `{"feature": "export"}` so Windback can detect feature adoption and breadth changes.
+- **Use `feature_used` with properties** — pass `{"feature": "export"}` so Windback can detect feature adoption changes.

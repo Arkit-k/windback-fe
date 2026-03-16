@@ -117,14 +117,7 @@ https://api.windbackai.com/api/v1/webhooks/razorpay/{project_public_key}
 
 ## Managing API Keys
 
-Each project has its own key pair:
-
-| Type | Prefix | Use |
-|---|---|---|
-| **Public** | `cg_pub_` | Widget, webhook URLs |
-| **Secret** | `cg_sk_` | SDK calls, server-side API access |
-
-View your project's API keys at **Settings > API Keys** within the project.
+Each project has its own key pair (public + secret). View your project's API keys at **Settings > API Keys** within the project.
 
 <Callout type="warn">
 API keys are shown only once when a project is created. Store them securely.
@@ -165,10 +158,6 @@ curl -X DELETE https://api.windbackai.com/api/v1/projects/acme-pro \
 <Callout type="warn">
 Deleting a project permanently removes all its churn events, recovery variants, and API keys. This action cannot be undone.
 </Callout>
-
-## Slug Uniqueness
-
-Project slugs are unique **per user**, not globally. If a slug collision is detected within your account, a short UUID suffix is appended automatically (e.g. `acme-pro-a1b2c3`).
 
 ## Next Steps
 

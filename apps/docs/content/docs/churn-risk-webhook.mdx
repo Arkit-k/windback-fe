@@ -29,11 +29,11 @@ curl -X PUT https://api.windbackai.com/api/v1/projects/:slug/churn-risk/config \
 
 ### 2. Copy the Webhook Secret
 
-A 32-byte hex secret is auto-generated when you set a webhook URL. You'll find it in the API response or in the dashboard settings page. Store it as an environment variable (e.g. `WINDBACK_WEBHOOK_SECRET`).
+A webhook secret is auto-generated when you set a webhook URL. You'll find it in the API response or in the dashboard settings page. Store it as an environment variable (e.g. `WINDBACK_WEBHOOK_SECRET`).
 
 ### 3. Implement Your Endpoint
 
-Your endpoint receives a JSON POST, verifies the HMAC signature, looks up the customer's email, and sends it.
+Your endpoint receives a JSON POST, verifies the signature, looks up the customer's email, and sends it.
 
 ## Webhook Payload
 
@@ -48,8 +48,8 @@ When a customer's churn score crosses the auto-email threshold, Windback POSTs:
   "risk_score": 82,
   "risk_level": "high",
   "signals": [
-    {"name": "gone_dark", "weight": 35, "description": "No login in 14+ days"},
-    {"name": "billing_portal_visit", "weight": 15, "description": "Visited billing/pricing page"}
+    {"name": "gone_dark", "description": "No login in 14+ days"},
+    {"name": "billing_portal_visit", "description": "Visited billing/pricing page"}
   ],
   "timestamp": "2026-03-12T10:00:00Z"
 }
@@ -60,7 +60,7 @@ When a customer's churn score crosses the auto-email threshold, Windback POSTs:
 | Header | Value |
 |--------|-------|
 | `Content-Type` | `application/json` |
-| `X-Windback-Signature` | HMAC-SHA256 hex digest of the raw JSON body, using your `webhook_secret` as the key |
+| `X-Windback-Signature` | Signature of the request body using your webhook secret |
 
 ### Fields
 
@@ -70,21 +70,17 @@ When a customer's churn score crosses the auto-email threshold, Windback POSTs:
 | `customer_name` | string | Customer name from tracked events (may be empty) |
 | `subject` | string | AI-generated email subject line |
 | `body_html` | string | AI-generated email body (HTML) |
-| `risk_score` | number | Current churn risk score (0–100) |
+| `risk_score` | number | Current churn risk score (0-100) |
 | `risk_level` | string | `"high"`, `"medium"`, or `"low"` |
-| `signals` | array | Detected churn signals with weights and descriptions |
+| `signals` | array | Detected churn signals with descriptions |
 | `timestamp` | string | ISO 8601 timestamp of when the webhook was sent |
 
 ## Signature Verification
 
-Every webhook request includes an `X-Windback-Signature` header. To verify:
-
-1. Read the raw request body (before JSON parsing)
-2. Compute HMAC-SHA256 of the body using your webhook secret
-3. Compare the hex digest to the header value
+Every webhook request includes an `X-Windback-Signature` header. Verify it before processing to prevent forged requests.
 
 <Callout type="warn">
-Always verify the signature before processing the webhook. This prevents forged requests.
+Always verify the signature before processing the webhook.
 </Callout>
 
 ### Node.js
@@ -105,7 +101,7 @@ app.post('/api/windback-webhook', express.json(), (req, res) => {
     return res.status(401).json({ error: 'Invalid signature' });
   }
 
-  const { customer_id, customer_name, subject, body_html, risk_score, risk_level } = req.body;
+  const { customer_id, subject, body_html } = req.body;
 
   // Look up the real email from your database
   const customer = await db.customers.findById(customer_id);
@@ -148,7 +144,7 @@ def webhook():
     # Look up real email from your database
     customer = db.customers.find_by_id(data['customer_id'])
 
-    # Send using your existing email infra (SendGrid, SES, etc.)
+    # Send using your existing email infra
     send_email(
         to=customer.email,
         subject=data['subject'],
@@ -186,12 +182,9 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     var payload struct {
-        CustomerID   string `json:"customer_id"`
-        CustomerName string `json:"customer_name"`
-        Subject      string `json:"subject"`
-        BodyHTML     string `json:"body_html"`
-        RiskScore    int    `json:"risk_score"`
-        RiskLevel    string `json:"risk_level"`
+        CustomerID string `json:"customer_id"`
+        Subject    string `json:"subject"`
+        BodyHTML   string `json:"body_html"`
     }
     json.Unmarshal(body, &payload)
 
@@ -207,13 +200,12 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 
 ## Delivery Behavior
 
-- **Fire-and-forget** — Windback does not retry failed webhook deliveries. If your endpoint is down, the email content is lost for that cycle.
-- **Always marked as sent** — Regardless of webhook success or failure, Windback marks the score as `email_sent = true` to prevent infinite retries on dead webhooks.
+- **Retries** — Failed webhook deliveries are retried automatically with exponential backoff.
 - **5-second timeout** — Webhook requests time out after 5 seconds. Keep your handler fast.
-- **One email per score cycle** — Each customer only receives one email per scoring cycle (every 24 hours or per manual recalculation).
+- **One email per cycle** — Each customer only receives one email per scoring cycle.
 
 <Callout type="info">
-If the webhook fails, the customer won't receive an email for that cycle. If you need guaranteed delivery, consider having your webhook handler enqueue the email job into a message queue (SQS, Redis, etc.) and return 200 immediately.
+For guaranteed delivery, consider having your webhook handler enqueue the email job into a message queue (SQS, Redis, etc.) and return 200 immediately.
 </Callout>
 
 ## Tracking with Opaque IDs
