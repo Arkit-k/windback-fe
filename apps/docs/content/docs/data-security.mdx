@@ -1,0 +1,80 @@
+---
+title: Data Security
+description: How Windback protects your customers' personal data at rest and in transit.
+---
+
+# Data Security
+
+Windback handles your customers' personal information (emails, names) and takes multiple steps to protect it.
+
+## Encryption at Rest (AES-256-GCM)
+
+All customer PII (email addresses and names) is encrypted before it is written to the database.
+
+| Layer | Algorithm | Purpose |
+|-------|-----------|---------|
+| **Encryption** | AES-256-GCM | Authenticated encryption of email and name fields |
+| **Hashing** | HMAC-SHA256 | Deterministic hash stored alongside for searchable lookups |
+
+### How it works
+
+```
+Input: "sarah@acme.co"
+  Stored in DB:  "enc:v1:nonce+ciphertext"   (encrypted, not readable)
+  Hash column:   "hmac:a9f2b1c3..."           (for WHERE / JOIN lookups)
+
+Search:  WHERE customer_email_hash = HMAC('sarah@acme.co')
+Display: Decrypt(customer_email) -> "sarah@acme.co"
+```
+
+- **New data** is encrypted on every write.
+- **Legacy plaintext data** is handled gracefully — the system detects the `enc:v1:` prefix and passes through unencrypted values.
+- **Dashboard and API responses** return decrypted values as normal (behind authentication).
+- **Database breach**: An attacker with raw DB access sees only encrypted blobs.
+
+### Encryption key
+
+Set the `ENCRYPTION_KEY` environment variable on your backend. Generate one with:
+
+```bash
+openssl rand -hex 32
+```
+
+<Callout type="error">
+**Required in production.** The backend refuses to start without `ENCRYPTION_KEY` in production mode. Never commit this key to source control.
+</Callout>
+
+## PII Masking in Logs
+
+Customer emails are masked in all application logs:
+
+```
+sarah@acme.co  ->  sa***@acme.co
+```
+
+This prevents accidental PII exposure through log aggregation services (Datadog, CloudWatch, etc.).
+
+## Encryption in Transit
+
+All API traffic uses HTTPS (TLS 1.2+). Webhook payloads to your endpoints are signed with HMAC-SHA256 so you can verify authenticity.
+
+## Environment Variables
+
+The following secrets must be set for a secure production deployment:
+
+| Variable | Purpose | Generate |
+|----------|---------|----------|
+| `ENCRYPTION_KEY` | AES-256-GCM key for customer PII | `openssl rand -hex 32` |
+| `JWT_SECRET` | Signs authentication tokens | `openssl rand -hex 32` |
+| `DATABASE_URL` | Postgres connection string (use SSL) | From your DB provider |
+
+## Self-Hosting Checklist
+
+If you self-host Windback, verify these before going live:
+
+1. `ENCRYPTION_KEY` is set (64 hex characters = 32 bytes)
+2. `JWT_SECRET` is set and not the default
+3. `SERVER_ENV=production`
+4. Database connection uses SSL (`?sslmode=require`)
+5. CORS origins are restricted to your domain
+6. API keys are rotated if any were accidentally committed
