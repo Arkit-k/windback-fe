@@ -15,13 +15,16 @@ const plans = [
     name: "Starter",
     monthlyPrice: "Free",
     annualPrice: "Free",
-    description: "For indie hackers getting started",
+    description: "For indie hackers and early-stage SaaS",
     features: [
-      "Up to 50 churn events/month",
-      "1 project",
+      "Up to 500 churn events/month",
+      "3 projects",
       "AI recovery email generation",
-      "Failed payment detection",
-      "1 payment provider",
+      "Failed payment detection & dunning",
+      "Cancellation flow widget",
+      "Churn risk scoring",
+      "Lost Gems (win-back old customers)",
+      "All payment providers",
       "Email analytics dashboard",
       "Email support",
     ],
@@ -37,43 +40,17 @@ const plans = [
     annualNote: "billed annually ($396/yr)",
     description: "For growing SaaS businesses",
     features: [
-      "Up to 500 churn events/month",
-      "Up to 5 projects",
-      "AI recovery email generation",
+      "Up to 5,000 churn events/month",
+      "Up to 10 projects",
+      "Everything in Starter, plus:",
       "Smart dunning sequences",
-      "Dunning tone customization",
-      "Unlimited payment providers",
-      "Cancellation flow widget",
-      "Email analytics & CSV export",
       "Health scores & NPS surveys",
-      "Team management (5 members)",
-      "Two-factor authentication",
-      "Priority support",
-    ],
-    cta: "Start Free Trial",
-    popular: false,
-  },
-  {
-    name: "Enterprise",
-    monthlyPrice: "$89",
-    annualPrice: "$74",
-    monthlyPeriod: "/month",
-    annualPeriod: "/month",
-    annualNote: "billed annually ($888/yr)",
-    description: "For scaling SaaS companies",
-    features: [
-      "Up to 2,000 churn events/month",
-      "Up to 15 projects",
-      "Everything in Growth, plus:",
-      "Advanced dunning sequences",
       "LTV tracking & forecasting",
       "CSM & customer success workflows",
       "Onboarding tracking",
-      "Alerts & smart notifications",
-      "Campaign tracking & ROI",
-      "Custom dashboards",
-      "Unlimited team members",
-      "API key rotation",
+      "Team management",
+      "Unlimited templates",
+      "Two-factor authentication",
       "Priority support",
     ],
     cta: "Start Free Trial",
@@ -81,25 +58,24 @@ const plans = [
   },
   {
     name: "Scale",
-    monthlyPrice: "$129",
-    annualPrice: "$108",
+    monthlyPrice: "$99",
+    annualPrice: "$83",
     monthlyPeriod: "/month",
     annualPeriod: "/month",
-    annualNote: "billed annually ($1,296/yr)",
+    annualNote: "billed annually ($996/yr)",
     description: "For established SaaS companies",
     features: [
       "Unlimited churn events",
       "Unlimited projects",
-      "Everything in Enterprise, plus:",
-      "Integrations marketplace",
-      "Public status page",
-      "Multi-currency normalization",
-      "Competitor radar & benchmarks",
+      "Everything in Growth, plus:",
       "Playbook automation",
       "A/B testing",
-      "Recovery analytics & trends",
-      "CSV export & reporting",
+      "Custom dashboards",
+      "Competitor radar & benchmarks",
+      "Alerts & smart notifications",
       "Audit logs",
+      "API key rotation",
+      "CSV export & reporting",
       "Dedicated support",
     ],
     cta: "Start Free Trial",
@@ -183,7 +159,6 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 const PLAN_NAME_TO_TIER: Record<string, string> = {
   Starter: "starter",
   Growth: "growth",
-  Enterprise: "enterprise",
   Scale: "scale",
 };
 
@@ -293,7 +268,7 @@ export default function PricingPage() {
         </ScrollReveal>
 
         <motion.div
-          className="mt-16 grid gap-6 md:grid-cols-2 xl:grid-cols-4"
+          className="mt-16 grid gap-6 md:grid-cols-2 xl:grid-cols-3"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-40px" }}
@@ -415,11 +390,10 @@ export default function PricingPage() {
         <ScrollReveal>
           <div className="mt-16 rounded-2xl bg-[var(--accent)] p-8 text-center sm:p-12">
             <h3 className="font-display text-2xl font-semibold text-white">
-              Need a custom plan?
+              Need something custom?
             </h3>
             <p className="mx-auto mt-2 max-w-md text-sm text-white/70">
-              Enterprise-grade features, custom event limits, SLAs, and dedicated
-              support tailored to your needs.
+              Custom event limits, SLAs, and dedicated support tailored to your needs.
             </p>
             <Button
               variant="secondary"

@@ -22,6 +22,13 @@ function formatCents(cents: number): string {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
+function maskEmail(email: string): string {
+  if (!email) return "";
+  const [local, domain] = email.split("@");
+  if (!domain) return email.slice(0, 2) + "***";
+  return local.slice(0, 2) + "***@" + domain;
+}
+
 function pct(v: number): string {
   return `${Math.round(v * 100)}%`;
 }
@@ -368,6 +375,7 @@ export default function WinBackPage() {
           </motion.div>
         </AnimatePresence>
       )}
+
     </div>
   );
 }
@@ -414,7 +422,7 @@ function OfferRow({ offer, index }: { offer: WinBackOffer; index: number }) {
       transition={{ delay: 0.02 * Math.min(index, 20) }}
     >
       <td className="px-4 py-2.5">
-        <div className="font-medium text-foreground">{offer.customer_email}</div>
+        <div className="font-medium text-foreground">{maskEmail(offer.customer_email)}</div>
         {offer.customer_name && (
           <div className="text-muted-foreground">{offer.customer_name}</div>
         )}

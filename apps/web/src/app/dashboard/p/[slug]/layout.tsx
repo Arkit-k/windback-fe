@@ -35,10 +35,10 @@ export default function ProjectLayout({
 
   return (
     <ProjectProvider project={project}>
-      <>
+      <div>
         <ProjectStreamMount slug={slug} />
         {children}
-      </>
+      </div>
     </ProjectProvider>
   );
 }

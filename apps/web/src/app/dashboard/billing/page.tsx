@@ -30,10 +30,10 @@ const PLAN_CONFIG: Record<
   string,
   { label: string; monthlyPrice: string; yearlyPrice: string; yearlyNote: string; eventsLimit: number; projectsLimit: number }
 > = {
-  starter:    { label: "Starter",    monthlyPrice: "Free",    yearlyPrice: "Free",    yearlyNote: "",                    eventsLimit: 50,   projectsLimit: 1   },
-  growth:     { label: "Growth",     monthlyPrice: "$39/mo",  yearlyPrice: "$33/mo",  yearlyNote: "billed $396/yr",     eventsLimit: 500,  projectsLimit: 5   },
-  enterprise: { label: "Enterprise", monthlyPrice: "$89/mo",  yearlyPrice: "$74/mo",  yearlyNote: "billed $888/yr",     eventsLimit: 2000, projectsLimit: 15  },
-  scale:      { label: "Scale",      monthlyPrice: "$129/mo", yearlyPrice: "$108/mo", yearlyNote: "billed $1,296/yr",   eventsLimit: -1,   projectsLimit: -1  },
+  starter:    { label: "Starter",    monthlyPrice: "Free",    yearlyPrice: "Free",    yearlyNote: "",                    eventsLimit: 500,  projectsLimit: 3   },
+  growth:     { label: "Growth",     monthlyPrice: "$39/mo",  yearlyPrice: "$33/mo",  yearlyNote: "billed $396/yr",     eventsLimit: 5000, projectsLimit: 10  },
+  scale:      { label: "Scale",      monthlyPrice: "$99/mo",  yearlyPrice: "$83/mo",  yearlyNote: "billed $996/yr",     eventsLimit: -1,   projectsLimit: -1  },
+  enterprise: { label: "Scale",      monthlyPrice: "$99/mo",  yearlyPrice: "$83/mo",  yearlyNote: "billed $996/yr",     eventsLimit: -1,   projectsLimit: -1  },
 };
 
 const CANCEL_REASONS = [
@@ -427,8 +427,8 @@ export default function BillingPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {(["starter", "growth", "enterprise", "scale"] as const).map((tier) => {
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {(["starter", "growth", "scale"] as const).map((tier) => {
               const config = PLAN_CONFIG[tier];
               const isCurrent = currentPlan === tier;
               const displayPrice = annual ? config.yearlyPrice : config.monthlyPrice;

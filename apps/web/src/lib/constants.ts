@@ -72,6 +72,7 @@ export const QUERY_KEYS = {
   customDashboards: (slug: string) => ["custom-dashboards", slug] as const,
   customDashboard: (slug: string, id: string) => ["custom-dashboards", slug, id] as const,
   exchangeRates: (slug: string) => ["exchange-rates", slug] as const,
+  winBackCustomers: (slug: string, page?: number) => ["winback-customers", slug, { page }] as const,
 } as const;
 
 export const STALE_TIMES = {
@@ -138,6 +139,7 @@ export const STALE_TIMES = {
   statusPageConfig: 60 * 1000,
   customDashboards: 30 * 1000,
   exchangeRates: 5 * 60 * 1000,
+  winBackCustomers: 30 * 1000,
 } as const;
 
 export const STATUS_LABELS: Record<string, string> = {

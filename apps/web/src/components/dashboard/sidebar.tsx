@@ -59,6 +59,7 @@ import {
   Radio,
   LayoutGrid,
   ArrowRightLeft,
+  UserSearch,
 } from "lucide-react";
 
 export function Sidebar() {
@@ -103,8 +104,9 @@ export function Sidebar() {
             { href: `${p}/events`, label: "Churn Events", icon: Activity },
             { href: `${p}/churn-risk`, label: "Churn Risk", icon: AlertTriangle },
             { href: `${p}/ghost-customers`, label: "Ghost Customers", icon: Ghost },
+            { href: `${p}/old-customers`, label: "Lost Gems", icon: UserSearch },
             { href: `${p}/win-back`, label: "Win-Back", icon: Gavel },
-            { href: `${p}/contagion`, label: "Contagion Map", icon: Network },
+            // { href: `${p}/contagion`, label: "Contagion Map", icon: Network },
           ],
         },
         { type: "link", href: `${p}/failed-payments`, label: "Failed Payments", icon: CreditCard },
@@ -112,44 +114,47 @@ export function Sidebar() {
           type: "group", label: "Analytics", icon: BarChart3,
           items: [
             { href: `${p}/analytics`, label: "Analytics", icon: BarChart3 },
-            { href: `${p}/market-pulse`, label: "Market Pulse", icon: TrendingUp },
+            // { href: `${p}/market-pulse`, label: "Market Pulse", icon: TrendingUp },
             { href: `${p}/cohorts`, label: "Cohorts", icon: Users },
             { href: `${p}/forecasting`, label: "Forecasting", icon: LineChart },
-            { href: `${p}/segments`, label: "Segments", icon: Filter },
-            { href: `${p}/benchmarking`, label: "Benchmarks", icon: BarChart3 },
-            { href: `${p}/mood`, label: "Mood Ring", icon: Heart },
-            { href: `${p}/competitor-radar`, label: "Competitor Radar", icon: Radar },
-            { href: `${p}/time-machine`, label: "Time Machine", icon: Clock },
+            // { href: `${p}/segments`, label: "Segments", icon: Filter },
+            // { href: `${p}/benchmarking`, label: "Benchmarks", icon: BarChart3 },
+            // { href: `${p}/mood`, label: "Mood Ring", icon: Heart },
+            // { href: `${p}/competitor-radar`, label: "Competitor Radar", icon: Radar },
+            // { href: `${p}/time-machine`, label: "Time Machine", icon: Clock },
             { href: `${p}/ltv`, label: "LTV Tracking", icon: DollarSign },
-            { href: `${p}/exchange-rates`, label: "Exchange Rates", icon: ArrowRightLeft },
+            // { href: `${p}/exchange-rates`, label: "Exchange Rates", icon: ArrowRightLeft },
           ],
         },
         {
           type: "group", label: "Customer Success", icon: HeartPulse,
           items: [
             { href: `${p}/health-scores`, label: "Health Scores", icon: HeartPulse },
-            { href: `${p}/surveys`, label: "NPS/CSAT Surveys", icon: MessageSquare },
-            { href: `${p}/csm`, label: "CSM Assignments", icon: Headphones },
+            // { href: `${p}/surveys`, label: "NPS/CSAT Surveys", icon: MessageSquare },
+            // { href: `${p}/csm`, label: "CSM Assignments", icon: Headphones },
             { href: `${p}/onboarding`, label: "Onboarding", icon: ListChecks },
           ],
         },
-        {
-          type: "group", label: "Automation", icon: Workflow,
-          items: [
-            { href: `${p}/playbooks`, label: "Playbooks", icon: Workflow },
-            { href: `${p}/ab-tests`, label: "A/B Tests", icon: FlaskConical },
-            { href: `${p}/alerts`, label: "Alerts", icon: BellRing },
-          ],
-        },
-        { type: "dynamic-group", href: `${p}/campaigns`, label: "Campaigns", icon: Megaphone },
-        {
-          type: "group", label: "Tools", icon: Radio,
-          items: [
-            { href: `${p}/integrations`, label: "Integrations", icon: Store },
-            { href: `${p}/status-page`, label: "Status Page", icon: Radio },
-            { href: `${p}/dashboards`, label: "Custom Dashboards", icon: LayoutGrid },
-          ],
-        },
+        // Automation hidden — revisit when users ask for it
+        // {
+        //   type: "group", label: "Automation", icon: Workflow,
+        //   items: [
+        //     { href: `${p}/playbooks`, label: "Playbooks", icon: Workflow },
+        //     { href: `${p}/ab-tests`, label: "A/B Tests", icon: FlaskConical },
+        //     { href: `${p}/alerts`, label: "Alerts", icon: BellRing },
+        //   ],
+        // },
+        // Campaigns hidden — revisit when users ask for it
+        // { type: "dynamic-group", href: `${p}/campaigns`, label: "Campaigns", icon: Megaphone },
+        // Tools hidden — revisit when users ask for it
+        // {
+        //   type: "group", label: "Tools", icon: Radio,
+        //   items: [
+        //     { href: `${p}/integrations`, label: "Integrations", icon: Store },
+        //     { href: `${p}/status-page`, label: "Status Page", icon: Radio },
+        //     { href: `${p}/dashboards`, label: "Custom Dashboards", icon: LayoutGrid },
+        //   ],
+        // },
         {
           type: "group", label: "Settings", icon: Settings,
           items: [
@@ -163,7 +168,7 @@ export function Sidebar() {
             { href: `${p}/settings/templates`, label: "Templates", icon: FileText },
             { href: `${p}/settings/retention-offers`, label: "Retention Offers", icon: Gift },
             { href: `${p}/settings/churn-risk`, label: "Churn Risk", icon: AlertTriangle },
-            { href: `${p}/settings/audit-logs`, label: "Audit Log", icon: Shield },
+            // { href: `${p}/settings/audit-logs`, label: "Audit Log", icon: Shield },
             { href: `${p}/settings/import-export`, label: "Import / Export", icon: ArrowLeftRight },
           ],
         },

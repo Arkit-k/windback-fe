@@ -154,6 +154,10 @@ export interface ChurnStats {
   total_mrr_at_risk: number;
   recovered_mrr: number;
   recovery_rate: number;
+  total_customers: number;
+  active_customers: number;
+  churned_customers: number;
+  winback_candidates: number;
 }
 
 export interface RegisterRequest {
