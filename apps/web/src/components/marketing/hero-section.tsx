@@ -86,7 +86,7 @@ export function HeroSection() {
               <FadeUp delay={0.35}>
                 <p className="mt-6 max-w-lg text-[1.075rem] leading-relaxed text-muted-foreground lg:max-w-none">
                   The complete customer retention platform for SaaS. Detect cancellations, recover failed payments,
-                  track customer health, run NPS surveys, forecast LTV, and automate win-back campaigns — all powered by AI.
+                  track customer health, forecast LTV, and win back lost customers — all powered by AI.
                 </p>
               </FadeUp>
 

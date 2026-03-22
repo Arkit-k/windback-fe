@@ -140,11 +140,11 @@ export function DashboardPreview() {
     },
     health: {
       title: "Customer Health",
-      description: "Monitor health scores, NPS surveys, and onboarding progress.",
+      description: "Monitor health scores, onboarding progress, and customer LTV.",
     },
     retention: {
       title: "Retention Tools",
-      description: "LTV tracking, campaigns, alerts, and customer success workflows.",
+      description: "LTV tracking, Lost Gems win-back, and churn forecasting.",
     },
   };
 
@@ -229,11 +229,10 @@ export function DashboardPreview() {
               <div className="my-2 h-px bg-border/40" />
               <div className="px-2.5 text-[9px] font-medium uppercase tracking-wider text-muted-foreground">More</div>
               <div className="space-y-0.5 text-[11px] text-muted-foreground">
-                <div className="px-2.5 py-1">NPS Surveys</div>
                 <div className="px-2.5 py-1">LTV Tracking</div>
-                <div className="px-2.5 py-1">Campaigns</div>
-                <div className="px-2.5 py-1">Alerts</div>
-                <div className="px-2.5 py-1">Integrations</div>
+                <div className="px-2.5 py-1">Lost Gems</div>
+                <div className="px-2.5 py-1">Health Scores</div>
+                <div className="px-2.5 py-1">Forecasting</div>
               </div>
             </div>
           </motion.div>
@@ -356,7 +355,7 @@ export function DashboardPreview() {
               >
                 <div className="grid grid-cols-3 gap-2">
                   <MiniStatCard icon={Activity} label="Avg Health" value="72" change="3 at risk" delay={0.5} />
-                  <MiniStatCard icon={TrendingUp} label="NPS Score" value="+42" change="85 responses" delay={0.6} />
+                  <MiniStatCard icon={TrendingUp} label="LTV Avg" value="$2.8k" change="156 customers" delay={0.6} />
                   <MiniStatCard icon={ArrowUpRight} label="Onboarded" value="89%" change="12 milestones" delay={0.7} />
                 </div>
                 <div className="rounded-sm border border-border/50 bg-card">
@@ -393,17 +392,17 @@ export function DashboardPreview() {
               >
                 <div className="grid grid-cols-3 gap-2">
                   <MiniStatCard icon={DollarSign} label="Avg LTV" value="$2,840" change="across 156 customers" delay={0.5} />
-                  <MiniStatCard icon={TrendingUp} label="Campaign ROI" value="340%" change="Q1 email campaign" delay={0.6} />
-                  <MiniStatCard icon={Activity} label="Active Alerts" value="3" change="1 triggered today" delay={0.7} />
+                  <MiniStatCard icon={TrendingUp} label="Lost Gems" value="24" change="ready to win back" delay={0.6} />
+                  <MiniStatCard icon={Activity} label="Win-Back Rate" value="12%" change="3 recovered this month" delay={0.7} />
                 </div>
                 <div className="rounded-sm border border-border/50 bg-card">
                   <div className="border-b border-border/40 px-3 py-2">
-                    <span className="text-[11px] font-semibold text-foreground">Active Campaigns</span>
+                    <span className="text-[11px] font-semibold text-foreground">Lost Gems — Win-Back Queue</span>
                   </div>
                   {[
-                    { name: "Q1 Win-Back Email", type: "Email", status: "Active", roi: "+$12.4k" },
-                    { name: "Re-engagement Ads", type: "Paid Ads", status: "Active", roi: "+$8.2k" },
-                    { name: "Referral Program", type: "Referral", status: "Draft", roi: "—" },
+                    { name: "sarah@acme.co", type: "Pro Plan", status: "Not contacted", roi: "$49/mo" },
+                    { name: "mike@startup.io", type: "Growth Plan", status: "Email sent", roi: "$99/mo" },
+                    { name: "lisa@design.co", type: "Pro Plan", status: "Recovered!", roi: "$49/mo" },
                   ].map((c) => (
                     <div key={c.name} className="flex items-center justify-between border-b border-border/40 px-3 py-2 last:border-0">
                       <div>

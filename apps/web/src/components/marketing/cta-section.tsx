@@ -42,7 +42,7 @@ export function CTASection() {
               </h3>
               <p className="mt-3 text-white/70">
                 Join SaaS teams using Windback to reduce churn, recover revenue, and understand their customers —
-                with AI recovery emails, health scores, smart dunning, NPS surveys, and real-time analytics.
+                with AI recovery emails, health scores, smart dunning, and real-time analytics.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <MagneticHover strength={0.12}>

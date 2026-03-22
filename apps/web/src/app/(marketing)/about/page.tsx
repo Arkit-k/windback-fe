@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Learn about Windback's mission to help SaaS founders retain customers and recover revenue with AI-powered retention tools, health scores, surveys, and smart dunning.",
+  description: "Learn about Windback's mission to help SaaS founders retain customers and recover revenue with AI-powered retention tools and smart dunning.",
   alternates: { canonical: "https://windback.io/about" },
   openGraph: {
     title: "About Windback",
@@ -35,8 +35,8 @@ export default function AboutPage() {
             </p>
             <p className="mt-3 leading-relaxed text-muted-foreground">
               Using AI, Windback analyzes cancellations and payment failures, generates
-              personalized recovery emails, tracks customer health scores, runs NPS surveys,
-              monitors LTV, and gives you the tools to proactively retain every customer.
+              personalized recovery emails, tracks customer health, monitors LTV, and gives
+              you the tools to proactively retain every customer.
             </p>
           </section>
 
@@ -55,11 +55,11 @@ export default function AboutPage() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
-                <span>Track customer health scores, run NPS/CSAT surveys, and monitor lifetime value to prevent churn before it happens.</span>
+                <span>Track customer health scores, monitor lifetime value, and predict churn risk before it happens.</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
-                <span>Automate onboarding tracking, CSM workflows, alert rules, and campaign ROI analytics from one dashboard.</span>
+                <span>Track onboarding progress and win back old customers with AI-powered Lost Gems outreach.</span>
               </li>
             </ul>
           </section>
@@ -70,7 +70,7 @@ export default function AboutPage() {
             </h2>
             <div className="mt-4 grid gap-6 sm:grid-cols-2">
               {[
-                { title: "Developer-First", desc: "RESTful APIs, typed SDKs, and comprehensive docs so you can integrate in minutes." },
+                { title: "Developer-First", desc: "RESTful APIs, webhook integrations, and comprehensive docs so you can integrate in minutes." },
                 { title: "Privacy by Default", desc: "We only process the data needed for recovery. No selling, no profiling, no surprises." },
                 { title: "Transparent Pricing", desc: "Simple tiers, no hidden fees, and a generous free plan to get started." },
                 { title: "Results-Driven", desc: "We measure success by one metric: how much revenue we help you recover." },

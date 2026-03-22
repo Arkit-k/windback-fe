@@ -28,9 +28,8 @@ const footerLinks = [
     title: "Developers",
     links: [
       { href: DOCS_URL, label: "API Reference" },
-      { href: `${DOCS_URL}/sdks`, label: "SDKs" },
       { href: `${DOCS_URL}/quickstart`, label: "Quickstart" },
-      { href: "https://github.com/windback-dev", label: "GitHub", external: true },
+      { href: `${DOCS_URL}/integrations/stripe`, label: "Integrations" },
     ],
   },
   {

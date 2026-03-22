@@ -13,7 +13,7 @@ import { SpotlightCard } from "@/components/animations/spotlight-card";
 import { DashboardPreview } from "@/components/marketing/dashboard-preview";
 
 const features = [
-  { icon: Brain, title: "AI Recovery Engine", description: "GPT-4o analyzes each churned customer and generates 9 personalized winback email variants with proven psychological strategies." },
+  { icon: Brain, title: "AI Recovery Engine", description: "AI analyzes each churned customer and generates personalized winback email variants with proven psychological strategies." },
   { icon: Webhook, title: "Universal Webhooks", description: "Connect Stripe, Razorpay, Paddle, or any payment provider via webhooks. Detect cancellations and failed payments the moment they happen." },
   { icon: Mail, title: "Smart Dunning & Recovery", description: "Automatically retry failed payments with customizable dunning sequences. AI-crafted emails recover both voluntary and involuntary churn." },
 ];
@@ -212,11 +212,11 @@ export function BentoGridSection() {
                   </motion.div>
                   <div>
                     <h3 className="text-sm font-semibold text-foreground">Built for Teams</h3>
-                    <p className="text-[11px] text-muted-foreground">SDKs, team management, 2FA, and API key rotation</p>
+                    <p className="text-[11px] text-muted-foreground">Team management, 2FA, and API key rotation</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  {["Node.js SDK", "Team Roles", "2FA", "Dunning"].map((badge) => (
+                  {["Webhooks", "Team Roles", "2FA", "Dunning"].map((badge) => (
                     <motion.span key={badge} className="inline-flex items-center rounded-lg border border-border bg-card px-3 py-1.5 font-mono text-[11px] font-medium text-foreground transition-colors duration-200 hover:border-primary hover:text-primary" whileHover={{ y: -2, scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>{badge}</motion.span>
                   ))}
                 </div>
