@@ -6,7 +6,7 @@ description: Official Windback SDK for Go (coming soon).
 # Go SDK
 
 <Callout type="warn">
-The Go SDK is not yet published. Use the [REST API](/docs/api-reference) directly for now.
+The Go SDK is coming soon. Use the [Node.js](/docs/sdks/node) or [Python](/docs/sdks/python) SDK, or the [REST API](/docs/api-reference) directly.
 </Callout>
 
 ## Using the API directly
@@ -19,6 +19,7 @@ import (
     "io"
     "net/http"
     "os"
+    "strings"
 )
 
 func main() {
@@ -28,14 +29,17 @@ func main() {
     // Get stats
     req, _ := http.NewRequest("GET", base+"/projects/my-app/stats", nil)
     req.Header.Set("X-API-Key", apiKey)
-
-    resp, err := http.DefaultClient.Do(req)
-    if err != nil {
-        panic(err)
-    }
-    defer resp.Body.Close()
-
+    resp, _ := http.DefaultClient.Do(req)
     body, _ := io.ReadAll(resp.Body)
+    resp.Body.Close()
     fmt.Println(string(body))
+
+    // Track an event
+    req, _ = http.NewRequest("POST", base+"/track", strings.NewReader(
+        `{"customer_email":"user@example.com","event":"login"}`,
+    ))
+    req.Header.Set("X-API-Key", apiKey)
+    req.Header.Set("Content-Type", "application/json")
+    http.DefaultClient.Do(req)
 }
 ```

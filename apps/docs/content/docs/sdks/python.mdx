@@ -1,34 +1,78 @@
 ---
 title: Python SDK
-description: Official Windback SDK for Python (coming soon).
+description: Official Windback SDK for Python.
 ---
 
 # Python SDK
 
-<Callout type="warn">
-The Python SDK is not yet published. Use the [REST API](/docs/api-reference) directly for now.
-</Callout>
+Official Python SDK for the Windback API.
 
-## Using the API directly
+## Installation
+
+```bash
+pip install windback
+```
+
+## Quick Start
 
 ```python
 import os
-import requests
+from windback import Windback
 
-API_KEY = os.environ["WINDBACK_SECRET_KEY"]  # sk_...
-BASE = "https://api.windbackai.com/api/v1"
-
-headers = {"X-API-Key": API_KEY}
+client = Windback(api_key=os.environ["WINDBACK_SECRET_KEY"])  # sk_...
 
 # Get stats
-stats = requests.get(f"{BASE}/projects/my-app/stats", headers=headers).json()
-
-# Track an event
-requests.post(f"{BASE}/track", headers=headers, json={
-    "customer_email": "user@example.com",
-    "event": "login",
-})
+stats = client.stats.get()
+print(f"Recovery rate: {stats.recovery_rate}%")
 
 # List churn events
-events = requests.get(f"{BASE}/projects/my-app/churn-events?limit=10", headers=headers).json()
+events = client.churn_events.list(status="new", limit=10)
+
+# Generate recovery emails
+variants = client.churn_events.generate_variants("event-id")
+
+# Send a recovery email
+client.churn_events.send_variant("event-id", "variant-id")
+
+# Mark as recovered
+client.churn_events.mark_recovered("event-id")
+```
+
+<Callout type="info">
+The SDK uses your **secret API key** (`sk_...`) for authentication. Get your API key from **Settings > API Keys** in the [dashboard](https://windbackai.com/dashboard).
+</Callout>
+
+## Track Events
+
+```python
+# Track customer behavior for churn risk scoring
+client.track(customer_email="user@example.com", event="login")
+
+# With properties
+client.track(
+    customer_email="user@example.com",
+    event="feature_used",
+    properties={"feature": "export"},
+)
+```
+
+## Configuration
+
+```python
+client = Windback(
+    api_key=os.environ["WINDBACK_SECRET_KEY"],
+    base_url="https://api.windbackai.com",  # optional
+    timeout=30,  # seconds, optional
+)
+```
+
+## Async Support
+
+```python
+from windback import AsyncWindback
+
+client = AsyncWindback(api_key=os.environ["WINDBACK_SECRET_KEY"])
+
+stats = await client.stats.get()
+events = await client.churn_events.list()
 ```

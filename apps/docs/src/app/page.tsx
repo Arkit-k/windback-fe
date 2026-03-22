@@ -67,9 +67,9 @@ const quickLinks = [
     bgColor: "bg-sky-500/10",
   },
   {
-    title: "Data Security",
-    description: "How Windback protects your customers' data at rest and in transit.",
-    href: "/docs/data-security",
+    title: "SDKs",
+    description: "Official client libraries for Node.js and Python.",
+    href: "/docs/sdks/node",
     icon: Package,
     color: "from-indigo-400 to-blue-600",
     bgColor: "bg-indigo-500/10",
@@ -123,35 +123,40 @@ const features = [
 
 const stats = [
   { value: "9", label: "AI Strategies", suffix: "" },
-  { value: "3", label: "Plans", suffix: "" },
+  { value: "2", label: "SDKs", suffix: "" },
   { value: "<5", label: "Min Setup", suffix: "min" },
   { value: "100", label: "Uptime", suffix: "%" },
 ];
 
 const codeExamples = [
   {
-    lang: "Track Event",
+    lang: "Node.js",
+    code: `import { Windback } from "windback-node";
+
+const client = new Windback({
+  apiKey: "sk_...",
+});
+
+const stats = await client.stats.get();
+const events = await client.churnEvents.list();`,
+  },
+  {
+    lang: "Python",
+    code: `from windback import Windback
+
+client = Windback(api_key="sk_...")
+
+stats = client.stats.get()
+events = client.churn_events.list()`,
+  },
+  {
+    lang: "cURL",
     code: `curl -X POST \\
   https://api.windbackai.com/api/v1/track \\
   -H "X-API-Key: pub_..." \\
   -H "Content-Type: application/json" \\
   -d '{"customer_email": "user@example.com",
        "event": "login"}'`,
-  },
-  {
-    lang: "List Events",
-    code: `curl \\
-  https://api.windbackai.com/api/v1/\\
-projects/my-app/churn-events \\
-  -H "X-API-Key: sk_..."`,
-  },
-  {
-    lang: "Generate AI",
-    code: `curl -X POST \\
-  https://api.windbackai.com/api/v1/\\
-projects/my-app/churn-events/\\
-evt_123/generate \\
-  -H "X-API-Key: sk_..."`,
   },
   {
     lang: "Webhook",
@@ -167,10 +172,10 @@ webhooks/stripe/pub_your_key
 ];
 
 const packageManagers = [
-  { name: "Stripe", command: "Add webhook URL in Stripe dashboard" },
-  { name: "Razorpay", command: "Add webhook URL in Razorpay dashboard" },
-  { name: "Widget", command: '<script src="https://api.windbackai.com/widget.js" data-api-key="pub_..." async></script>' },
-  { name: "cURL", command: "curl -H 'X-API-Key: sk_...' https://api.windbackai.com/api/v1/stats" },
+  { name: "npm", command: "npm install windback-node" },
+  { name: "pip", command: "pip install windback" },
+  { name: "pnpm", command: "pnpm add windback-node" },
+  { name: "bun", command: "bun add windback-node" },
 ];
 
 /* ── Animated Counter ── */
@@ -244,11 +249,11 @@ export default function DocsHome() {
               API
             </Link>
             <Link
-              href="/docs/integrations/stripe"
+              href="/docs/sdks/node"
               className="flex items-center gap-1.5 text-sm font-medium text-fd-muted-foreground transition-colors hover:text-fd-foreground"
             >
-              <Link2 className="h-3.5 w-3.5" />
-              Integrations
+              <Package className="h-3.5 w-3.5" />
+              SDKs
             </Link>
           </div>
 
