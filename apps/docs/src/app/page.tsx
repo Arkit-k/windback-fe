@@ -67,9 +67,9 @@ const quickLinks = [
     bgColor: "bg-sky-500/10",
   },
   {
-    title: "SDKs",
-    description: "Official client libraries for Node.js, Python, and Go.",
-    href: "/docs/sdks/node",
+    title: "Data Security",
+    description: "How Windback protects your customers' data at rest and in transit.",
+    href: "/docs/data-security",
     icon: Package,
     color: "from-indigo-400 to-blue-600",
     bgColor: "bg-indigo-500/10",
@@ -81,7 +81,7 @@ const features = [
     icon: Sparkles,
     title: "AI-Powered Recovery",
     description:
-      "Generate 9 unique email variants using strategies like discounts, feature highlights, social proof, and founder emails.",
+      "AI generates personalized email variants using strategies like discounts, feature highlights, social proof, and founder emails.",
     gradient: "from-blue-500 to-indigo-600",
   },
   {
@@ -123,60 +123,54 @@ const features = [
 
 const stats = [
   { value: "9", label: "AI Strategies", suffix: "" },
-  { value: "3", label: "SDK Languages", suffix: "" },
+  { value: "3", label: "Plans", suffix: "" },
   { value: "<5", label: "Min Setup", suffix: "min" },
   { value: "100", label: "Uptime", suffix: "%" },
 ];
 
 const codeExamples = [
   {
-    lang: "Node.js",
-    code: `import Windback from "@windback/node";
-
-const pb = new Windback({ apiKey: "cg_sk_..." });
-
-const events = await pb.churnEvents.list();
-const recovery = await pb.churnEvents.generate(
-  events[0].id
-);`,
-  },
-  {
-    lang: "Python",
-    code: `from windback import Windback
-
-pb = Windback(api_key="cg_sk_...")
-
-events = pb.churn_events.list()
-recovery = pb.churn_events.generate(
-    events[0].id
-)`,
-  },
-  {
-    lang: "Go",
-    code: `import "github.com/windback/windback-go"
-
-client := windback.New("cg_sk_...")
-
-events, _ := client.ChurnEvents.List(ctx)
-recovery, _ := client.ChurnEvents.Generate(
-    ctx, events[0].ID,
-)`,
-  },
-  {
-    lang: "cURL",
+    lang: "Track Event",
     code: `curl -X POST \\
-  https://api.windbackai.com/api/v1/projects/my-app/\\
-churn-events/evt_123/generate \\
-  -H "X-API-Key: cg_sk_..." \\
-  -H "Content-Type: application/json"`,
+  https://api.windbackai.com/api/v1/track \\
+  -H "X-API-Key: pub_..." \\
+  -H "Content-Type: application/json" \\
+  -d '{"customer_email": "user@example.com",
+       "event": "login"}'`,
+  },
+  {
+    lang: "List Events",
+    code: `curl \\
+  https://api.windbackai.com/api/v1/\\
+projects/my-app/churn-events \\
+  -H "X-API-Key: sk_..."`,
+  },
+  {
+    lang: "Generate AI",
+    code: `curl -X POST \\
+  https://api.windbackai.com/api/v1/\\
+projects/my-app/churn-events/\\
+evt_123/generate \\
+  -H "X-API-Key: sk_..."`,
+  },
+  {
+    lang: "Webhook",
+    code: `# Add this URL in your Stripe dashboard:
+https://api.windbackai.com/api/v1/\\
+webhooks/stripe/pub_your_key
+
+# Events to listen for:
+# - customer.subscription.deleted
+# - invoice.payment_failed
+# - invoice.payment_succeeded`,
   },
 ];
 
 const packageManagers = [
-  { name: "npm", command: "npm install @windback/node" },
-  { name: "pnpm", command: "pnpm add @windback/node" },
-  { name: "yarn", command: "yarn add @windback/node" },
-  { name: "bun", command: "bun add @windback/node" },
+  { name: "Stripe", command: "Add webhook URL in Stripe dashboard" },
+  { name: "Razorpay", command: "Add webhook URL in Razorpay dashboard" },
+  { name: "Widget", command: '<script src="https://api.windbackai.com/widget.js" data-api-key="pub_..." async></script>' },
+  { name: "cURL", command: "curl -H 'X-API-Key: sk_...' https://api.windbackai.com/api/v1/stats" },
 ];
 
 /* ── Animated Counter ── */
@@ -250,17 +244,17 @@ export default function DocsHome() {
               API
             </Link>
             <Link
-              href="/docs/sdks/node"
+              href="/docs/integrations/stripe"
               className="flex items-center gap-1.5 text-sm font-medium text-fd-muted-foreground transition-colors hover:text-fd-foreground"
             >
-              <Package className="h-3.5 w-3.5" />
-              SDKs
+              <Link2 className="h-3.5 w-3.5" />
+              Integrations
             </Link>
           </div>
 
           <div className="flex items-center gap-3">
             <Link
-              href="http://localhost:3001"
+              href="https://windbackai.com/dashboard"
               className="hidden text-sm font-medium text-fd-muted-foreground transition-colors hover:text-fd-foreground sm:block"
             >
               Dashboard

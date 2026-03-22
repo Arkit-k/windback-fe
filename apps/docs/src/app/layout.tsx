@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     template: "%s — Windback Docs",
   },
   description:
-    "Developer documentation for Windback. Integrate AI-powered churn recovery with APIs, SDKs, and a drop-in cancellation widget.",
+    "Developer documentation for Windback. Integrate AI-powered churn recovery with webhooks, APIs, and a drop-in cancellation widget.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

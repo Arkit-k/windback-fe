@@ -1,74 +1,41 @@
 ---
 title: Go SDK
-description: Official Windback SDK for Go.
+description: Official Windback SDK for Go (coming soon).
 ---
 
 # Go SDK
 
-Official Go SDK for the Windback API.
+<Callout type="warn">
+The Go SDK is not yet published. Use the [REST API](/docs/api-reference) directly for now.
+</Callout>
 
-## Installation
-
-```bash
-go get github.com/windback/windback-go
-```
-
-## Quick Start
+## Using the API directly
 
 ```go
 package main
 
 import (
-    "context"
     "fmt"
-    "log"
+    "io"
+    "net/http"
     "os"
-
-    windback "github.com/windback/windback-go"
 )
 
 func main() {
-    client := windback.NewClient(os.Getenv("WINDBACK_SECRET_KEY")) // sk_... from dashboard settings
-
-    ctx := context.Background()
+    apiKey := os.Getenv("WINDBACK_SECRET_KEY") // sk_...
+    base := "https://api.windbackai.com/api/v1"
 
     // Get stats
-    stats, err := client.Stats.Get(ctx)
+    req, _ := http.NewRequest("GET", base+"/projects/my-app/stats", nil)
+    req.Header.Set("X-API-Key", apiKey)
+
+    resp, err := http.DefaultClient.Do(req)
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
-    fmt.Printf("Recovery rate: %.1f%%\n", stats.RecoveryRate)
+    defer resp.Body.Close()
 
-    // List churn events
-    events, err := client.ChurnEvents.List(ctx, &windback.ListParams{
-        Status: "new",
-        Limit:  10,
-    })
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    // Generate recovery emails
-    variants, err := client.ChurnEvents.GenerateVariants(ctx, "event-id")
-
-    // Send a variant
-    err = client.ChurnEvents.SendVariant(ctx, "event-id", "variant-id")
-
-    // Mark as recovered
-    err = client.ChurnEvents.MarkRecovered(ctx, "event-id")
+    body, _ := io.ReadAll(resp.Body)
+    fmt.Println(string(body))
 }
-```
-
-<Callout type="info">
-The SDK uses your **secret API key** (`sk_...`) for authentication, not JWT tokens. Get your API key from **Settings** in the [dashboard](https://app.windbackai.com/dashboard).
-</Callout>
-
-## Configuration
-
-```go
-client := windback.NewClient(
-    os.Getenv("WINDBACK_SECRET_KEY"),
-    windback.WithBaseURL("https://api.windbackai.com"),
-    windback.WithTimeout(30 * time.Second),
-)
 ```
