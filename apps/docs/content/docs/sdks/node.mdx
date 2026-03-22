@@ -37,89 +37,151 @@ bun add windback-node
 ```typescript
 import { Windback } from "windback-node";
 
-const client = new Windback({
-  apiKey: process.env.WINDBACK_SECRET_KEY, // sk_... from dashboard settings
+const pb = new Windback("sk_live_your_api_key");
+
+// Track a churn event when a customer cancels
+await pb.trackChurn({
+  email: "jane@company.com",
+  name: "Jane Doe",
+  provider: "stripe",
+  planName: "Pro",
+  mrr: 4900,        // $49.00 in cents
+  currency: "USD",
+  tenureDays: 120,
+  cancelReason: "too_expensive",
+  cancelReasonText: "Costs more than our budget allows",
 });
-
-// Get stats
-const stats = await client.stats.get();
-console.log(`Recovery rate: ${stats.recovery_rate}%`);
-
-// List churn events
-const events = await client.churnEvents.list({
-  status: "new",
-  limit: 10,
-});
-
-// Generate recovery emails
-const variants = await client.churnEvents.generateVariants("event-id");
-
-// Send a recovery email
-await client.churnEvents.sendVariant("event-id", "variant-id");
-
-// Mark as recovered
-await client.churnEvents.markRecovered("event-id");
 ```
 
-<Callout type="info">
-The SDK uses your **secret API key** (`sk_...`) for authentication. Get your API key from **Settings > API Keys** in the [dashboard](https://windbackai.com/dashboard).
-</Callout>
-
-## Track Events
+## Initialize
 
 ```typescript
-// Track customer behavior for churn risk scoring
-await client.track({
-  customerEmail: "user@example.com",
-  event: "login",
-});
+// Simple — just pass API key
+const pb = new Windback("sk_live_your_api_key");
 
-// Batch track
-await client.track({
-  events: [
-    { customerEmail: "user@example.com", event: "login" },
-    { customerEmail: "user@example.com", event: "feature_used", properties: { feature: "export" } },
-  ],
+// With options
+const pb = new Windback({
+  apiKey: "sk_live_your_api_key",
+  baseUrl: "https://api.windbackai.com", // default
+  timeout: 10000, // 10s default
+  retries: 2,     // retry on 5xx errors
 });
 ```
 
-## API Reference
+## Track Churn
 
-### `Windback(options)`
+Call this wherever your cancellation logic runs. Windback stores the event; use `generateVariants` + `sendVariant` to trigger the winback email manually, or pass `cancelReason` and call `reportCancelReason` to trigger it automatically.
 
-| Option | Type | Description |
-|---|---|---|
-| `apiKey` | string | Your secret API key (`sk_...`) |
-| `baseUrl` | string | API base URL (optional) |
+```typescript
+const event = await pb.trackChurn({
+  email: "jane@company.com",    // required
+  provider: "stripe",            // required
+  mrr: 4900,                     // required, in cents
 
-### `client.stats.get()`
+  name: "Jane Doe",              // optional
+  planName: "Pro",               // optional
+  currency: "USD",               // optional, default "USD"
+  tenureDays: 120,               // optional
+  lastActiveAt: "2026-02-10T12:30:00Z", // optional, ISO 8601
+  cancelReason: "too_expensive", // optional
+  cancelReasonText: "Too costly for our stage", // optional, free text
+  notes: "Requested downgrade first",           // optional, internal notes
+});
+// returns { id, status, customerEmail, ... }
+```
 
-Returns aggregate churn recovery statistics.
+## Cancel Reason — Two Integration Patterns
 
-### `client.churnEvents.list(params?)`
+### Pattern A — All-in-one (cancel happens in real time)
 
-| Param | Type | Description |
-|---|---|---|
-| `status` | string | Filter by status |
-| `limit` | number | Items per page |
-| `offset` | number | Items to skip |
+Use this when the customer fills in the cancel reason on YOUR platform at the moment they cancel. Windback creates the event, picks the best winback strategy for the reason, and sends the email automatically.
 
-### `client.churnEvents.get(id)`
+```typescript
+await pb.submitCancelFlow({
+  email: "jane@company.com",    // required
+  provider: "stripe",            // required
+  mrr: 4900,                     // required, in cents
+  currency: "USD",               // required
+  cancelReason: "too_expensive", // required
+  cancelReasonText: "It's more than our budget", // optional
 
-Get a single churn event by ID.
+  name: "Jane Doe",
+  planName: "Pro",
+  tenureDays: 120,
+});
+// Email is sent automatically. Returns { churnEventId, status, message }
+```
 
-### `client.churnEvents.generateVariants(id)`
+### Pattern B — Webhook first, survey later
 
-Generate AI recovery email variants.
+Use this when your payment provider (Stripe, Dodo, Razorpay) fires a webhook that Windback picks up automatically to create the churn event — and your cancel survey collects the reason separately.
 
-### `client.churnEvents.sendVariant(eventId, variantId)`
+```typescript
+// Step 1 — Windback creates the event from the payment webhook automatically.
+// Your webhook handler just needs to be set up in the Windback dashboard.
 
-Send a specific variant email.
+// Step 2 — Once your cancel survey captures the reason, call:
+await pb.reportCancelReason(event.id, {
+  cancelReason: "missing_features",
+  cancelReasonText: "We need Salesforce integration",
+});
+// Windback updates the event and sends the targeted winback email automatically.
+```
 
-### `client.churnEvents.markRecovered(id)`
+## Cancel Reason Values
 
-Mark an event as recovered.
+| Value | When to use |
+|-------|-------------|
+| `too_expensive` | Price is the blocker |
+| `missing_features` | They need something you don't have |
+| `not_using_enough` | Low engagement / forgot about it |
+| `switching_competitor` | Moving to a competing product |
+| `technical_issues` | Bugs, downtime, or integration problems |
+| `poor_support` | Unhappy with support experience |
+| `dont_need_anymore` | Use case is gone (company pivot, etc.) |
+| `other` | None of the above — use `cancelReasonText` |
 
-### `client.track(params)`
+Windback maps each reason to the best winback email strategy automatically:
 
-Send behavioral events for churn risk scoring.
+| Reason | Email strategy |
+|--------|---------------|
+| `too_expensive` | Discount offer |
+| `missing_features` | Highlight unused / upcoming features |
+| `not_using_enough` | Value recap |
+| `switching_competitor` | Social proof |
+| `technical_issues` | Pain point fix + apology |
+| `poor_support` | Founder personal email |
+| `dont_need_anymore` | Pause option |
+| `other` | Feedback request |
+
+## Supported Providers
+
+`stripe` | `razorpay` | `paypal` | `wise` | `paddle` | `polar` | `dodo` | `chargebee` | `lemonsqueezy` | `custom`
+
+## Other Methods
+
+```typescript
+// Get a churn event
+const event = await pb.getEvent("event_id");
+
+// Generate AI recovery email variants manually
+const result = await pb.generateVariants("event_id");
+
+// Send a specific variant manually
+await pb.sendVariant("event_id", "variant_id");
+```
+
+## Error Handling
+
+```typescript
+import { Windback, WindbackError } from "windback-node";
+
+try {
+  await pb.trackChurn({ ... });
+} catch (error) {
+  if (error instanceof WindbackError) {
+    console.error(error.message); // "Windback: invalid API key"
+    console.error(error.status);  // 401
+  }
+}
+```
