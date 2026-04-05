@@ -90,7 +90,7 @@ export function MetricsStrip() {
       </div>
 
       <motion.div
-        className="relative w-full overflow-hidden h-[340px]"
+        className="relative mx-auto max-w-6xl overflow-hidden h-[220px] px-4 sm:px-6"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
