@@ -40,7 +40,7 @@ export default function LandingPage() {
       <LoadingScreen onComplete={() => setLoaded(true)} />
 
       <div className="relative flex min-h-screen flex-col overflow-x-hidden">
-        <div className="pointer-events-none fixed inset-0 -z-10 bg-white" />
+        <div className="pointer-events-none fixed inset-0 -z-10 bg-gradient-to-b from-[#EEF2FF] via-white to-white" />
 
         <motion.div
           initial={{ opacity: 0 }}
