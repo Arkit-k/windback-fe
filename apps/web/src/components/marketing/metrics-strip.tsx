@@ -74,12 +74,12 @@ const metrics = [
 
 export function MetricsStrip() {
   return (
-    <section className="relative overflow-hidden pt-16 pb-20">
+    <section className="relative overflow-hidden pt-16 pb-20 bg-[var(--accent)]">
 
       {/* Small label above image */}
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 pb-3">
         <motion.p
-          className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground"
+          className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/60"
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -123,7 +123,7 @@ export function MetricsStrip() {
 
           {/* Left — big heading */}
           <motion.h2
-            className="font-serif text-4xl leading-[1.1] tracking-tight text-foreground italic sm:text-5xl lg:text-[3.5rem] lg:max-w-sm"
+            className="font-serif text-4xl leading-[1.1] tracking-tight text-white italic sm:text-5xl lg:text-[3.5rem] lg:max-w-sm"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -134,7 +134,7 @@ export function MetricsStrip() {
 
           {/* Right — description */}
           <motion.p
-            className="text-base text-muted-foreground leading-relaxed max-w-md lg:pt-3"
+            className="text-base text-white/60 leading-relaxed max-w-md lg:pt-3"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -147,7 +147,7 @@ export function MetricsStrip() {
 
         {/* Stats row — label top, big number, sublabel */}
         <motion.div
-          className="mt-12 grid grid-cols-2 gap-y-10 border-t border-border pt-10 lg:grid-cols-4"
+          className="mt-12 grid grid-cols-2 gap-y-10 border-t border-white/20 pt-10 lg:grid-cols-4"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-40px" }}
@@ -165,16 +165,16 @@ export function MetricsStrip() {
             >
               {/* Vertical divider */}
               {i > 0 && (
-                <div className="absolute -left-0 top-0 hidden h-full w-px bg-border lg:block" />
+                <div className="absolute -left-0 top-0 hidden h-full w-px bg-white/20 lg:block" />
               )}
 
               {/* Category label */}
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground mb-3">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/50 mb-3">
                 {metric.category}
               </p>
 
               {/* Big number */}
-              <div className="font-serif text-5xl font-normal text-foreground italic sm:text-6xl">
+              <div className="font-serif text-5xl font-normal text-white italic sm:text-6xl">
                 {metric.highlight ? (
                   <motion.span
                     initial={{ opacity: 0, scale: 0.85 }}
@@ -190,7 +190,7 @@ export function MetricsStrip() {
               </div>
 
               {/* Label */}
-              <p className="mt-2 text-sm text-muted-foreground group-hover:text-foreground transition-colors duration-200">
+              <p className="mt-2 text-sm text-white/50 group-hover:text-white transition-colors duration-200">
                 {metric.label}
               </p>
             </motion.div>
