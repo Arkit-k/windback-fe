@@ -76,7 +76,7 @@ export function MetricsStrip() {
   return (
     <>
     {/* ── White section: label + image ── */}
-    <section className="relative overflow-hidden pt-16 pb-0 bg-white">
+    <section className="relative overflow-hidden pt-6 pb-0 bg-white">
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 pb-3">
         <motion.p
           className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground"
