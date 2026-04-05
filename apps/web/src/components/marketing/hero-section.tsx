@@ -19,8 +19,8 @@ import { useAuth } from "@/hooks/use-auth";
 export function HeroRibbon() {
   return (
     <div
-      className="pointer-events-none absolute right-0 top-0 z-0 hidden h-[280vh] w-[50%] lg:block"
-      style={{ maskImage: "linear-gradient(to right, transparent, white 18%), linear-gradient(to bottom, white 85%, transparent 100%)", WebkitMaskImage: "linear-gradient(to right, transparent, white 18%), linear-gradient(to bottom, white 85%, transparent 100%)", maskComposite: "intersect", WebkitMaskComposite: "source-in" }}
+      className="pointer-events-none absolute right-0 top-0 z-0 hidden h-[135vh] w-[45%] lg:block"
+      style={{ maskImage: "linear-gradient(to right, transparent, white 18%), linear-gradient(to bottom, white 65%, transparent 100%)", WebkitMaskImage: "linear-gradient(to right, transparent, white 18%), linear-gradient(to bottom, white 65%, transparent 100%)", maskComposite: "intersect", WebkitMaskComposite: "source-in" }}
     >
       <HeroWave />
     </div>
