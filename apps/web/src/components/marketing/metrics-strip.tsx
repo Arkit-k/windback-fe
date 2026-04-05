@@ -74,12 +74,12 @@ const metrics = [
 
 export function MetricsStrip() {
   return (
-    <section className="relative overflow-hidden pt-16 pb-20 bg-[var(--accent)]">
-
-      {/* Small label above image */}
+    <>
+    {/* ── White section: label + image ── */}
+    <section className="relative overflow-hidden pt-16 pb-0 bg-white">
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 pb-3">
         <motion.p
-          className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/60"
+          className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground"
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -89,7 +89,6 @@ export function MetricsStrip() {
         </motion.p>
       </div>
 
-      {/* Full-width image with centered logo overlay */}
       <motion.div
         className="relative w-full overflow-hidden h-[340px]"
         initial={{ opacity: 0, y: 20 }}
@@ -105,7 +104,6 @@ export function MetricsStrip() {
           className="w-full h-full object-cover object-center"
           priority={false}
         />
-        {/* Centered logo */}
         <motion.div
           className="absolute inset-0 flex items-center justify-center"
           initial={{ opacity: 0 }}
@@ -116,8 +114,10 @@ export function MetricsStrip() {
           <AnimatedLogo className="text-5xl tracking-tight" />
         </motion.div>
       </motion.div>
+    </section>
 
-      {/* Below image — heading (left) + description (right) */}
+    {/* ── Blue section: heading + stats ── */}
+    <section className="relative overflow-hidden pt-12 pb-20 bg-[var(--accent)]">
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
         <div className="mt-10 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
 
@@ -199,5 +199,6 @@ export function MetricsStrip() {
       </div>
 
     </section>
+    </>
   );
 }
