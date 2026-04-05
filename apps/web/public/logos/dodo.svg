@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 40" fill="none">
+  <!-- Bird icon circle -->
+  <circle cx="18" cy="20" r="14" fill="#C8F542"/>
+  <!-- Simple bird silhouette -->
+  <path d="M12,16 C12,16 14,12 18,12 C22,12 24,15 24,18 C24,22 21,25 17,25 C14,25 12,23 12,20 Z" fill="#1A1A1A"/>
+  <circle cx="16" cy="17" r="1.5" fill="white"/>
+  <path d="M22,17 L26,15 L22,19 Z" fill="#1A1A1A"/>
+  <!-- Text -->
+  <text x="38" y="28" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="700" fill="#1A1A1A" letter-spacing="-0.3">Dodo Payments</text>
+</svg>

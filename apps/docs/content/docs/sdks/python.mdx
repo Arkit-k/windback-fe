@@ -16,119 +16,54 @@ pip install windback
 ## Quick Start
 
 ```python
+import os
 from windback import Windback
 
-pb = Windback("sk_live_your_api_key")
+client = Windback(api_key=os.environ["WINDBACK_SECRET_KEY"])  # sk_...
 
-# Track a churn event when a customer cancels
-event = pb.track_churn(
-    email="jane@company.com",
-    name="Jane Doe",
-    provider="stripe",
-    plan_name="Pro",
-    mrr=4900,        # $49.00 in cents
-    currency="USD",
-    tenure_days=120,
-    cancel_reason="too_expensive",
-    cancel_reason_text="Costs more than our budget allows",
+# Get stats
+stats = client.stats.get()
+print(f"Recovery rate: {stats.recovery_rate}%")
+
+# List churn events
+events = client.churn_events.list(status="new", limit=10)
+
+# Generate recovery emails
+variants = client.churn_events.generate_variants("event-id")
+
+# Send a recovery email
+client.churn_events.send_variant("event-id", "variant-id")
+
+# Mark as recovered
+client.churn_events.mark_recovered("event-id")
+```
+
+<Callout type="info">
+The SDK uses your **secret API key** (`sk_...`) for authentication. Get your API key from **Settings > API Keys** in the [dashboard](https://windbackai.com/dashboard).
+</Callout>
+
+## Track Events
+
+```python
+# Track customer behavior for churn risk scoring
+client.track(customer_email="user@example.com", event="login")
+
+# With properties
+client.track(
+    customer_email="user@example.com",
+    event="feature_used",
+    properties={"feature": "export"},
 )
 ```
 
-## Initialize
+## Configuration
 
 ```python
-# Simple — just pass API key
-pb = Windback("sk_live_your_api_key")
-
-# With options
-pb = Windback(
-    api_key="sk_live_your_api_key",
-    base_url="https://api.windbackai.com",  # default
-    timeout=10,  # seconds, default 10
+client = Windback(
+    api_key=os.environ["WINDBACK_SECRET_KEY"],
+    base_url="https://api.windbackai.com",  # optional
+    timeout=30,  # seconds, optional
 )
-```
-
-## Track Churn
-
-```python
-event = pb.track_churn(
-    email="jane@company.com",       # required
-    provider="stripe",               # required
-    mrr=4900,                        # required, in cents
-
-    name="Jane Doe",                 # optional
-    plan_name="Pro",                 # optional
-    currency="USD",                  # optional, default "USD"
-    tenure_days=120,                 # optional
-    last_active_at="2026-02-10T12:30:00Z",  # optional, ISO 8601
-    cancel_reason="too_expensive",   # optional
-    cancel_reason_text="Too costly for our stage",  # optional
-    notes="Requested downgrade first",              # optional
-)
-# returns { id, status, customer_email, ... }
-```
-
-## Cancel Reason — Two Integration Patterns
-
-### Pattern A — All-in-one
-
-```python
-result = pb.submit_cancel_flow(
-    email="jane@company.com",
-    provider="stripe",
-    mrr=4900,
-    currency="USD",
-    cancel_reason="too_expensive",
-    cancel_reason_text="It's more than our budget",
-
-    name="Jane Doe",
-    plan_name="Pro",
-    tenure_days=120,
-)
-# Email is sent automatically. Returns { churn_event_id, status, message }
-```
-
-### Pattern B — Webhook first, survey later
-
-```python
-# Step 1 — Windback creates the event from the payment webhook automatically.
-
-# Step 2 — Once your cancel survey captures the reason:
-pb.report_cancel_reason(event["id"], {
-    "cancel_reason": "missing_features",
-    "cancel_reason_text": "We need Salesforce integration",
-})
-# Windback sends the targeted winback email automatically.
-```
-
-## Cancel Reason Values
-
-| Value | When to use |
-|-------|-------------|
-| `too_expensive` | Price is the blocker |
-| `missing_features` | They need something you don't have |
-| `not_using_enough` | Low engagement / forgot about it |
-| `switching_competitor` | Moving to a competing product |
-| `technical_issues` | Bugs, downtime, or integration problems |
-| `poor_support` | Unhappy with support experience |
-| `dont_need_anymore` | Use case is gone (company pivot, etc.) |
-| `other` | None of the above — use `cancel_reason_text` |
-
-## Supported Providers
-
-`stripe` | `razorpay` | `paypal` | `wise` | `paddle` | `polar` | `dodo` | `chargebee` | `lemonsqueezy` | `custom`
-
-## Other Methods
-
-```python
-# Get a churn event
-event = pb.get_event("event_id")
-
-# Generate AI recovery email variants manually
-result = pb.generate_variants("event_id")
-
-# Send a specific variant manually
-pb.send_variant("event_id", "variant_id")
 ```
 
 ## Async Support
@@ -136,23 +71,8 @@ pb.send_variant("event_id", "variant_id")
 ```python
 from windback import AsyncWindback
 
-pb = AsyncWindback("sk_live_your_api_key")
+client = AsyncWindback(api_key=os.environ["WINDBACK_SECRET_KEY"])
 
-event = await pb.track_churn(
-    email="jane@company.com",
-    provider="stripe",
-    mrr=4900,
-)
-```
-
-## Error Handling
-
-```python
-from windback import Windback, WindbackError
-
-try:
-    pb.track_churn(...)
-except WindbackError as e:
-    print(e.message)  # "Windback: invalid API key"
-    print(e.status)   # 401
+stats = await client.stats.get()
+events = await client.churn_events.list()
 ```

@@ -23,6 +23,7 @@ import {
   useDisconnectGmail,
   useDisconnectDomain,
 } from "@/hooks/use-email-config";
+import { friendlyError } from "@/lib/error-messages";
 import { CheckCircle2, Mail, ExternalLink, Copy, Globe, Loader2 } from "lucide-react";
 import type { DNSRecord } from "@/types/api";
 
@@ -60,7 +61,7 @@ export default function EmailSenderPage() {
       { method: "windback_default" },
       {
         onSuccess: () => toast({ title: "Email method updated", description: "Now using Windback default sender." }),
-        onError: (e) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+        onError: (e) => toast({ title: "Error", description: friendlyError(e, "Failed to update email settings."), variant: "destructive" }),
       }
     );
   }
@@ -82,7 +83,7 @@ export default function EmailSenderPage() {
   function handleDisconnectGmail() {
     disconnectGmail.mutate(undefined, {
       onSuccess: () => toast({ title: "Gmail disconnected" }),
-      onError: (e) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+      onError: (e) => toast({ title: "Error", description: friendlyError(e, "Failed to update email settings."), variant: "destructive" }),
     });
   }
 
@@ -95,7 +96,7 @@ export default function EmailSenderPage() {
           setDnsRecords(data.dns_records);
           toast({ title: "Domain configured", description: "Add the CNAME records below to your DNS provider." });
         },
-        onError: (e) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+        onError: (e) => toast({ title: "Error", description: friendlyError(e, "Failed to update email settings."), variant: "destructive" }),
       }
     );
   }
@@ -109,7 +110,7 @@ export default function EmailSenderPage() {
           toast({ title: "Not verified yet", description: "DNS records haven't propagated yet. Try again in a few minutes.", variant: "destructive" });
         }
       },
-      onError: (e) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+      onError: (e) => toast({ title: "Error", description: friendlyError(e, "Failed to update email settings."), variant: "destructive" }),
     });
   }
 
@@ -123,7 +124,7 @@ export default function EmailSenderPage() {
         setReplyTo("");
         toast({ title: "Domain disconnected" });
       },
-      onError: (e) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+      onError: (e) => toast({ title: "Error", description: friendlyError(e, "Failed to update email settings."), variant: "destructive" }),
     });
   }
 

@@ -191,8 +191,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${instrumentSerif.variable} ${GeistMono.variable}`}>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" as="style" />
+        <link rel="preload" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap" as="style" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#10b981" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
         <script

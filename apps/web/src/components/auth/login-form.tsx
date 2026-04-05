@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Button, Input, Label, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@windback/ui";
 import { useAuth } from "@/hooks/use-auth";
+import { friendlyError } from "@/lib/error-messages";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { RiveLoginCharacter } from "@/components/animations/rive-login-character";
@@ -98,7 +99,7 @@ export function LoginForm() {
             </Link>
           </div>
           {login.error && (
-            <p className="text-sm text-destructive">{login.error.message}</p>
+            <p className="text-sm text-destructive">{friendlyError(login.error, "Incorrect email or password.")}</p>
           )}
           <Button type="submit" className="w-full" disabled={login.isPending}>
             {login.isPending ? "Signing in..." : "Sign In"}

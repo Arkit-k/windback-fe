@@ -197,7 +197,7 @@ pb.submitCancelFlow({
             </Link>{" "}
             or check the{" "}
             <a
-              href={`${process.env.NEXT_PUBLIC_DOCS_URL || "/docs"}/quickstart`}
+              href={"https://docs.windbackai.com/quickstart"}
               className="font-medium text-primary underline underline-offset-2"
             >
               quickstart docs

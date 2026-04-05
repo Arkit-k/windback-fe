@@ -10,6 +10,7 @@ import {
 import { toast } from "@windback/ui";
 import { useCurrentProject } from "@/providers/project-provider";
 import { useRotateAPIKey } from "@/hooks/use-churn-events";
+import { friendlyError } from "@/lib/error-messages";
 import { useAPIKeys } from "@/hooks/use-projects";
 import { Copy, Check, Shield, RefreshCw, AlertTriangle } from "lucide-react";
 
@@ -52,7 +53,7 @@ export default function ProjectApiKeysPage() {
           toast({ title: "Key rotated", description: "Your old key will expire in 24 hours." });
         },
         onError: (err) => {
-          toast({ title: "Rotation failed", description: err.message, variant: "destructive" });
+          toast({ title: "Rotation failed", description: friendlyError(err, "Failed to rotate API key."), variant: "destructive" });
         },
       }
     );

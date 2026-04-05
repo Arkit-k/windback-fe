@@ -18,6 +18,7 @@ import {
   SelectItem,
 } from "@windback/ui";
 import { useAuth, useUpdateProfile } from "@/hooks/use-auth";
+import { friendlyError } from "@/lib/error-messages";
 import { User as UserIcon, Building2, CreditCard } from "lucide-react";
 
 const BUSINESS_TYPES = ["SaaS", "E-commerce", "Marketplace", "Agency", "Other"];
@@ -120,7 +121,7 @@ export default function ProfileSettingsPage() {
             </div>
 
             {updateProfile.error && (
-              <p className="text-sm text-destructive">{updateProfile.error.message}</p>
+              <p className="text-sm text-destructive">{friendlyError(updateProfile.error, "Failed to update profile.")}</p>
             )}
 
             <div className="flex items-center gap-3">
@@ -185,7 +186,7 @@ export default function ProfileSettingsPage() {
             </div>
 
             {updateProfile.error && (
-              <p className="text-sm text-destructive">{updateProfile.error.message}</p>
+              <p className="text-sm text-destructive">{friendlyError(updateProfile.error, "Failed to update profile.")}</p>
             )}
 
             <div className="flex items-center gap-3">

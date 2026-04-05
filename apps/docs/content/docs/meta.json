@@ -11,6 +11,8 @@
     "churn-risk",
     "churn-risk-webhook",
     "failed-payment-recovery",
+    "cancel-flow",
+    "retention-offers",
     "---API---",
     "api-reference",
     "---Guides---",

@@ -331,7 +331,7 @@ export default function PricingPage() {
                           viewport={{ once: true }}
                           transition={{ delay: 0.4 + i * 0.04, duration: 0.3 }}
                         >
-                          <span className={`mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-sm ${plan.popular ? "bg-white/20 text-white" : "bg-[var(--accent-light)] text-[var(--accent)]"}`}>
+                          <span className={`mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-none ${plan.popular ? "bg-white/20 text-white" : "bg-[var(--accent-light)] text-[var(--accent)]"}`}>
                             <FeatureIcon className="h-2.5 w-2.5" />
                           </span>
                           {feature}
@@ -344,7 +344,7 @@ export default function PricingPage() {
                     const isCurrent = isAuthenticated && tier === currentTier;
                     const ctaText = getPlanCta(plan.name);
                     return isCurrent ? (
-                      <div className={`w-full rounded-md py-2 text-center text-sm font-medium ${
+                      <div className={`w-full rounded-none py-2 text-center text-sm font-medium ${
                         plan.popular ? "bg-white/20 text-white" : "bg-[var(--accent-light)] text-[var(--accent)]"
                       }`}>
                         Current Plan
@@ -373,7 +373,7 @@ export default function PricingPage() {
             <h2 className="text-center font-display text-2xl font-semibold text-foreground">
               Frequently asked questions
             </h2>
-            <div className="mt-8 rounded-lg border border-border bg-card p-6">
+            <div className="mt-8 rounded-none border border-border bg-card p-6">
               {faqs.map((faq) => (
                 <FAQItem key={faq.question} question={faq.question} answer={faq.answer} />
               ))}
@@ -383,7 +383,7 @@ export default function PricingPage() {
 
         {/* CTA Strip */}
         <ScrollReveal>
-          <div className="mt-16 rounded-2xl bg-[var(--accent)] p-8 text-center sm:p-12">
+          <div className="mt-16 rounded-none bg-[var(--accent)] p-8 text-center sm:p-12">
             <h3 className="font-display text-2xl font-semibold text-white">
               Need something custom?
             </h3>

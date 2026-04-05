@@ -149,7 +149,7 @@ export default function AboutPage() {
                 support@windbackai.com
               </a>{" "}
               or{" "}
-              <Link href="/docs" className="text-[var(--accent)] hover:underline">
+              <Link href="https://docs.windbackai.com" className="text-[var(--accent)] hover:underline">
                 explore our docs
               </Link>
               .

@@ -10,6 +10,7 @@ const instrumentSerif = Instrument_Serif({
 });
 import { RootProvider } from "fumadocs-ui/provider";
 import type { Metadata } from "next";
+import { AiChat } from "@/components/ai-chat";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -25,7 +26,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} ${instrumentSerif.variable}`} suppressHydrationWarning>
       <body className="flex min-h-screen flex-col font-sans antialiased">
-        <RootProvider>{children}</RootProvider>
+        <RootProvider>
+          {children}
+          <AiChat />
+        </RootProvider>
       </body>
     </html>
   );

@@ -12,9 +12,9 @@
 
 :root {
   /* Blue + Peach SaaS tokens */
-  --surface-0: #F6F8FF;
+  --surface-0: #FFFFFF;
   --surface-1: #FFFFFF;
-  --surface-2: #EEF2FF;
+  --surface-2: #F5F5F5;
   --border-default: #D1DCF5;
   --border-subtle: #EEF2FF;
   --text-primary: #0F1733;
@@ -47,7 +47,7 @@
   --border: var(--border-default);
   --input: var(--border-default);
   --ring: var(--accent);
-  --radius: 0.25rem;
+  --radius: 0px;
 
   /* Chart colors */
   --chart-1: #0004E0;

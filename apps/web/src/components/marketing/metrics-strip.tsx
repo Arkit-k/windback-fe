@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { AnimatedLogo } from "@/components/animations/animated-logo";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -112,9 +113,7 @@ export function MetricsStrip() {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <span className="font-display text-5xl font-semibold tracking-tight text-[var(--accent)] select-none">
-            Windback<span className="text-[var(--accent)]">.</span>
-          </span>
+          <AnimatedLogo className="text-5xl tracking-tight" />
         </motion.div>
       </motion.div>
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { AnimatedLogo } from "@/components/animations/animated-logo";
 import { motion, AnimatePresence } from "framer-motion";
 import { DOCS_URL } from "@/lib/constants";
 const footerLinks = [
@@ -50,7 +51,7 @@ function SocialIcon({ d, href, label }: { d: string; href: string; label: string
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-all hover:bg-[var(--accent-light)] hover:text-[var(--accent)]"
+      className="flex h-8 w-8 items-center justify-center rounded-none text-muted-foreground transition-all hover:bg-[var(--accent-light)] hover:text-[var(--accent)]"
       whileHover={{ scale: 1.15, y: -2 }}
       whileTap={{ scale: 0.9 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -63,11 +64,7 @@ function SocialIcon({ d, href, label }: { d: string; href: string; label: string
 }
 
 function WindbackLogoMark() {
-  return (
-    <span className="font-display text-xl font-semibold tracking-tight text-[var(--accent)] select-none">
-      Windback<span className="text-[var(--accent)]">.</span>
-    </span>
-  );
+  return <AnimatedLogo className="text-xl tracking-tight" />;
 }
 
 export function Footer() {
@@ -129,7 +126,7 @@ export function Footer() {
               {subscribed ? (
                 <motion.div
                   key="subscribed"
-                  className="mt-3 inline-flex items-center gap-2 rounded-md bg-green-50 px-4 py-2.5 text-[13px] font-medium text-green-700"
+                  className="mt-3 inline-flex items-center gap-2 rounded-none bg-green-50 px-4 py-2.5 text-[13px] font-medium text-green-700"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ type: "spring", stiffness: 400, damping: 20 }}
@@ -164,11 +161,11 @@ export function Footer() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@company.com"
-                    className="h-9 flex-1 rounded-md border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all duration-200 focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20 focus:shadow-[0_0_12px_hsl(from_var(--accent)_h_s_l_/_0.1)]"
+                    className="h-9 flex-1 rounded-none border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all duration-200 focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20 focus:shadow-[0_0_12px_hsl(from_var(--accent)_h_s_l_/_0.1)]"
                   />
                   <motion.button
                     type="submit"
-                    className="inline-flex h-9 items-center gap-1.5 rounded-md bg-[var(--accent)] px-4 text-[13px] font-medium text-white transition-colors hover:bg-[var(--accent)]/90"
+                    className="inline-flex h-9 items-center gap-1.5 rounded-none bg-[var(--accent)] px-4 text-[13px] font-medium text-white transition-colors hover:bg-[var(--accent)]/90"
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
                     transition={{ type: "spring", stiffness: 400, damping: 17 }}

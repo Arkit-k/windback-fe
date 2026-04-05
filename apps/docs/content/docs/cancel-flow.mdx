@@ -1,0 +1,281 @@
+---
+title: Cancel Flow
+description: Capture cancellation reasons and present retention offers to save churning customers.
+---
+
+# Cancel Flow
+
+The Cancel Flow is Windback's end-to-end system for intercepting subscription cancellations, understanding why customers leave, and presenting targeted retention offers in real time.
+
+## How It Works
+
+When a customer initiates a cancellation, Windback follows this sequence:
+
+1. **Customer cancels** — The customer clicks "Cancel" in your app or billing portal.
+2. **Reason captured** — Your cancellation widget or a direct API call sends the cancel reason to Windback.
+3. **Offer matched** — Windback matches the reason to a retention offer you've configured in the dashboard.
+4. **Offer presented** — The matched offer is returned to your frontend and shown to the customer.
+5. **Customer responds** — The customer accepts or declines the offer.
+6. **AI email triggered** — If the customer declines (or no offer matches), Windback generates and queues a personalized recovery email.
+
+<Callout type="info">
+The Cancel Flow works even when your Windback subscription is expired. Cancellation data is always captured and offers are always served — graceful degradation is built in so you never lose a save opportunity.
+</Callout>
+
+## Authentication
+
+Cancel Flow endpoints accept your **public API key** (`pub_...`). This lets you call them safely from client-side code without exposing your secret key.
+
+You can also use your secret key (`sk_...`) for server-side calls.
+
+Get your keys from **Settings > API Keys** in the [dashboard](https://windbackai.com/dashboard).
+
+## Rate Limits
+
+All Cancel Flow endpoints are rate-limited to **10 requests per 15 seconds** per API key.
+
+<Callout type="warn">
+If you exceed the rate limit, the API returns `429 Too Many Requests`. Implement exponential backoff in your integration to handle this gracefully.
+</Callout>
+
+## Cancel Reasons
+
+Windback uses a fixed set of cancel reason identifiers. Pass one of these as the `cancel_reason` field:
+
+| Reason | Description |
+|---|---|
+| `too_expensive` | Customer finds the pricing too high |
+| `missing_features` | A needed feature is missing |
+| `not_using_enough` | Customer isn't getting enough value |
+| `switching_competitor` | Customer is moving to a competitor |
+| `technical_issues` | Customer experienced bugs or reliability problems |
+| `poor_support` | Customer is unhappy with support quality |
+| `dont_need_anymore` | Customer no longer needs the product |
+| `other` | None of the above (free-text via `cancel_reason_text`) |
+
+## API Endpoints
+
+### Submit a Cancellation
+
+```
+POST /api/v1/cancel-flow/submit
+```
+
+Submit a cancellation event with customer details and the selected reason.
+
+**Request body:**
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `customer_email` | string | Yes | Customer's email address |
+| `customer_name` | string | Yes | Customer's display name |
+| `cancel_reason` | string | Yes | One of the valid cancel reason identifiers |
+| `cancel_reason_text` | string | No | Free-text elaboration (especially useful for `other`) |
+| `provider` | string | Yes | Payment provider (`stripe`, `razorpay`, `paddle`, etc.) |
+| `plan_name` | string | Yes | Name of the plan being cancelled |
+| `mrr` | number | Yes | Monthly recurring revenue in **cents** |
+| `currency` | string | Yes | ISO 4217 currency code (e.g. `usd`, `eur`) |
+| `tenure_days` | number | Yes | Number of days the customer has been subscribed |
+
+**Example request:**
+
+```bash
+curl -X POST https://api.windbackai.com/api/v1/cancel-flow/submit \
+  -H "Authorization: Bearer pub_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customer_email": "jane@example.com",
+    "customer_name": "Jane Smith",
+    "cancel_reason": "too_expensive",
+    "cancel_reason_text": "We cut our SaaS budget this quarter.",
+    "provider": "stripe",
+    "plan_name": "Pro Monthly",
+    "mrr": 4900,
+    "currency": "usd",
+    "tenure_days": 134
+  }'
+```
+
+**Response (`200 OK`):**
+
+```json
+{
+  "success": true,
+  "event_id": "evt_abc123",
+  "offer": {
+    "offer_type": "discount",
+    "title": "Stay for 50% off",
+    "description": "We'd love to keep you — here's 50% off your next 3 months.",
+    "cta_button_text": "Claim Discount",
+    "discount_percent": 50
+  }
+}
+```
+
+If no offer is configured for the given reason, the `offer` field is `null`.
+
+### Get Matched Offer
+
+```
+GET /api/v1/cancel-flow/offers?reason={cancel_reason}
+```
+
+Fetch the retention offer configured for a specific cancel reason without submitting a cancellation event. Useful for previewing offers in your UI before the customer confirms.
+
+**Query parameters:**
+
+| Param | Type | Required | Description |
+|---|---|---|---|
+| `reason` | string | Yes | A valid cancel reason identifier |
+
+**Example request:**
+
+```bash
+curl https://api.windbackai.com/api/v1/cancel-flow/offers?reason=too_expensive \
+  -H "Authorization: Bearer pub_your_key_here"
+```
+
+**Response (`200 OK`):**
+
+```json
+{
+  "offer": {
+    "offer_type": "discount",
+    "title": "Stay for 50% off",
+    "description": "We'd love to keep you — here's 50% off your next 3 months.",
+    "cta_button_text": "Claim Discount",
+    "discount_percent": 50
+  }
+}
+```
+
+### Accept an Offer
+
+```
+POST /api/v1/cancel-flow/accept-offer
+```
+
+Record that a customer accepted a retention offer. This updates the churn event status and triggers any downstream actions (e.g. applying a discount in Stripe).
+
+**Request body:**
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `customer_email` | string | Yes | Customer's email address |
+| `cancel_reason` | string | Yes | The cancel reason that was submitted |
+| `offer_type` | string | Yes | The type of offer accepted (`discount`, `extension`, `downgrade`, `feature_unlock`, `custom`) |
+
+**Example request:**
+
+```bash
+curl -X POST https://api.windbackai.com/api/v1/cancel-flow/accept-offer \
+  -H "Authorization: Bearer pub_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customer_email": "jane@example.com",
+    "cancel_reason": "too_expensive",
+    "offer_type": "discount"
+  }'
+```
+
+**Response (`200 OK`):**
+
+```json
+{
+  "success": true,
+  "message": "Offer accepted. Discount will be applied."
+}
+```
+
+## SDK Usage
+
+### Node.js
+
+```typescript
+import { Windback } from "windback-node";
+
+const windback = new Windback({
+  apiKey: "pub_your_key_here",
+});
+
+// Submit a cancellation and get the matched offer
+const result = await windback.submitCancelFlow({
+  customerEmail: "jane@example.com",
+  customerName: "Jane Smith",
+  cancelReason: "too_expensive",
+  cancelReasonText: "We cut our SaaS budget this quarter.",
+  provider: "stripe",
+  planName: "Pro Monthly",
+  mrr: 4900,
+  currency: "usd",
+  tenureDays: 134,
+});
+
+if (result.offer) {
+  // Show the offer to the customer in your UI
+  console.log(result.offer.title);
+  console.log(result.offer.description);
+}
+```
+
+### Accepting an Offer
+
+```typescript
+await windback.acceptCancelFlowOffer({
+  customerEmail: "jane@example.com",
+  cancelReason: "too_expensive",
+  offerType: "discount",
+});
+```
+
+### Fetching an Offer Without Submitting
+
+```typescript
+const offer = await windback.getCancelFlowOffer("too_expensive");
+
+if (offer) {
+  console.log(`Offer: ${offer.title} (${offer.offer_type})`);
+}
+```
+
+### Python
+
+```python
+from windback import Windback
+
+client = Windback(api_key="pub_your_key_here")
+
+result = client.submit_cancel_flow(
+    customer_email="jane@example.com",
+    customer_name="Jane Smith",
+    cancel_reason="too_expensive",
+    cancel_reason_text="We cut our SaaS budget this quarter.",
+    provider="stripe",
+    plan_name="Pro Monthly",
+    mrr=4900,
+    currency="usd",
+    tenure_days=134,
+)
+
+if result.offer:
+    print(result.offer.title)
+```
+
+## Configuring Retention Offers
+
+Retention offers are configured in your Windback dashboard under **Settings > Retention Offers**. Each cancel reason can have one offer mapped to it.
+
+See the [Retention Offers](/docs/retention-offers) guide for full configuration details, including offer types, fields, and best practices.
+
+## Graceful Degradation
+
+<Callout type="info">
+The Cancel Flow is designed to never fail. Even if your Windback subscription has expired or your account is in a limited state, the cancellation submission endpoint will still accept data and return any configured offers. This ensures you never miss a chance to save a customer.
+</Callout>
+
+Specifically:
+
+- `POST /api/v1/cancel-flow/submit` always accepts and stores cancellation data.
+- `GET /api/v1/cancel-flow/offers` always returns configured offers.
+- `POST /api/v1/cancel-flow/accept-offer` always records acceptances.
+- AI email generation may be paused on expired accounts, but the data is queued and processed once your account is reactivated.

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button, Card, CardContent, CardHeader, CardTitle, CardDescription, Input, Label } from "@windback/ui";
 import { useAuth, useChangePassword } from "@/hooks/use-auth";
+import { friendlyError } from "@/lib/error-messages";
 import { useEnable2FA, useVerify2FA, useDisable2FA } from "@/hooks/use-totp";
 import { Shield, ShieldCheck, ShieldOff, KeyRound } from "lucide-react";
 
@@ -105,7 +106,7 @@ export default function SecuritySettingsPage() {
                   />
                 </div>
                 {verify2FA.error && (
-                  <p className="text-sm text-destructive">{verify2FA.error.message}</p>
+                  <p className="text-sm text-destructive">{friendlyError(verify2FA.error, "Failed to verify 2FA code.")}</p>
                 )}
                 <Button type="submit" disabled={verify2FA.isPending}>
                   {verify2FA.isPending ? "Verifying..." : "Verify & Enable"}
@@ -139,7 +140,7 @@ export default function SecuritySettingsPage() {
                 </Button>
               </div>
               {disable2FA.error && (
-                <p className="text-sm text-destructive">{disable2FA.error.message}</p>
+                <p className="text-sm text-destructive">{friendlyError(disable2FA.error, "Failed to disable 2FA.")}</p>
               )}
             </form>
           )}
@@ -241,7 +242,7 @@ function ChangePasswordCard() {
             <p className="text-sm text-destructive">{validationError}</p>
           )}
           {changePassword.error && (
-            <p className="text-sm text-destructive">{changePassword.error.message}</p>
+            <p className="text-sm text-destructive">{friendlyError(changePassword.error, "Failed to change password.")}</p>
           )}
           {success && (
             <p className="text-sm text-green-600">Password changed successfully!</p>

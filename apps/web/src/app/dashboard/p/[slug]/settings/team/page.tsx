@@ -21,6 +21,7 @@ import { toast } from "@windback/ui";
 import { useCurrentProject } from "@/providers/project-provider";
 import { useAuth } from "@/hooks/use-auth";
 import { useTeam, useInviteTeamMember, useRemoveTeamMember } from "@/hooks/use-team";
+import { friendlyError } from "@/lib/error-messages";
 import { Trash2, Send } from "lucide-react";
 import type { TeamRole } from "@/types/api";
 
@@ -53,7 +54,7 @@ export default function TeamSettingsPage() {
           setRole("member");
         },
         onError: (err) => {
-          toast({ title: "Failed to invite", description: err.message, variant: "destructive" });
+          toast({ title: "Failed to invite", description: friendlyError(err, "Failed to send invitation."), variant: "destructive" });
         },
       }
     );
@@ -65,7 +66,7 @@ export default function TeamSettingsPage() {
         toast({ title: "Member removed", description: `${memberEmail} has been removed from the team.` });
       },
       onError: (err) => {
-        toast({ title: "Failed to remove", description: err.message, variant: "destructive" });
+        toast({ title: "Failed to remove", description: friendlyError(err, "Failed to remove team member."), variant: "destructive" });
       },
     });
   }

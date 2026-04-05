@@ -7,20 +7,16 @@ import { useState, useEffect, useCallback } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence, useMotionValueEvent, useScroll } from "framer-motion";
 import { useAuth } from "@/hooks/use-auth";
-import { DOCS_URL } from "@/lib/constants";
+import { AnimatedLogo } from "@/components/animations/animated-logo";
 const navLinks = [
   { href: "/#features", label: "Features", section: "features" },
   { href: "/#how-it-works", label: "How it Works", section: "how-it-works" },
   { href: "/pricing", label: "Pricing", section: "" },
-  { href: DOCS_URL, label: "Docs", section: "" },
+  { href: "https://docs.windbackai.com", label: "Docs", section: "" },
 ];
 
 function WindbackLogo() {
-  return (
-    <span id="navbar-logo" className="font-display text-xl font-semibold tracking-tight text-[var(--accent)] select-none">
-      Windback<span className="text-[var(--accent)]">.</span>
-    </span>
-  );
+  return <AnimatedLogo id="navbar-logo" className="text-xl tracking-tight" />;
 }
 
 export function Navbar() {
@@ -227,7 +223,7 @@ export function Navbar() {
                     >
                       <Link
                         href={link.href}
-                        className="block rounded-sm px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
+                        className="block rounded-none px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
                         onClick={(e) => {
                           setMobileOpen(false);
                           if (link.section) {

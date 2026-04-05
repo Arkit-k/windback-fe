@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 40" fill="none">
+  <!-- Lemon icon -->
+  <path d="M10,18 C10,14 13,10 18,10 C20,10 21,11 22,10 C23,9 24,9 24,11 C24,12 23,13 22,14 C25,15 28,18 28,22 C28,27 24,30 18,30 C12,30 8,26 8,21 C8,19 9,18 10,18 Z" fill="#FFC233"/>
+  <path d="M20,11 C21,10 22,10 22,12 C22,13 21,14 20,14" fill="none" stroke="#1A1A1A" stroke-width="1"/>
+  <!-- Text -->
+  <text x="32" y="28" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="700" fill="#1A1A1A" letter-spacing="-0.3">lemon squeezy</text>
+</svg>

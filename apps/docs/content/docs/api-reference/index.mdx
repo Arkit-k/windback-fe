@@ -14,25 +14,307 @@ Most endpoints require authentication. The API supports two methods:
 - **JWT Bearer token**: `Authorization: Bearer <token>` — obtained via login/register
 - **API Secret Key**: `X-API-Key: sk_...` — obtained from dashboard settings
 
-Most endpoints accept either method. Widget and webhook endpoints use public API keys.
+Widget and cancel flow endpoints use the public API key (`pub_...`).
 
-## Endpoints
+## Auth & Account
 
 | Method | Path | Auth | Description |
 |---|---|---|---|
-| `POST` | `/auth/register` | None | Create a new account (email + password) |
-| `POST` | `/auth/login` | None | Log in with email + password |
-| `GET` | `/auth/me` | JWT / Secret | Get current user info |
-| `PUT` | `/auth/allowed-origins` | JWT / Secret | Update allowed origins |
-| `GET` | `/stats` | JWT / Secret | Get churn statistics |
-| `POST` | `/churn-events` | JWT / Secret | Create a churn event |
-| `GET` | `/churn-events` | JWT / Secret | List churn events |
-| `GET` | `/churn-events/:id` | JWT / Secret | Get a specific event |
-| `POST` | `/churn-events/:id/generate` | JWT / Secret | Generate recovery variants |
-| `POST` | `/churn-events/:id/variants/:vid/send` | JWT / Secret | Send a recovery email |
-| `POST` | `/churn-events/:id/recovered` | JWT / Secret | Mark event as recovered |
-| `POST` | `/cancel-flow/submit` | Public | Submit cancellation reason |
-| `POST` | `/webhooks/:provider/:key` | None | Receive payment webhooks |
+| `POST` | `/auth/register` | None | Create account |
+| `POST` | `/auth/login` | None | Log in |
+| `GET` | `/auth/me` | JWT / Secret | Get current user |
+| `PUT` | `/auth/profile` | JWT | Update profile |
+| `POST` | `/auth/change-password` | JWT | Change password |
+| `POST` | `/auth/forgot-password` | None | Initiate password reset |
+| `POST` | `/auth/reset-password` | None | Complete password reset |
+| `POST` | `/auth/onboarding` | JWT | Complete onboarding |
+| `GET` | `/auth/oauth/:provider` | None | Redirect to OAuth (google, github) |
+| `POST` | `/auth/2fa/enable` | JWT | Enable 2FA |
+| `POST` | `/auth/2fa/verify` | JWT | Verify 2FA code |
+| `POST` | `/auth/2fa/disable` | JWT | Disable 2FA |
+
+## Projects
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/projects` | JWT | Create project |
+| `GET` | `/projects` | JWT | List projects |
+| `GET` | `/projects/:slug` | JWT / Secret | Get project |
+| `PUT` | `/projects/:slug` | JWT / Secret | Update project |
+| `DELETE` | `/projects/:slug` | JWT / Secret | Delete project |
+| `GET` | `/projects/:slug/api-keys` | JWT / Secret | List API keys |
+| `POST` | `/projects/:slug/api-keys/rotate` | JWT / Secret | Rotate API key |
+| `PUT` | `/projects/:slug/allowed-origins` | JWT / Secret | Update allowed origins |
+| `GET` | `/projects/:slug/auto-send` | JWT / Secret | Get auto-send setting |
+| `PATCH` | `/projects/:slug/auto-send` | JWT / Secret | Update auto-send |
+| `GET` | `/projects/:slug/audit-logs` | JWT / Secret | List audit logs |
+
+## Churn Events
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/projects/:slug/churn-events` | JWT / Secret | Create churn event |
+| `GET` | `/projects/:slug/churn-events` | JWT / Secret | List events (paginated) |
+| `GET` | `/projects/:slug/churn-events/:id` | JWT / Secret | Get event |
+| `POST` | `/projects/:slug/churn-events/:id/recovered` | JWT / Secret | Mark recovered |
+| `PATCH` | `/projects/:slug/churn-events/:id/cancel-reason` | JWT / Secret | Attach cancel reason |
+| `GET` | `/projects/:slug/stats` | JWT / Secret | Get churn stats |
+
+## Recovery & Variants
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/projects/:slug/churn-events/:id/generate` | JWT / Secret | Generate recovery variants |
+| `POST` | `/projects/:slug/churn-events/:id/variants/:vid/send` | JWT / Secret | Send variant email |
+| `PATCH` | `/projects/:slug/churn-events/:id/variants/:vid` | JWT / Secret | Update variant |
+
+## Recovery Templates
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/projects/:slug/recovery-templates` | JWT / Secret | List templates |
+| `POST` | `/projects/:slug/recovery-templates` | JWT / Secret | Create template |
+| `GET` | `/projects/:slug/recovery-templates/:id` | JWT / Secret | Get template |
+| `PUT` | `/projects/:slug/recovery-templates/:id` | JWT / Secret | Update template |
+| `DELETE` | `/projects/:slug/recovery-templates/:id` | JWT / Secret | Delete template |
+| `GET` | `/projects/:slug/system-templates` | JWT / Secret | List system templates |
+| `POST` | `/projects/:slug/system-templates/:id/activate` | JWT / Secret | Activate system template |
+
+## Cancel Flow & Retention
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/cancel-flow/submit` | Public Key | Submit cancellation |
+| `GET` | `/cancel-flow/offers?reason=X` | Public Key | Get retention offer |
+| `POST` | `/cancel-flow/accept-offer` | Public Key | Accept offer |
+| `GET` | `/projects/:slug/retention-offers` | JWT / Secret | List configured offers |
+| `PUT` | `/projects/:slug/retention-offers/:reason` | JWT / Secret | Upsert offer |
+| `DELETE` | `/projects/:slug/retention-offers/:reason` | JWT / Secret | Delete offer |
+
+## Payment Failures & Dunning
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/projects/:slug/payment-failures` | JWT / Secret | List failures |
+| `GET` | `/projects/:slug/payment-failures/:id` | JWT / Secret | Get failure |
+| `POST` | `/projects/:slug/payment-failures/:id/retry` | JWT / Secret | Retry payment |
+| `GET` | `/projects/:slug/payment-failures/stats` | JWT / Secret | Failure stats |
+| `GET` | `/projects/:slug/dunning-config` | JWT / Secret | Get dunning config |
+| `PUT` | `/projects/:slug/dunning-config` | JWT / Secret | Update dunning config |
+
+## Win-Back
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/projects/:slug/win-back/customers` | JWT / Secret | List churned customers |
+| `POST` | `/projects/:slug/win-back/customers/:id/send` | JWT / Secret | Send win-back email |
+| `GET` | `/projects/:slug/win-back/offers` | JWT / Secret | Generate personalized offers |
+| `GET` | `/projects/:slug/win-back/summary` | JWT / Secret | Auction summary stats |
+
+## Churn Risk Scoring
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/projects/:slug/churn-risk/scores` | JWT / Secret | List risk scores |
+| `GET` | `/projects/:slug/churn-risk/stats` | JWT / Secret | Score statistics |
+| `GET` | `/projects/:slug/churn-risk/config` | JWT / Secret | Get scoring config |
+| `PUT` | `/projects/:slug/churn-risk/config` | JWT / Secret | Update config |
+| `POST` | `/projects/:slug/churn-risk/recalculate` | JWT / Secret | Trigger recalculation |
+| `GET` | `/projects/:slug/churn-risk/customers/:email` | JWT / Secret | Customer detail |
+| `GET` | `/projects/:slug/churn-risk/customers/:email/preview-email` | JWT / Secret | Preview email |
+| `GET` | `/projects/:slug/churn-risk/export` | JWT / Secret | Export CSV |
+| `GET` | `/projects/:slug/churn-risk/webhook-deliveries` | JWT / Secret | Webhook history |
+| `POST` | `/projects/:slug/churn-risk/test-webhook` | JWT / Secret | Test webhook |
+
+## Customer Health & LTV
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/projects/:slug/health-scores/compute` | JWT / Secret | Compute health scores |
+| `GET` | `/projects/:slug/health-scores` | JWT / Secret | List scores |
+| `GET` | `/projects/:slug/health-scores/:email` | JWT / Secret | Get customer score |
+| `GET` | `/projects/:slug/health-scores/stats` | JWT / Secret | Health stats |
+| `POST` | `/projects/:slug/ltv/compute` | JWT / Secret | Compute LTV |
+| `GET` | `/projects/:slug/ltv` | JWT / Secret | List LTV scores |
+| `GET` | `/projects/:slug/ltv/:email` | JWT / Secret | Get customer LTV |
+| `GET` | `/projects/:slug/ltv/stats` | JWT / Secret | LTV stats |
+
+## Analytics & Insights
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/projects/:slug/analytics/email` | JWT / Secret | Email metrics |
+| `GET` | `/projects/:slug/analytics/recovery-trends` | JWT / Secret | Recovery trends |
+| `GET` | `/projects/:slug/analytics/export` | JWT / Secret | Export CSV |
+| `GET` | `/projects/:slug/cohorts` | JWT / Secret | Cohort retention |
+| `GET` | `/projects/:slug/forecast` | JWT / Secret | Revenue forecast |
+| `GET` | `/projects/:slug/time-machine` | JWT / Secret | Counterfactual sim |
+| `GET` | `/projects/:slug/benchmarks` | JWT / Secret | Industry benchmarks |
+| `GET` | `/projects/:slug/market-pulse/latest` | JWT / Secret | Latest snapshot |
+| `GET` | `/projects/:slug/market-pulse/snapshots` | JWT / Secret | Historical snapshots |
+| `GET` | `/projects/:slug/market-pulse/heatmap` | JWT / Secret | Demand heatmap |
+| `GET` | `/projects/:slug/mood` | JWT / Secret | Product health mood |
+| `GET` | `/projects/:slug/contagion` | JWT / Secret | Churn contagion |
+| `GET` | `/projects/:slug/competitor-radar` | JWT / Secret | Competitor mentions |
+| `GET` | `/projects/:slug/ghosts` | JWT / Secret | Ghost customers |
+| `GET` | `/projects/:slug/ghosts/stats` | JWT / Secret | Ghost stats |
+| `GET` | `/projects/:slug/customers/:email/timeline` | JWT / Secret | Customer timeline |
+
+## Segments & A/B Tests
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/projects/:slug/segments` | JWT / Secret | Create segment |
+| `GET` | `/projects/:slug/segments` | JWT / Secret | List segments |
+| `GET` | `/projects/:slug/segments/:id` | JWT / Secret | Get segment |
+| `PUT` | `/projects/:slug/segments/:id` | JWT / Secret | Update segment |
+| `DELETE` | `/projects/:slug/segments/:id` | JWT / Secret | Delete segment |
+| `POST` | `/projects/:slug/segments/evaluate` | JWT / Secret | Preview segment |
+| `POST` | `/projects/:slug/ab-tests` | JWT / Secret | Create A/B test |
+| `GET` | `/projects/:slug/ab-tests` | JWT / Secret | List tests |
+| `GET` | `/projects/:slug/ab-tests/:id` | JWT / Secret | Get test + results |
+| `POST` | `/projects/:slug/ab-tests/:id/start` | JWT / Secret | Start test |
+| `POST` | `/projects/:slug/ab-tests/:id/complete` | JWT / Secret | Complete test |
+| `DELETE` | `/projects/:slug/ab-tests/:id` | JWT / Secret | Delete test |
+
+## Campaigns & Playbooks
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/projects/:slug/campaigns` | JWT / Secret | Create campaign |
+| `GET` | `/projects/:slug/campaigns` | JWT / Secret | List campaigns |
+| `GET` | `/projects/:slug/campaigns/:id` | JWT / Secret | Get campaign |
+| `PUT` | `/projects/:slug/campaigns/:id` | JWT / Secret | Update campaign |
+| `DELETE` | `/projects/:slug/campaigns/:id` | JWT / Secret | Delete campaign |
+| `POST` | `/projects/:slug/campaigns/:id/duplicate` | JWT / Secret | Clone campaign |
+| `POST` | `/projects/:slug/playbooks` | JWT / Secret | Create playbook |
+| `GET` | `/projects/:slug/playbooks` | JWT / Secret | List playbooks |
+| `GET` | `/projects/:slug/playbooks/:id` | JWT / Secret | Get playbook |
+| `PUT` | `/projects/:slug/playbooks/:id` | JWT / Secret | Update playbook |
+| `DELETE` | `/projects/:slug/playbooks/:id` | JWT / Secret | Delete playbook |
+| `POST` | `/projects/:slug/playbooks/:id/toggle` | JWT / Secret | Toggle active |
+| `GET` | `/projects/:slug/playbooks/:id/runs` | JWT / Secret | List runs |
+
+## Customer Success
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/projects/:slug/surveys` | JWT / Secret | Create survey |
+| `GET` | `/projects/:slug/surveys` | JWT / Secret | List surveys |
+| `GET` | `/projects/:slug/surveys/:id` | JWT / Secret | Get survey |
+| `PUT` | `/projects/:slug/surveys/:id` | JWT / Secret | Update survey |
+| `DELETE` | `/projects/:slug/surveys/:id` | JWT / Secret | Delete survey |
+| `POST` | `/projects/:slug/surveys/:id/responses` | JWT / Secret | Submit response |
+| `GET` | `/projects/:slug/surveys/:id/stats` | JWT / Secret | Survey stats |
+| `POST` | `/projects/:slug/csm/assignments` | JWT / Secret | Assign CSM |
+| `GET` | `/projects/:slug/csm/assignments` | JWT / Secret | List assignments |
+| `DELETE` | `/projects/:slug/csm/assignments/:id` | JWT / Secret | Remove assignment |
+| `POST` | `/projects/:slug/csm/assignments/:id/touchpoints` | JWT / Secret | Add touchpoint |
+| `GET` | `/projects/:slug/csm/assignments/:id/touchpoints` | JWT / Secret | List touchpoints |
+| `GET` | `/projects/:slug/csm/stats` | JWT / Secret | CSM stats |
+
+## Onboarding Tracking
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/projects/:slug/onboarding/milestones` | JWT / Secret | Create milestone |
+| `GET` | `/projects/:slug/onboarding/milestones` | JWT / Secret | List milestones |
+| `DELETE` | `/projects/:slug/onboarding/milestones/:id` | JWT / Secret | Delete milestone |
+| `POST` | `/projects/:slug/onboarding/milestones/:id/complete` | JWT / Secret | Mark completed |
+| `GET` | `/projects/:slug/onboarding/progress/:email` | JWT / Secret | Customer progress |
+| `GET` | `/projects/:slug/onboarding/stats` | JWT / Secret | Onboarding stats |
+
+## Alerts
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/projects/:slug/alerts` | JWT / Secret | Create alert rule |
+| `GET` | `/projects/:slug/alerts` | JWT / Secret | List rules |
+| `PUT` | `/projects/:slug/alerts/:id` | JWT / Secret | Update rule |
+| `DELETE` | `/projects/:slug/alerts/:id` | JWT / Secret | Delete rule |
+| `GET` | `/projects/:slug/alerts/history` | JWT / Secret | Alert history |
+| `POST` | `/projects/:slug/alerts/history/:id/acknowledge` | JWT / Secret | Acknowledge alert |
+
+## Integrations & Notifications
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/projects/:slug/integrations/providers` | JWT / Secret | List providers |
+| `POST` | `/projects/:slug/integrations` | JWT / Secret | Connect integration |
+| `GET` | `/projects/:slug/integrations` | JWT / Secret | List connected |
+| `DELETE` | `/projects/:slug/integrations/:id` | JWT / Secret | Disconnect |
+| `GET` | `/projects/:slug/notification-config` | JWT / Secret | Get notification config |
+| `PUT` | `/projects/:slug/notification-config` | JWT / Secret | Update config |
+| `POST` | `/projects/:slug/notification-config/test/slack` | JWT / Secret | Test Slack |
+| `POST` | `/projects/:slug/notification-config/test/webhook` | JWT / Secret | Test webhook |
+| `GET` | `/projects/:slug/stripe-connect/status` | JWT / Secret | Stripe status |
+| `GET` | `/projects/:slug/stripe-connect/auth-url` | JWT / Secret | Stripe OAuth URL |
+| `DELETE` | `/projects/:slug/stripe-connect` | JWT / Secret | Disconnect Stripe |
+
+## Email Configuration
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/projects/:slug/email-config` | JWT / Secret | Get email config |
+| `PUT` | `/projects/:slug/email-config/method` | JWT / Secret | Set method |
+| `GET` | `/projects/:slug/email-config/gmail/auth-url` | JWT / Secret | Gmail OAuth URL |
+| `POST` | `/projects/:slug/email-config/gmail/connect` | JWT / Secret | Connect Gmail |
+| `DELETE` | `/projects/:slug/email-config/gmail` | JWT / Secret | Disconnect Gmail |
+| `POST` | `/projects/:slug/email-config/domain` | JWT / Secret | Init domain verification |
+| `POST` | `/projects/:slug/email-config/domain/verify` | JWT / Secret | Verify DNS |
+| `DELETE` | `/projects/:slug/email-config/domain` | JWT / Secret | Disconnect domain |
+
+## Custom Dashboards & Status Page
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/projects/:slug/dashboards` | JWT / Secret | Create dashboard |
+| `GET` | `/projects/:slug/dashboards` | JWT / Secret | List dashboards |
+| `GET` | `/projects/:slug/dashboards/:id` | JWT / Secret | Get dashboard |
+| `PUT` | `/projects/:slug/dashboards/:id` | JWT / Secret | Update dashboard |
+| `DELETE` | `/projects/:slug/dashboards/:id` | JWT / Secret | Delete dashboard |
+| `POST` | `/projects/:slug/status-page/incidents` | JWT / Secret | Create incident |
+| `GET` | `/projects/:slug/status-page/incidents` | JWT / Secret | List incidents |
+| `PUT` | `/projects/:slug/status-page/incidents/:id` | JWT / Secret | Update incident |
+| `DELETE` | `/projects/:slug/status-page/incidents/:id` | JWT / Secret | Delete incident |
+| `GET` | `/projects/:slug/status-page/config` | JWT / Secret | Get config |
+| `PUT` | `/projects/:slug/status-page/config` | JWT / Secret | Update config |
+
+## Event Tracking
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/track` | API Key | Track events (single or batch, max 100) |
+
+## Webhooks
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/webhooks/:provider/:api_key` | Signature | Payment webhooks (stripe, razorpay, paddle, dodo) |
+
+## Billing
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/billing/checkout` | JWT | Create checkout session |
+| `POST` | `/billing/portal` | JWT | Billing portal URL |
+| `GET` | `/billing/usage` | JWT | Plan usage |
+| `POST` | `/billing/cancel` | JWT | Cancel subscription |
+
+## Team
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/team/accept/:token` | JWT | Accept invite |
+| `POST` | `/projects/:slug/team/invite` | JWT / Secret | Invite member |
+| `GET` | `/projects/:slug/team` | JWT / Secret | List members |
+| `DELETE` | `/projects/:slug/team/:id` | JWT / Secret | Remove member |
+
+## Real-time
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/projects/:slug/stream` | JWT / Secret | SSE event stream |
 
 ## Response Format
 

@@ -13,6 +13,7 @@ import { useUsage } from "@/hooks/use-billing";
 import { formatDate } from "@/lib/utils";
 import { Plus, FolderOpen, ArrowRight, Zap, Copy, Check, Shield } from "lucide-react";
 import type { CreateProjectResponse } from "@/types/api";
+import { friendlyError } from "@/lib/error-messages";
 
 const productTypes = [
   { value: "SaaS", label: "SaaS" },
@@ -237,7 +238,7 @@ export default function ProjectsPage() {
               </div>
               {createProject.isError && (
                 <p className="text-sm text-destructive">
-                  {createProject.error.message}
+                  {friendlyError(createProject.error, "Failed to create project. Please try again.")}
                 </p>
               )}
               <Button

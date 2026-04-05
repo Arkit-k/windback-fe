@@ -386,7 +386,7 @@ export function AbstractVisual({ className }: { className?: string }) {
         {/* ── Celebration pulse when all connected ── */}
         {allConnected && (
           <motion.div
-            className="absolute inset-0 z-[1] rounded-lg"
+            className="absolute inset-0 z-[1] rounded-none"
             initial={{ opacity: 0 }}
             animate={{ opacity: [0, 0.15, 0] }}
             transition={{ duration: 1.5, ease: "easeInOut" }}
@@ -407,10 +407,10 @@ export function AbstractVisual({ className }: { className?: string }) {
           constraintsRef={containerRef}
           onPositionChange={handlePositionChange}
         >
-          <div className="rounded-sm border border-border/50 bg-card px-4 py-2.5 shadow-sm hover:shadow-md transition-shadow">
+          <div className="rounded-none border border-border/50 bg-card px-4 py-2.5 shadow-sm hover:shadow-md transition-shadow">
             <ConnectorDot side="right" active={!!positions["analyze"]} />
             <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-amber-50">
+              <div className="flex h-8 w-8 items-center justify-center rounded-none bg-amber-50">
                 <Webhook className="h-4 w-4 text-amber-600" />
               </div>
               <div>
@@ -433,11 +433,11 @@ export function AbstractVisual({ className }: { className?: string }) {
           constraintsRef={containerRef}
           onPositionChange={handlePositionChange}
         >
-          <div className="rounded-sm border border-border/50 bg-card px-4 py-3 shadow-sm hover:shadow-md transition-shadow">
+          <div className="rounded-none border border-border/50 bg-card px-4 py-3 shadow-sm hover:shadow-md transition-shadow">
             <ConnectorDot side="left" active={!!positions["detect"]} />
             <ConnectorDot side="right" active={!!positions["send"]} />
             <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-[var(--accent-light)]">
+              <div className="flex h-8 w-8 items-center justify-center rounded-none bg-[var(--accent-light)]">
                 <TrendingUp className="h-4 w-4 text-[var(--accent)]" />
               </div>
               <div>
@@ -448,7 +448,7 @@ export function AbstractVisual({ className }: { className?: string }) {
                   26.6%
                 </p>
               </div>
-              <span className="ml-1 rounded-sm bg-green-50 px-1.5 py-0.5 text-[10px] font-medium text-green-600">
+              <span className="ml-1 rounded-none bg-green-50 px-1.5 py-0.5 text-[10px] font-medium text-green-600">
                 +4.2%
               </span>
             </div>
@@ -463,11 +463,11 @@ export function AbstractVisual({ className }: { className?: string }) {
           constraintsRef={containerRef}
           onPositionChange={handlePositionChange}
         >
-          <div className="rounded-sm border border-border/50 bg-card px-4 py-2.5 shadow-sm hover:shadow-md transition-shadow">
+          <div className="rounded-none border border-border/50 bg-card px-4 py-2.5 shadow-sm hover:shadow-md transition-shadow">
             <ConnectorDot side="left" active={!!positions["analyze"]} />
             <ConnectorDot side="right" active={!!positions["recover"]} />
             <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-blue-50">
+              <div className="flex h-8 w-8 items-center justify-center rounded-none bg-blue-50">
                 <Mail className="h-4 w-4 text-[var(--accent)]" />
               </div>
               <div>
@@ -490,7 +490,7 @@ export function AbstractVisual({ className }: { className?: string }) {
           constraintsRef={containerRef}
           onPositionChange={handlePositionChange}
         >
-          <div className={`rounded-sm border border-green-200/60 bg-green-50/95 px-4 py-2.5 shadow-sm hover:shadow-md transition-all ${allConnected ? "shadow-green-200/50 shadow-lg" : ""}`}>
+          <div className={`rounded-none border border-green-200/60 bg-green-50/95 px-4 py-2.5 shadow-sm hover:shadow-md transition-all ${allConnected ? "shadow-green-200/50 shadow-lg" : ""}`}>
             <ConnectorDot side="left" active={!!positions["send"]} />
             <div className="flex items-center gap-2">
               <CheckCircle2 className={`h-4 w-4 text-green-600 ${allConnected ? "animate-bounce" : ""}`} />

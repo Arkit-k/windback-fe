@@ -6,6 +6,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@windback/ui";
 import { useAcceptInvitation } from "@/hooks/use-team";
+import { friendlyError } from "@/lib/error-messages";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 
 export default function InviteAcceptPage() {
@@ -71,7 +72,7 @@ export default function InviteAcceptPage() {
                     Failed to accept invitation
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {acceptMutation.error?.message || "The invitation may have expired or already been used."}
+                    {friendlyError(acceptMutation.error, "The invitation may have expired or already been used.")}
                   </p>
                 </div>
                 <Link

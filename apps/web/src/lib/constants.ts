@@ -210,7 +210,6 @@ export const PROVIDER_LABELS: Record<string, string> = {
   stripe: "Stripe",
   razorpay: "Razorpay",
   paypal: "PayPal",
-  wise: "Wise",
   paddle: "Paddle",
   polar: "Polar",
   dodo: "Dodo",

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 40" fill="none">
+  <!-- P icon -->
+  <path d="M14,6 C14,6 22,6 26,6 C32,6 35,10 34,15 C33,22 27,25 22,25 L18,25 L16,35 L10,35 L14,6 Z" fill="#003087"/>
+  <path d="M20,10 C20,10 26,10 29,10 C34,10 36,14 35,18 C34,24 29,26 25,26 L22,26 L20,34 L15,34 L20,10 Z" fill="#009CDE"/>
+  <!-- Text -->
+  <text x="40" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="26" font-weight="700" letter-spacing="-0.5">
+    <tspan fill="#003087">Pay</tspan><tspan fill="#009CDE">Pal</tspan>
+  </text>
+</svg>

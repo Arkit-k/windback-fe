@@ -5,13 +5,12 @@ import { motion } from "framer-motion";
 import { InfiniteMarquee } from "@/components/animations/infinite-marquee";
 
 const logos = [
-  { name: "Stripe", src: "/logos/stripe.svg", width: 80, height: 34 },
-  { name: "Razorpay", src: "/logos/razorpay.svg", width: 120, height: 28 },
-  { name: "Paddle", src: "/logos/paddle.svg", width: 110, height: 30 },
-  { name: "Dodo Payments", src: "/logos/dodopayments.svg", width: 160, height: 30 },
-  { name: "Chargebee", src: "/logos/chargebee.svg", width: 130, height: 30 },
-  { name: "Polar", src: "/logos/polar.svg", width: 100, height: 30 },
-  { name: "Recurly", src: "/logos/recurly.svg", width: 110, height: 28 },
+  { name: "Stripe", src: "/logos/stripe.svg", width: 120, height: 40 },
+  { name: "Razorpay", src: "/logos/razorpay.svg", width: 180, height: 40 },
+  { name: "PayPal", src: "/logos/paypal.svg", width: 150, height: 40 },
+  { name: "Dodo Payments", src: "/logos/dodo.svg", width: 220, height: 40 },
+  { name: "Polar", src: "/logos/polar.svg", width: 130, height: 40 },
+  { name: "LemonSqueezy", src: "/logos/lemonsqueezy.svg", width: 200, height: 40 },
 ];
 
 export function LogoCloud() {
@@ -32,14 +31,14 @@ export function LogoCloud() {
           {logos.map((logo) => (
             <div
               key={logo.name}
-              className="flex items-center px-4 opacity-40 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0 cursor-default"
+              className="flex items-center px-8 opacity-60 transition-all duration-300 hover:opacity-100 cursor-default"
             >
               <Image
                 src={logo.src}
                 alt={logo.name}
                 width={logo.width}
                 height={logo.height}
-                className="h-8 w-auto object-contain"
+                className="h-9 w-auto object-contain"
               />
             </div>
           ))}

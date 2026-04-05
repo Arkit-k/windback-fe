@@ -18,6 +18,7 @@ import { useCurrentProject } from "@/providers/project-provider";
 import { useAPIKeys } from "@/hooks/use-projects";
 import { Copy, Check, ExternalLink, Loader2, Unplug, Zap } from "lucide-react";
 import { useStripeConnectStatus, useStripeConnectAuthURL, useStripeConnectDisconnect } from "@/hooks/use-stripe-connect";
+import { friendlyError } from "@/lib/error-messages";
 import { useSearchParams } from "next/navigation";
 
 // Set NEXT_PUBLIC_STRIPE_CONNECT_ENABLED=true to show the one-click Connect button.
@@ -64,7 +65,7 @@ export default function ProjectIntegrationsPage() {
     disconnectMutation.mutate(undefined, {
       onSuccess: () => toast({ title: "Stripe disconnected" }),
       onError: (err) =>
-        toast({ title: "Failed to disconnect", description: err.message, variant: "destructive" }),
+        toast({ title: "Failed to disconnect", description: friendlyError(err, "Failed to update integration."), variant: "destructive" }),
     });
   }
 

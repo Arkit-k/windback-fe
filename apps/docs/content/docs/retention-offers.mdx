@@ -1,0 +1,271 @@
+---
+title: Retention Offers
+description: Configure targeted retention offers to save customers at the moment they cancel.
+---
+
+# Retention Offers
+
+Retention offers are the incentives Windback presents to customers during the [Cancel Flow](/docs/cancel-flow). Each offer is tied to a specific cancel reason, so customers see a relevant response to their concern rather than a generic plea to stay.
+
+## How Offer Matching Works
+
+When a customer submits a cancellation with a `cancel_reason`, Windback performs an exact match against your configured offers:
+
+1. Customer selects a cancel reason (e.g. `too_expensive`).
+2. Windback looks up the offer configured for that exact reason in your project.
+3. If a match exists, the offer is returned to the widget or API caller.
+4. If no match exists, `offer` is `null` and the flow continues to AI email recovery.
+
+There is no fallback or fuzzy matching — each reason either has a configured offer or it does not.
+
+## Offer Types
+
+| Type | Description | Use Case |
+|---|---|---|
+| `discount` | A percentage discount on the current plan | Price-sensitive customers (`too_expensive`) |
+| `extension` | Free days added to the subscription | Customers who haven't explored enough (`not_using_enough`) |
+| `downgrade` | Offer to switch to a lower-tier plan | Budget-constrained customers |
+| `feature_unlock` | Temporarily unlock a premium feature | Customers citing `missing_features` |
+| `custom` | Free-form offer with custom title and description | Any scenario not covered above |
+
+## Configuring Offers in the Dashboard
+
+Navigate to **Settings > Retention Offers** in your project dashboard. You will see a list of all valid cancel reasons. For each reason, you can:
+
+1. **Enable an offer** — Toggle the offer on for that reason.
+2. **Choose the offer type** — Select from `discount`, `extension`, `downgrade`, `feature_unlock`, or `custom`.
+3. **Set offer details** — Fill in the fields relevant to the chosen type.
+4. **Save** — The offer takes effect immediately for new cancellations.
+
+### Offer Fields
+
+| Field | Type | Applies To | Description |
+|---|---|---|---|
+| `offer_type` | string | All | One of `discount`, `extension`, `downgrade`, `feature_unlock`, `custom` |
+| `title` | string | All | Headline shown to the customer (e.g. "Stay for 50% off") |
+| `description` | string | All | Supporting text explaining the offer |
+| `cta_button_text` | string | All | Label for the accept button (e.g. "Claim Discount") |
+| `discount_percent` | number | `discount` | Percentage off (1–100) |
+| `extension_days` | number | `extension` | Number of free days to add |
+| `downgrade_plan` | string | `downgrade` | Slug or name of the plan to offer |
+| `feature_name` | string | `feature_unlock` | The feature to temporarily unlock |
+| `feature_unlock_days` | number | `feature_unlock` | How many days the feature stays unlocked |
+
+<Callout type="info">
+Fields that don't apply to the selected offer type are ignored. For example, `discount_percent` is only used when `offer_type` is `discount`.
+</Callout>
+
+## API Endpoints
+
+These endpoints are used by the dashboard and require your **secret API key** (`sk_...`).
+
+### List All Offers
+
+```
+GET /api/v1/projects/:slug/retention-offers
+```
+
+Returns all configured retention offers for the project.
+
+**Example request:**
+
+```bash
+curl https://api.windbackai.com/api/v1/projects/my-project/retention-offers \
+  -H "Authorization: Bearer sk_your_key_here"
+```
+
+**Response (`200 OK`):**
+
+```json
+{
+  "offers": [
+    {
+      "cancel_reason": "too_expensive",
+      "offer_type": "discount",
+      "title": "Stay for 50% off",
+      "description": "We'd love to keep you — here's 50% off your next 3 months.",
+      "cta_button_text": "Claim Discount",
+      "discount_percent": 50,
+      "enabled": true
+    },
+    {
+      "cancel_reason": "not_using_enough",
+      "offer_type": "extension",
+      "title": "14 more days, on us",
+      "description": "Give us two more weeks to show you what you've been missing.",
+      "cta_button_text": "Extend Free",
+      "extension_days": 14,
+      "enabled": true
+    }
+  ]
+}
+```
+
+### Update an Offer
+
+```
+PUT /api/v1/projects/:slug/retention-offers/:reason
+```
+
+Create or update the retention offer for a specific cancel reason.
+
+**Example request:**
+
+```bash
+curl -X PUT https://api.windbackai.com/api/v1/projects/my-project/retention-offers/too_expensive \
+  -H "Authorization: Bearer sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "offer_type": "discount",
+    "title": "Stay for 50% off",
+    "description": "We'\''d love to keep you — here'\''s 50% off your next 3 months.",
+    "cta_button_text": "Claim Discount",
+    "discount_percent": 50,
+    "enabled": true
+  }'
+```
+
+**Response (`200 OK`):**
+
+```json
+{
+  "success": true,
+  "offer": {
+    "cancel_reason": "too_expensive",
+    "offer_type": "discount",
+    "title": "Stay for 50% off",
+    "description": "We'd love to keep you — here's 50% off your next 3 months.",
+    "cta_button_text": "Claim Discount",
+    "discount_percent": 50,
+    "enabled": true
+  }
+}
+```
+
+### Delete an Offer
+
+```
+DELETE /api/v1/projects/:slug/retention-offers/:reason
+```
+
+Remove the retention offer for a specific cancel reason. Customers who cancel with this reason will no longer see an offer.
+
+**Example request:**
+
+```bash
+curl -X DELETE https://api.windbackai.com/api/v1/projects/my-project/retention-offers/too_expensive \
+  -H "Authorization: Bearer sk_your_key_here"
+```
+
+**Response (`200 OK`):**
+
+```json
+{
+  "success": true,
+  "message": "Offer for 'too_expensive' deleted."
+}
+```
+
+## Example Configuration
+
+Here is a complete set of offers covering the most common cancel reasons:
+
+```json
+[
+  {
+    "cancel_reason": "too_expensive",
+    "offer_type": "discount",
+    "title": "Stay for 50% off",
+    "description": "Here's 50% off your next 3 months while you evaluate the ROI.",
+    "cta_button_text": "Claim Discount",
+    "discount_percent": 50,
+    "enabled": true
+  },
+  {
+    "cancel_reason": "missing_features",
+    "offer_type": "feature_unlock",
+    "title": "Try our upcoming feature early",
+    "description": "We're shipping the feature you need soon. Get early access for 30 days.",
+    "cta_button_text": "Unlock Feature",
+    "feature_name": "advanced_exports",
+    "feature_unlock_days": 30,
+    "enabled": true
+  },
+  {
+    "cancel_reason": "not_using_enough",
+    "offer_type": "extension",
+    "title": "14 more days, on us",
+    "description": "Give us two more weeks — we'll send you tips to get the most out of your account.",
+    "cta_button_text": "Extend Free",
+    "extension_days": 14,
+    "enabled": true
+  },
+  {
+    "cancel_reason": "switching_competitor",
+    "offer_type": "discount",
+    "title": "We'll match it — 40% off",
+    "description": "Before you switch, try us at 40% off for 3 months. Migration hassle avoided.",
+    "cta_button_text": "Stay & Save",
+    "discount_percent": 40,
+    "enabled": true
+  },
+  {
+    "cancel_reason": "technical_issues",
+    "offer_type": "custom",
+    "title": "Let us fix it — priority support",
+    "description": "We'll assign a dedicated engineer to resolve your issues within 48 hours.",
+    "cta_button_text": "Get Priority Support",
+    "enabled": true
+  },
+  {
+    "cancel_reason": "poor_support",
+    "offer_type": "custom",
+    "title": "Talk directly to our founder",
+    "description": "We take support seriously. Our founder will personally help resolve your concerns.",
+    "cta_button_text": "Schedule a Call",
+    "enabled": true
+  },
+  {
+    "cancel_reason": "dont_need_anymore",
+    "offer_type": "downgrade",
+    "title": "Switch to our free plan",
+    "description": "Keep your data and account active on our free tier — upgrade anytime.",
+    "cta_button_text": "Downgrade to Free",
+    "downgrade_plan": "free",
+    "enabled": true
+  }
+]
+```
+
+## Analytics (Coming Soon)
+
+<Callout type="info">
+Retention offer analytics are coming in a future release. You'll be able to see acceptance rates, save rates, and revenue retained per offer type and cancel reason — all from the dashboard.
+</Callout>
+
+## Best Practices
+
+### Match the offer to the concern
+
+The most effective retention offers directly address the customer's stated reason for leaving:
+
+- **too_expensive** — Discounts work well. 30-50% off for 2-3 months gives customers time to re-evaluate ROI without a permanent price cut.
+- **missing_features** — Feature unlocks or early access builds goodwill. If the feature genuinely exists on your roadmap, say so with a timeline.
+- **not_using_enough** — Extensions paired with onboarding outreach are highly effective. The customer hasn't found value yet, so give them guided time.
+- **switching_competitor** — Competitive discounts combined with a clear comparison of advantages. Make the switching cost feel real.
+- **technical_issues** — Priority support or direct engineering help. Discounts feel tone-deaf here; the customer wants the product to work.
+- **poor_support** — Escalation to leadership or a dedicated contact. Acknowledge the failure directly.
+- **dont_need_anymore** — Downgrade to a free or minimal plan. Keep the relationship alive for when they need you again.
+- **other** — A custom offer with a personal touch (founder outreach, call scheduling) works best when the reason is ambiguous.
+
+### Keep copy short and specific
+
+Offer titles should be under 10 words. Descriptions should be 1-2 sentences. The CTA button text should be an action phrase ("Claim Discount", not "Learn More").
+
+<Callout type="warn">
+Avoid making promises you can't keep. If you offer a discount, make sure your billing integration can apply it automatically. If you offer a feature unlock, ensure it actually works for the customer's plan.
+</Callout>
+
+### Test and iterate
+
+Start with offers for your top 2-3 cancel reasons (check your dashboard analytics to find them). Monitor acceptance rates once analytics ship, and adjust offer values and copy based on results.

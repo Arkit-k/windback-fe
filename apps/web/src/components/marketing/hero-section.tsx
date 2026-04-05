@@ -14,7 +14,6 @@ import { AnimatedBadge } from "@/components/animations/animated-badge";
 import { FloatingParticles } from "@/components/animations/floating-particles";
 import { HeroWave } from "@/components/marketing/hero-wave";
 import { useAuth } from "@/hooks/use-auth";
-import { DOCS_URL } from "@/lib/constants";
 
 /** Ribbon only — rendered after loading completes. */
 export function HeroRibbon() {
@@ -85,8 +84,8 @@ export function HeroSection() {
 
               <FadeUp delay={0.35}>
                 <p className="mt-6 max-w-lg text-[1.075rem] leading-relaxed text-muted-foreground lg:max-w-none">
-                  The complete customer retention platform for SaaS. Detect cancellations, recover failed payments,
-                  track customer health, forecast LTV, and win back lost customers — all powered by AI.
+                  Whatever your payment stack, Windback detects cancellations and failed payments,
+                  then generates personalized AI recovery emails and smart dunning sequences to bring customers back.
                 </p>
               </FadeUp>
 
@@ -105,7 +104,7 @@ export function HeroSection() {
                   <MagneticHover strength={0.12}>
                     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
                       <Button variant="outline" size="lg" asChild>
-                        <Link href={DOCS_URL}>Read the Docs</Link>
+                        <Link href="https://docs.windbackai.com">Read the Docs</Link>
                       </Button>
                     </motion.div>
                   </MagneticHover>

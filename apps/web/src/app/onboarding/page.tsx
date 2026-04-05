@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,6 +17,7 @@ import {
   ArrowLeft,
   Loader2,
 } from "lucide-react";
+import { friendlyError } from "@/lib/error-messages";
 
 const TOTAL_STEPS = 4;
 
@@ -174,15 +175,11 @@ export default function OnboardingPage() {
                 />
               )}
               {step === 1 && (
-                <StepTextInput
-                  icon={MapPin}
-                  title="Where is your business located?"
-                  subtitle="Country or city — whatever works."
+                <StepLocationInput
                   value={formData.business_location}
                   onChange={(v) =>
                     setFormData((d) => ({ ...d, business_location: v }))
                   }
-                  placeholder="e.g. San Francisco, USA"
                   onKeyDown={handleKeyDown}
                 />
               )}
@@ -256,7 +253,7 @@ export default function OnboardingPage() {
             animate={{ opacity: 1 }}
             className="mt-4 text-center text-sm text-destructive"
           >
-            {onboarding.error.message}
+            {friendlyError(onboarding.error, "Failed to complete onboarding. Please try again.")}
           </motion.p>
         )}
       </div>
@@ -305,6 +302,183 @@ function StepTextInput({
           autoFocus
           className="h-11"
         />
+      </div>
+    </div>
+  );
+}
+
+interface LocationSuggestion {
+  id: string;
+  name: string;
+}
+
+function formatPhotonResult(props: Record<string, string>): string {
+  const parts: string[] = [];
+  if (props.city || props.name) parts.push(props.city || props.name);
+  if (props.state) parts.push(props.state);
+  if (props.country) parts.push(props.country);
+  return parts.join(", ") || props.name || "";
+}
+
+function StepLocationInput({
+  value,
+  onChange,
+  onKeyDown,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  onKeyDown: (e: React.KeyboardEvent) => void;
+}) {
+  const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const fetchSuggestions = useCallback(async (query: string) => {
+    if (query.length < 2) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5&lang=en`
+      );
+      if (res.ok) {
+        const data = await res.json();
+        const results: LocationSuggestion[] = (data.features || []).map(
+          (f: { properties: Record<string, string> }, i: number) => ({
+            id: `${i}-${f.properties.osm_id || i}`,
+            name: formatPhotonResult(f.properties),
+          })
+        );
+        // Deduplicate by name
+        const seen = new Set<string>();
+        const unique = results.filter((r) => {
+          if (seen.has(r.name)) return false;
+          seen.add(r.name);
+          return true;
+        });
+        setSuggestions(unique);
+        setShowSuggestions(unique.length > 0);
+        setActiveIndex(-1);
+      }
+    } catch {
+      setSuggestions([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const handleChange = (v: string) => {
+    onChange(v);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => fetchSuggestions(v), 300);
+  };
+
+  const selectSuggestion = (name: string) => {
+    onChange(name);
+    setShowSuggestions(false);
+    setSuggestions([]);
+  };
+
+  const handleInputKeyDown = (e: React.KeyboardEvent) => {
+    if (showSuggestions && suggestions.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setActiveIndex((i) => Math.min(i + 1, suggestions.length - 1));
+        return;
+      }
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setActiveIndex((i) => Math.max(i - 1, 0));
+        return;
+      }
+      if (e.key === "Enter" && activeIndex >= 0) {
+        e.preventDefault();
+        selectSuggestion(suggestions[activeIndex].display_name);
+        return;
+      }
+      if (e.key === "Escape") {
+        setShowSuggestions(false);
+        return;
+      }
+    }
+    onKeyDown(e);
+  };
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <MapPin className="h-5 w-5" />
+        </div>
+        <h2 className="font-display text-xl font-semibold text-foreground">
+          Where is your business located?
+        </h2>
+        <p className="text-sm text-muted-foreground">Start typing to search for your city or country.</p>
+      </div>
+      <div className="relative" ref={containerRef}>
+        <Label htmlFor="location-input" className="sr-only">
+          Business location
+        </Label>
+        <div className="relative">
+          <Input
+            id="location-input"
+            value={value}
+            onChange={(e) => handleChange(e.target.value)}
+            placeholder="e.g. San Francisco, USA"
+            onKeyDown={handleInputKeyDown}
+            onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+            autoFocus
+            autoComplete="off"
+            className="h-11"
+          />
+          {loading && (
+            <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
+          )}
+        </div>
+        <AnimatePresence>
+          {showSuggestions && suggestions.length > 0 && (
+            <motion.ul
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.15 }}
+              className="absolute z-50 mt-1 w-full overflow-hidden rounded-lg border border-border bg-card shadow-lg"
+            >
+              {suggestions.map((s, i) => (
+                <li
+                  key={s.id}
+                  onClick={() => selectSuggestion(s.name)}
+                  onMouseEnter={() => setActiveIndex(i)}
+                  className={`flex cursor-pointer items-center gap-2 px-3 py-2.5 text-sm transition-colors ${
+                    i === activeIndex
+                      ? "bg-[var(--accent)]/5 text-foreground"
+                      : "text-muted-foreground hover:bg-secondary"
+                  }`}
+                >
+                  <MapPin className="h-3.5 w-3.5 shrink-0 text-[var(--accent)]" />
+                  <span className="truncate">{s.name}</span>
+                </li>
+              ))}
+            </motion.ul>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

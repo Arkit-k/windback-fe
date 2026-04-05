@@ -20,7 +20,7 @@ export function WindbackLogo({ size = "default", variant = "default" }: { size?:
     <span className={`inline-flex items-center ${s.gap} select-none`}>
       {/* Icon mark — return arrow in a rounded square */}
       <span
-        className="inline-flex items-center justify-center rounded-lg bg-[var(--accent)] shrink-0"
+        className="inline-flex items-center justify-center rounded-none bg-[var(--accent)] shrink-0"
         style={{
           width: size === "sm" ? 24 : size === "lg" ? 34 : 28,
           height: size === "sm" ? 24 : size === "lg" ? 34 : 28,
@@ -60,7 +60,7 @@ export function WindbackLogo({ size = "default", variant = "default" }: { size?:
 export function WindbackMark({ size = 28 }: { size?: number }) {
   return (
     <span
-      className="inline-flex items-center justify-center rounded-lg bg-[var(--accent)] shrink-0"
+      className="inline-flex items-center justify-center rounded-none bg-[var(--accent)] shrink-0"
       style={{ width: size, height: size }}
     >
       <svg

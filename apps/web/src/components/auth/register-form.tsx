@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Button, Input, Label, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@windback/ui";
 import { useAuth } from "@/hooks/use-auth";
+import { friendlyError } from "@/lib/error-messages";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { RiveLoginCharacter } from "@/components/animations/rive-login-character";
@@ -102,7 +103,7 @@ export function RegisterForm() {
             />
           </div>
           {register.error && (
-            <p className="text-sm text-destructive">{register.error.message}</p>
+            <p className="text-sm text-destructive">{friendlyError(register.error, "Registration failed. Please try again.")}</p>
           )}
           <Button type="submit" className="w-full" disabled={register.isPending}>
             {register.isPending ? "Creating account..." : "Create Account"}

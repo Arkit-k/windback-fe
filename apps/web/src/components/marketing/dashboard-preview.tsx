@@ -30,7 +30,7 @@ function MiniStatCard({ icon: Icon, label, value, change, delay }: {
 }) {
   return (
     <motion.div
-      className="rounded-sm border border-border/50 bg-card p-3 transition-all duration-200 hover:border-primary/40 hover:shadow-sm cursor-default"
+      className="rounded-none border border-border/50 bg-card p-3 transition-all duration-200 hover:border-primary/40 hover:shadow-sm cursor-default"
       initial={{ opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -157,7 +157,7 @@ export function DashboardPreview() {
       transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
     >
       <motion.div
-        className="overflow-hidden rounded-sm border border-border/60 bg-card transition-shadow duration-500 hover:shadow-xl hover:shadow-primary/5"
+        className="overflow-hidden rounded-none border border-border/60 bg-card transition-shadow duration-500 hover:shadow-xl hover:shadow-primary/5"
         whileHover={{ y: -3, transition: { type: "spring", stiffness: 200, damping: 25 } }}
       >
         <div className="flex items-center gap-2 border-b border-border/60 bg-secondary/50 px-4 py-2.5">
@@ -171,7 +171,7 @@ export function DashboardPreview() {
               />
             ))}
           </div>
-          <div className="mx-auto flex h-6 w-64 items-center justify-center rounded-sm bg-background/80 text-[10px] text-muted-foreground">
+          <div className="mx-auto flex h-6 w-64 items-center justify-center rounded-none bg-background/80 text-[10px] text-muted-foreground">
             app.windbackai.com/dashboard
           </div>
         </div>
@@ -184,7 +184,7 @@ export function DashboardPreview() {
             viewport={{ once: true }}
             transition={{ delay: 0.3, duration: 0.4 }}
           >
-            <div className="mb-4 font-display text-sm font-semibold text-[var(--accent)]">Windback<span>.</span></div>
+            <div className="mb-4 font-serif text-sm font-semibold text-[var(--accent)]">Windback<span>.</span></div>
             <div className="space-y-0.5">
               {[
                 { label: "Overview", tab: "overview" as PreviewTab },
@@ -194,7 +194,7 @@ export function DashboardPreview() {
                   key={item.label}
                   type="button"
                   onClick={() => setActiveTab(item.tab)}
-                  className={`w-full rounded-sm px-2.5 py-1.5 text-left text-[11px] transition-colors duration-150 ${
+                  className={`w-full rounded-none px-2.5 py-1.5 text-left text-[11px] transition-colors duration-150 ${
                     activeTab === item.tab
                       ? "bg-[var(--accent-light)] font-medium text-[var(--accent)]"
                       : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
@@ -215,7 +215,7 @@ export function DashboardPreview() {
                   key={item.label}
                   type="button"
                   onClick={() => setActiveTab(item.tab)}
-                  className={`w-full rounded-sm px-2.5 py-1.5 text-left text-[11px] transition-colors duration-150 ${
+                  className={`w-full rounded-none px-2.5 py-1.5 text-left text-[11px] transition-colors duration-150 ${
                     activeTab === item.tab
                       ? "bg-[var(--accent-light)] font-medium text-[var(--accent)]"
                       : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
@@ -259,7 +259,7 @@ export function DashboardPreview() {
                 </div>
 
                 <motion.div
-                  className="mt-4 rounded-sm border border-border/50 bg-card"
+                  className="mt-4 rounded-none border border-border/50 bg-card"
                   initial={{ opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -288,7 +288,7 @@ export function DashboardPreview() {
                 </motion.div>
 
                 <motion.div
-                  className="mt-3 flex items-center gap-2 rounded-sm border border-[var(--accent)]/20 bg-[var(--accent-light)] px-3 py-2 cursor-default"
+                  className="mt-3 flex items-center gap-2 rounded-none border border-[var(--accent)]/20 bg-[var(--accent-light)] px-3 py-2 cursor-default"
                   initial={{ opacity: 0, scale: 0.95 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
@@ -322,7 +322,7 @@ export function DashboardPreview() {
                 </div>
 
                 <motion.div
-                  className="mt-4 rounded-sm border border-border/50 bg-card"
+                  className="mt-4 rounded-none border border-border/50 bg-card"
                   initial={{ opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -358,7 +358,7 @@ export function DashboardPreview() {
                   <MiniStatCard icon={TrendingUp} label="LTV Avg" value="$2.8k" change="156 customers" delay={0.6} />
                   <MiniStatCard icon={ArrowUpRight} label="Onboarded" value="89%" change="12 milestones" delay={0.7} />
                 </div>
-                <div className="rounded-sm border border-border/50 bg-card">
+                <div className="rounded-none border border-border/50 bg-card">
                   <div className="border-b border-border/40 px-3 py-2">
                     <span className="text-[11px] font-semibold text-foreground">Customer Health Scores</span>
                   </div>
@@ -395,7 +395,7 @@ export function DashboardPreview() {
                   <MiniStatCard icon={TrendingUp} label="Lost Gems" value="24" change="ready to win back" delay={0.6} />
                   <MiniStatCard icon={Activity} label="Win-Back Rate" value="12%" change="3 recovered this month" delay={0.7} />
                 </div>
-                <div className="rounded-sm border border-border/50 bg-card">
+                <div className="rounded-none border border-border/50 bg-card">
                   <div className="border-b border-border/40 px-3 py-2">
                     <span className="text-[11px] font-semibold text-foreground">Lost Gems — Win-Back Queue</span>
                   </div>
@@ -416,7 +416,7 @@ export function DashboardPreview() {
                     </div>
                   ))}
                 </div>
-                <div className="flex items-center gap-2 rounded-sm border border-amber-200/50 bg-amber-50/50 px-3 py-2">
+                <div className="flex items-center gap-2 rounded-none border border-amber-200/50 bg-amber-50/50 px-3 py-2">
                   <Sparkles className="h-3.5 w-3.5 text-amber-600" />
                   <span className="text-[10px] text-amber-700">Alert: Churn rate exceeded 5% threshold — 3 high-risk customers flagged</span>
                 </div>
