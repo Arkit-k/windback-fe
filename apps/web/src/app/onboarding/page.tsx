@@ -399,7 +399,7 @@ function StepLocationInput({
       }
       if (e.key === "Enter" && activeIndex >= 0) {
         e.preventDefault();
-        selectSuggestion(suggestions[activeIndex].display_name);
+        selectSuggestion(suggestions[activeIndex].name);
         return;
       }
       if (e.key === "Escape") {
