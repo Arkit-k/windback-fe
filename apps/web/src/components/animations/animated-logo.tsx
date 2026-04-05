@@ -1,14 +1,13 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 const LETTERS = "Windback.".split("");
 const SERIF = "var(--font-serif, 'Instrument Serif'), serif";
 const PIXEL = "'Silkscreen', cursive";
 
-// Cycle: serif → pixel (sweep right) → pause → serif (sweep right) → pause → repeat
-const SWEEP_INTERVAL = 60; // ms per letter
-const PAUSE_AFTER_SWEEP = 2500; // ms to hold before next sweep
+const SWEEP_INTERVAL = 60;
+const PAUSE_AFTER_SWEEP = 2500;
 
 interface AnimatedLogoProps {
   id?: string;
@@ -16,32 +15,51 @@ interface AnimatedLogoProps {
 }
 
 export function AnimatedLogo({ id, className = "" }: AnimatedLogoProps) {
-  const [pixelCount, setPixelCount] = useState(0); // how many letters are in pixel font (from left)
-  const [direction, setDirection] = useState<"toPixel" | "toSerif">("toPixel");
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const [pixelCount, setPixelCount] = useState(0);
+  const directionRef = useRef<"toPixel" | "toSerif">("toPixel");
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const pausedRef = useRef(false);
 
-  useEffect(() => {
-    function tick() {
+  const startSweep = useCallback(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    pausedRef.current = false;
+
+    intervalRef.current = setInterval(() => {
+      if (pausedRef.current) return;
+
       setPixelCount((prev) => {
-        const next = direction === "toPixel" ? prev + 1 : prev - 1;
+        const dir = directionRef.current;
+        const next = dir === "toPixel" ? prev + 1 : prev - 1;
 
-        if (direction === "toPixel" && next > LETTERS.length) {
-          // All letters are pixel — pause then sweep back
-          setTimeout(() => setDirection("toSerif"), PAUSE_AFTER_SWEEP);
+        if (dir === "toPixel" && next > LETTERS.length) {
+          pausedRef.current = true;
+          if (intervalRef.current) clearInterval(intervalRef.current);
+          setTimeout(() => {
+            directionRef.current = "toSerif";
+            startSweep();
+          }, PAUSE_AFTER_SWEEP);
           return LETTERS.length;
         }
-        if (direction === "toSerif" && next < 0) {
-          // All letters are serif — pause then sweep to pixel
-          setTimeout(() => setDirection("toPixel"), PAUSE_AFTER_SWEEP);
+        if (dir === "toSerif" && next < 0) {
+          pausedRef.current = true;
+          if (intervalRef.current) clearInterval(intervalRef.current);
+          setTimeout(() => {
+            directionRef.current = "toPixel";
+            startSweep();
+          }, PAUSE_AFTER_SWEEP);
           return 0;
         }
         return next;
       });
-    }
+    }, SWEEP_INTERVAL);
+  }, []);
 
-    timerRef.current = setInterval(tick, SWEEP_INTERVAL);
-    return () => clearInterval(timerRef.current);
-  }, [direction]);
+  useEffect(() => {
+    startSweep();
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [startSweep]);
 
   return (
     <span id={id} className={`font-semibold text-[var(--accent)] select-none ${className}`}>
