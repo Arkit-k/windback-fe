@@ -33,16 +33,16 @@ export function HeroBackground() {
     <>
       {/* Peach glow — top left */}
       <motion.div
-        className="pointer-events-none absolute -left-20 -top-10 h-[320px] w-[320px] rounded-full blur-[90px]"
-        style={{ background: "radial-gradient(circle, rgba(251,170,138,0.35) 0%, rgba(251,170,138,0.12) 50%, transparent 70%)" }}
-        animate={{ x: [0, 50, 20, 0], y: [0, 40, -10, 0], scale: [1, 1.1, 0.95, 1] }}
+        className="pointer-events-none absolute -left-20 -top-10 h-[520px] w-[520px] rounded-full blur-[90px]"
+        style={{ background: "radial-gradient(circle, rgba(251,170,138,0.65) 0%, rgba(251,170,138,0.25) 50%, transparent 70%)" }}
+        animate={{ x: [0, 80, 30, 0], y: [0, 60, -20, 0], scale: [1, 1.15, 0.92, 1] }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
       />
       {/* Blue glow — top right */}
       <motion.div
-        className="pointer-events-none absolute -right-20 -top-10 h-[320px] w-[320px] rounded-full blur-[90px]"
-        style={{ background: "radial-gradient(circle, rgba(37,99,235,0.3) 0%, rgba(37,99,235,0.1) 50%, transparent 70%)" }}
-        animate={{ x: [0, -50, -10, 0], y: [0, 40, 5, 0], scale: [1, 0.92, 1.1, 1] }}
+        className="pointer-events-none absolute -right-20 -top-10 h-[520px] w-[520px] rounded-full blur-[90px]"
+        style={{ background: "radial-gradient(circle, rgba(37,99,235,0.65) 0%, rgba(37,99,235,0.25) 50%, transparent 70%)" }}
+        animate={{ x: [0, -80, -20, 0], y: [0, 70, 10, 0], scale: [1, 0.88, 1.18, 1] }}
         transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
       />
     </>

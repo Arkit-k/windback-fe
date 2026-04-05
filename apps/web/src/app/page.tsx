@@ -59,7 +59,7 @@ export default function LandingPage() {
         <motion.div
           className="pointer-events-none absolute inset-0 overflow-hidden"
           initial={{ opacity: 0 }}
-          animate={{ opacity: loaded ? 0.6 : 0 }}
+          animate={{ opacity: loaded ? 1 : 0 }}
           transition={{ duration: 1.1, delay: 0.5 }}
         >
           <HeroRibbon />
